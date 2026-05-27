@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Досье NT-ARC-17-LFH6S3W</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 20px;
+            font-family: 'Courier Prime', 'Courier New', monospace;
+            background: 
+                linear-gradient(90deg, 
+                    rgba(0,0,0,0.03) 0%, 
+                    transparent 0.5%, 
+                    transparent 99.5%, 
+                    rgba(0,0,0,0.03) 100%),
+                linear-gradient(180deg,
+                    rgba(255,255,255,0.02) 0%,
+                    transparent 20%,
+                    transparent 80%,
+                    rgba(0,0,0,0.05) 100%),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent 0px,
+                    transparent 50px,
+                    rgba(255,255,255,0.008) 50px,
+                    rgba(255,255,255,0.008) 51px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent 0px,
+                    transparent 50px,
+                    rgba(0,0,0,0.015) 50px,
+                    rgba(0,0,0,0.015) 51px
+                ),
+                linear-gradient(135deg, #4a4f52 0%, #3d4144 25%, #35393c 50%, #3d4144 75%, #4a4f52 100%);
+            background-color: #3a3e41;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.06) 0%, transparent 40%),
+                radial-gradient(ellipse at 70% 80%, rgba(255,255,255,0.04) 0%, transparent 35%),
+                radial-gradient(ellipse at 50% 50%, transparent 0%, rgba(0,0,0,0.15) 100%),
+                linear-gradient(175deg, transparent 0%, transparent 49%, rgba(255,255,255,0.02) 49%, rgba(255,255,255,0.02) 51%, transparent 51%, transparent 100%),
+                linear-gradient(5deg, transparent 0%, transparent 49%, rgba(0,0,0,0.02) 49%, rgba(0,0,0,0.02) 51%, transparent 51%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .metal-scratches {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                linear-gradient(97deg, transparent 0%, transparent 45%, rgba(255,255,255,0.015) 45%, rgba(255,255,255,0.015) 45.1%, transparent 45.1%, transparent 100%),
+                linear-gradient(83deg, transparent 0%, transparent 62%, rgba(0,0,0,0.02) 62%, rgba(0,0,0,0.02) 62.2%, transparent 62.2%, transparent 100%),
+                linear-gradient(91deg, transparent 0%, transparent 28%, rgba(255,255,255,0.012) 28%, rgba(255,255,255,0.012) 28.15%, transparent 28.15%, transparent 100%),
+                linear-gradient(89deg, transparent 0%, transparent 71%, rgba(0,0,0,0.018) 71%, rgba(0,0,0,0.018) 71.1%, transparent 71.1%, transparent 100%),
+                linear-gradient(95deg, transparent 0%, transparent 15%, rgba(255,255,255,0.01) 15%, rgba(255,255,255,0.01) 15.2%, transparent 15.2%, transparent 100%),
+                linear-gradient(88deg, transparent 0%, transparent 85%, rgba(0,0,0,0.015) 85%, rgba(0,0,0,0.015) 85.15%, transparent 85.15%, transparent 100%),
+                linear-gradient(92deg, transparent 0%, transparent 52%, rgba(255,255,255,0.018) 52%, rgba(255,255,255,0.018) 52.08%, transparent 52.08%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .metal-bolts {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle at 40% 40%, #5a5f62 0%, #3a3e41 60%, #2a2d30 100%);
+            border-radius: 50%;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255,255,255,0.15),
+                inset -1px -1px 2px rgba(0,0,0,0.3),
+                0 1px 3px rgba(0,0,0,0.4);
+            z-index: 0;
+        }
+
+        .metal-bolts::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 3px;
+            width: 10px;
+            height: 2px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%);
+            transform: rotate(45deg);
+        }
+
+        .metal-bolts::after {
+            content: '';
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle at 40% 40%, #5a5f62 0%, #3a3e41 60%, #2a2d30 100%);
+            border-radius: 50%;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255,255,255,0.15),
+                inset -1px -1px 2px rgba(0,0,0,0.3),
+                0 1px 3px rgba(0,0,0,0.4);
+        }
+
+        .metal-bolts-bottom {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle at 40% 40%, #5a5f62 0%, #3a3e41 60%, #2a2d30 100%);
+            border-radius: 50%;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255,255,255,0.15),
+                inset -1px -1px 2px rgba(0,0,0,0.3),
+                0 1px 3px rgba(0,0,0,0.4);
+            z-index: 0;
+        }
+
+        .metal-bolts-bottom::after {
+            content: '';
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle at 40% 40%, #5a5f62 0%, #3a3e41 60%, #2a2d30 100%);
+            border-radius: 50%;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255,255,255,0.15),
+                inset -1px -1px 2px rgba(0,0,0,0.3),
+                0 1px 3px rgba(0,0,0,0.4);
+        }
+
+        .flip-hint {
+            position: relative;
+            z-index: 10;
+            color: rgba(200, 210, 220, 0.7);
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            animation: pulse 2s ease-in-out infinite;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .flip-hint .side-indicator {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 3px;
+            margin-left: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .scene {
+            position: relative;
+            z-index: 1;
+            width: 210mm;
+            height: 297mm;
+            perspective: 2000px;
+        }
+
+        .paper-shadow {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: -20px;
+            bottom: -20px;
+            background: rgba(0,0,0,0.6);
+            filter: blur(25px);
+            border-radius: 3px;
+            z-index: -1;
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .paper-shadow.flipped {
+            left: -20px;
+            right: 20px;
+        }
+
+        .document-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .document-container.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .paper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 2px;
+            overflow: hidden;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .paper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .paper-front {
+            background: 
+                linear-gradient(135deg, 
+                    rgba(255,255,255,0.12) 0%, 
+                    transparent 60%),
+                linear-gradient(
+                    180deg,
+                    #f5efe6 0%,
+                    #ece4d8 10%,
+                    #e8dfd0 25%,
+                    #e3d9c6 50%,
+                    #ded2bc 75%,
+                    #d9ccb3 90%,
+                    #d5c7ac 100%
+                );
+            padding: 35px 45px;
+            box-shadow: 
+                0 3px 6px rgba(0,0,0,0.15),
+                0 10px 20px rgba(0,0,0,0.15),
+                0 20px 40px rgba(0,0,0,0.2),
+                inset 0 0 120px rgba(139, 115, 85, 0.08);
+            z-index: 2;
+        }
+
+        .paper-back {
+            background: 
+                linear-gradient(225deg, 
+                    rgba(255,255,255,0.1) 0%, 
+                    transparent 60%),
+                linear-gradient(
+                    180deg,
+                    #f3ebe2 0%,
+                    #e9e0d4 15%,
+                    #e5dbcc 40%,
+                    #e0d5c2 60%,
+                    #dbcfb8 85%,
+                    #d7caaf 100%
+                );
+            padding: 35px 45px;
+            transform: rotateY(180deg);
+            z-index: 1;
+            box-shadow: 
+                0 3px 6px rgba(0,0,0,0.15),
+                0 10px 20px rgba(0,0,0,0.15),
+                0 20px 40px rgba(0,0,0,0.2),
+                inset 0 0 100px rgba(139, 115, 85, 0.06);
+        }
+
+        .paper-clip {
+            position: absolute;
+            top: 15px;
+            left: 45px;
+            width: 36px;
+            height: 95px;
+            z-index: 100;
+        }
+
+        .paper-clip-outer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 30px;
+            height: 85px;
+            border: 4px solid #a8a8a8;
+            border-radius: 15px 15px 20px 20px;
+            background: linear-gradient(90deg, #b8b8b8 0%, #e0e0e0 40%, #c8c8c8 60%, #a0a0a0 100%);
+            box-shadow: 
+                3px 4px 8px rgba(0,0,0,0.35),
+                inset 2px 2px 4px rgba(255,255,255,0.6),
+                inset -1px -1px 3px rgba(0,0,0,0.2);
+            transform: rotate(-3deg);
+        }
+
+        .paper-clip-inner {
+            position: absolute;
+            top: 15px;
+            left: 8px;
+            width: 17px;
+            height: 55px;
+            border: 3px solid #999;
+            border-radius: 10px 10px 12px 12px;
+            background: linear-gradient(90deg, #c0c0c0 0%, #e8e8e8 50%, #b0b0b0 100%);
+            transform: rotate(-3deg);
+        }
+
+        .torn-edge-top {
+            position: absolute;
+            top: -2px;
+            left: 15px;
+            right: 15px;
+            height: 10px;
+            background: inherit;
+            clip-path: polygon(
+                0% 100%, 3% 50%, 6% 100%, 10% 30%, 14% 100%, 17% 60%,
+                21% 100%, 25% 40%, 29% 100%, 33% 55%, 37% 100%, 41% 35%,
+                45% 100%, 49% 65%, 53% 100%, 57% 45%, 61% 100%, 65% 50%,
+                69% 100%, 73% 35%, 77% 100%, 81% 60%, 85% 100%, 89% 40%,
+                93% 100%, 97% 55%, 100% 100%
+            );
+        }
+
+        .coffee-stain {
+            position: absolute;
+            width: 80px;
+            height: 75px;
+            border: 4px solid rgba(101, 67, 33, 0.12);
+            border-radius: 50%;
+            top: 40px;
+            right: 60px;
+            transform: rotate(12deg);
+            background: radial-gradient(ellipse at center, rgba(101, 67, 33, 0.04) 0%, transparent 70%);
+        }
+
+        .coffee-stain::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border: 2px solid rgba(101, 67, 33, 0.06);
+            border-radius: 50%;
+        }
+
+        .blood-stain {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .blood-1 {
+            width: 130px;
+            height: 110px;
+            top: 6%;
+            right: 2%;
+            background: radial-gradient(ellipse at 35% 45%, 
+                rgba(130, 25, 25, 0.25) 0%, 
+                rgba(90, 15, 15, 0.14) 35%,
+                rgba(60, 8, 8, 0.06) 55%,
+                transparent 75%);
+            transform: rotate(18deg);
+            filter: blur(0.5px);
+        }
+
+        .blood-2 {
+            width: 100px;
+            height: 90px;
+            bottom: 18%;
+            left: 4%;
+            background: radial-gradient(ellipse at 50% 50%, 
+                rgba(110, 18, 18, 0.2) 0%, 
+                rgba(75, 12, 12, 0.1) 45%,
+                transparent 70%);
+            transform: rotate(-8deg);
+        }
+
+        .blood-3 {
+            width: 55px;
+            height: 75px;
+            top: 42%;
+            right: 6%;
+            background: radial-gradient(ellipse at 50% 35%, 
+                rgba(120, 20, 20, 0.18) 0%, 
+                rgba(85, 12, 12, 0.1) 40%,
+                transparent 65%);
+        }
+
+        .blood-drip {
+            position: absolute;
+            width: 7px;
+            height: 35px;
+            top: 15%;
+            right: 8%;
+            background: linear-gradient(180deg, 
+                rgba(110, 18, 18, 0.2) 0%, 
+                rgba(85, 12, 12, 0.14) 60%,
+                rgba(60, 8, 8, 0.05) 100%);
+            border-radius: 4px 4px 50% 50%;
+            transform: rotate(3deg);
+        }
+
+        .stamp {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 4px solid;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 9px;
+            text-align: center;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+        }
+
+        .stamp::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            border: 2px solid;
+            border-radius: 50%;
+        }
+
+        .stamp-1 {
+            bottom: 50px;
+            right: 60px;
+            transform: rotate(-10deg);
+            border-color: rgba(180, 35, 35, 0.4);
+            color: rgba(180, 35, 35, 0.45);
+        }
+
+        .stamp-1::before {
+            border-color: rgba(180, 35, 35, 0.28);
+        }
+
+        .stamp-2 {
+            bottom: 70px;
+            right: 180px;
+            transform: rotate(5deg);
+            border-color: rgba(35, 85, 160, 0.35);
+            color: rgba(35, 85, 160, 0.4);
+        }
+
+        .stamp-2::before {
+            border-color: rgba(35, 85, 160, 0.25);
+        }
+
+        .stamp-back-1 {
+            top: 60px;
+            right: 50px;
+            transform: rotate(15deg);
+            border-color: rgba(50, 120, 50, 0.38);
+            color: rgba(50, 120, 50, 0.42);
+        }
+
+        .stamp-back-1::before {
+            border-color: rgba(50, 120, 50, 0.28);
+        }
+
+        .stamp-back-2 {
+            bottom: 100px;
+            left: 45px;
+            transform: rotate(-8deg);
+            border-color: rgba(160, 100, 30, 0.38);
+            color: rgba(160, 100, 30, 0.42);
+        }
+
+        .stamp-back-2::before {
+            border-color: rgba(160, 100, 30, 0.28);
+        }
+
+        .nt-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-35deg);
+            font-size: 85px;
+            font-weight: bold;
+            color: rgba(0, 0, 0, 0.02);
+            letter-spacing: 15px;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .header {
+            text-align: center;
+            border: 3px double #222;
+            padding: 15px 20px;
+            margin-bottom: 18px;
+            background: linear-gradient(180deg, 
+                rgba(255,255,255,0.25) 0%, 
+                rgba(255,255,255,0.08) 50%,
+                rgba(0,0,0,0.02) 100%);
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .header-ascii {
+            font-size: 10px;
+            line-height: 1.1;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .document-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 12px 0 6px 0;
+            color: #000;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+        }
+
+        .document-code {
+            font-size: 13px;
+            color: #333;
+            letter-spacing: 1.5px;
+            padding: 4px 12px;
+            background: rgba(0,0,0,0.04);
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .section {
+            margin: 14px 0;
+            position: relative;
+        }
+
+        .section-header {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            background: linear-gradient(90deg, 
+                rgba(0,0,0,0.07) 0%, 
+                rgba(0,0,0,0.02) 100%);
+            border-left: 3px solid #333;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .info-line {
+            margin: 7px 0;
+            padding-left: 12px;
+            font-size: 13px;
+            color: #1a1a1a;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .info-line::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #666;
+            font-size: 10px;
+        }
+
+        .info-line strong {
+            color: #000;
+            min-width: 160px;
+            display: inline-block;
+        }
+
+        .redacted-container {
+            display: inline-block;
+            position: relative;
+            vertical-align: middle;
+        }
+
+        .redacted-box {
+            display: inline-block;
+            width: 130px;
+            height: 18px;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    #080808 0px,
+                    #080808 2px,
+                    #151515 2px,
+                    #151515 4px
+                );
+            position: relative;
+            transform: skewX(-3deg);
+            box-shadow: 
+                3px 3px 6px rgba(0,0,0,0.4),
+                inset 0 0 10px rgba(0,0,0,0.6);
+        }
+
+        .redacted-box::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -8px;
+            right: -8px;
+            bottom: -4px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(0,0,0,0.88) 8%,
+                rgba(0,0,0,0.95) 50%,
+                rgba(0,0,0,0.88) 92%,
+                transparent 100%);
+            transform: rotate(-0.5deg);
+        }
+
+        .redacted-box::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -12px;
+            right: -12px;
+            height: 3px;
+            background: #000;
+            transform: translateY(-50%);
+            box-shadow: 0 -6px 0 #000, 0 6px 0 #000;
+        }
+
+        .redacted-tear {
+            position: absolute;
+            top: -10px;
+            right: -18px;
+            width: 28px;
+            height: 22px;
+            background: linear-gradient(140deg, #e8dfd0 0%, #dbd0be 100%);
+            clip-path: polygon(10% 25%, 55% 0%, 100% 35%, 85% 100%, 15% 100%, 0% 60%);
+            transform: rotate(12deg);
+            box-shadow: -2px 3px 4px rgba(0,0,0,0.2);
+        }
+
+        .divider {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                #333 8%, 
+                #333 92%, 
+                transparent 100%);
+            margin: 14px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '◆';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: #e8dfd0;
+            padding: 0 8px;
+            color: #333;
+            font-size: 8px;
+        }
+
+        .psychology-section {
+            background: linear-gradient(180deg, 
+                rgba(0,0,0,0.018) 0%, 
+                rgba(0,0,0,0.04) 100%);
+            padding: 12px 14px;
+            border: 1px solid rgba(0,0,0,0.12);
+            margin: 12px 0;
+        }
+
+        .psychology-text {
+            font-size: 12px;
+            line-height: 1.7;
+            color: #222;
+            text-align: justify;
+            text-indent: 20px;
+        }
+
+        .note {
+            margin-top: 18px;
+            font-size: 10px;
+            line-height: 1.55;
+            padding: 10px 14px;
+            background: rgba(0,0,0,0.028);
+            border: 1px solid #888;
+            border-left: 3px solid #444;
+            color: #333;
+        }
+
+        .stamp-area {
+            margin-top: 15px;
+            text-align: center;
+            padding: 10px;
+            border-top: 2px dashed #666;
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: #555;
+        }
+
+        .fold-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(0,0,0,0.05) 15%,
+                rgba(0,0,0,0.07) 50%,
+                rgba(0,0,0,0.05) 85%,
+                transparent 100%);
+            pointer-events: none;
+        }
+
+        .fold-1 { top: 33%; }
+        .fold-2 { top: 66%; }
+
+        .back-header {
+            text-align: center;
+            border-bottom: 3px solid #333;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .back-title {
+            font-size: 15px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #222;
+        }
+
+        .back-subtitle {
+            font-size: 11px;
+            color: #555;
+            margin-top: 6px;
+            letter-spacing: 1.5px;
+        }
+
+        .history-section {
+            margin: 16px 0;
+        }
+
+        .history-entry {
+            padding: 10px 12px;
+            margin: 8px 0;
+            background: rgba(0,0,0,0.025);
+            border-left: 3px solid #666;
+            position: relative;
+        }
+
+        .history-date {
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 4px;
+            letter-spacing: 1.5px;
+        }
+
+        .history-text {
+            font-size: 11px;
+            line-height: 1.55;
+            color: #222;
+        }
+
+        .history-author {
+            font-size: 10px;
+            color: #888;
+            text-align: right;
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        .handwritten-note {
+            position: absolute;
+            font-style: italic;
+            font-size: 12px;
+        }
+
+        .note-1 {
+            bottom: 160px;
+            right: 40px;
+            color: rgba(0, 50, 120, 0.75);
+            transform: rotate(-3deg);
+        }
+
+        .note-2 {
+            top: 280px;
+            left: 30px;
+            transform: rotate(2deg);
+            color: rgba(150, 50, 50, 0.65);
+        }
+
+        .confidential-stripe {
+            position: absolute;
+            top: 50%;
+            left: -30px;
+            right: -30px;
+            height: 35px;
+            background: repeating-linear-gradient(
+                90deg,
+                rgba(180, 30, 30, 0.08) 0px,
+                rgba(180, 30, 30, 0.08) 100px,
+                rgba(180, 30, 30, 0.12) 100px,
+                rgba(180, 30, 30, 0.12) 200px
+            );
+            transform: translateY(-50%) rotate(-5deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .confidential-text {
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 15px;
+            color: rgba(180, 30, 30, 0.22);
+            text-transform: uppercase;
+        }
+
+        .medical-section {
+            border: 2px dashed #999;
+            padding: 12px;
+            margin: 16px 0;
+            background: rgba(255, 255, 240, 0.35);
+        }
+
+        .medical-header {
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            color: #444;
+            text-transform: uppercase;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        .medical-text {
+            font-size: 11px;
+            line-height: 1.65;
+            color: #333;
+        }
+
+        .barcode {
+            position: absolute;
+            bottom: 25px;
+            right: 35px;
+            display: flex;
+            gap: 2px;
+            height: 40px;
+            opacity: 0.65;
+        }
+
+        .barcode-line {
+            width: 3px;
+            background: #222;
+        }
+
+        .barcode-line:nth-child(odd) { height: 100%; }
+        .barcode-line:nth-child(even) { height: 75%; align-self: flex-end; }
+        .barcode-line:nth-child(3n) { width: 4px; }
+        .barcode-line:nth-child(5n) { width: 2px; height: 85%; }
+
+        .scene:hover .document-container {
+            box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+        }
+    </style>
+</head>
+<body>
+    <div class="metal-scratches"></div>
+    <div class="metal-bolts"></div>
+    <div class="metal-bolts-bottom"></div>
+
+    <div class="flip-hint">
+        ▶ Нажмите на документ для переворота ◀
+        <span class="side-indicator" id="sideIndicator">ЛИЦЕВАЯ</span>
+    </div>
+    
+    <div class="scene" id="scene">
+        <div class="paper-shadow" id="paperShadow"></div>
+        <div class="document-container" id="documentContainer">
+            
+            <div class="paper paper-front">
+                <div class="torn-edge-top"></div>
+                <div class="fold-line fold-1"></div>
+                <div class="fold-line fold-2"></div>
+                
+                <div class="paper-clip">
+                    <div class="paper-clip-outer"></div>
+                    <div class="paper-clip-inner"></div>
+                </div>
+                
+                <div class="coffee-stain"></div>
+                <div class="blood-stain blood-1"></div>
+                <div class="blood-stain blood-2"></div>
+                <div class="blood-stain blood-3"></div>
+                <div class="blood-drip"></div>
+                
+                <div class="nt-watermark">NANOTRASEN</div>
+
+                <div class="header">
+                    <div class="header-ascii">
+░███░███░░░░██░████████░░░░<br>
+░██░░████░░░██░░░░██░░░░░░░<br>
+░█░░░██░██░░██░░░░██░░░░░█░<br>
+░░░░░██░░██░██░░░░██░░░░██░<br>
+░░░░░██░░░████░░░░██░░░███░
+                    </div>
+                    <div class="document-title">Личностное досье сотрудника</div>
+                    <div class="document-code">NT-ARC-17-LFH6S3W</div>
+                </div>
+
+                <div class="section">
+                    <div class="info-line"><strong>СЕКТОР:</strong> ЦС-Авалон-V02Tauri</div>
+                    <div class="info-line"><strong>ДАТА СОСТАВЛЕНИЯ:</strong> 12/03/3020</div>
+                    <div class="info-line"><strong>ФИО:</strong> Иридий Триф</div>
+                    <div class="info-line"><strong>УНИКАЛЬНЫЙ КОД:</strong> Rilavion</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section">
+                    <div class="section-header">Основные данные</div>
+                    <div class="info-line"><strong>Дата найма:</strong> 3020</div>
+                    <div class="info-line"><strong>Возраст:</strong> 20 лет</div>
+                    <div class="info-line">
+                        <strong>Раса:</strong>
+                        <span class="redacted-container">
+                            <span class="redacted-box"></span>
+                            <span class="redacted-tear"></span>
+                        </span>
+                    </div>
+                    <div class="info-line"><strong>Контракт:</strong> Бессрочный</div>
+                    <div class="info-line"><strong>Сектор работы:</strong> Станция Qillu (программа обмена)</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section">
+                    <div class="section-header">Служебная информация</div>
+                    <div class="info-line"><strong>Текущая должность:</strong> [ПЕРЕВЕДЁН]</div>
+                    <div class="info-line"><strong>Образование:</strong> Академия Пилотирования NT — шаттлы класса Gamma (ККК-ОКК)</div>
+                    <div class="info-line"><strong>Психическое состояние:</strong> Удовлетворительное</div>
+                    <div class="info-line"><strong>Инциденты до работы:</strong> Не зафиксировано</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section">
+                    <div class="section-header">Психологическая сводка</div>
+                    <div class="psychology-section">
+                        <p class="psychology-text">
+                            Иридий — личность, представляющая интерес для наблюдения. Демонстрирует нестандартные психологические паттерны. Согласно досье сектора S-21 (планета «Меркурий-3»), субъект воспринимает всех живых существ как равных, не проводя между ними различий помимо внешних. Рекомендован для толерантных станций корпорации.
+                        </p>
+                        <p class="psychology-text" style="margin-top: 10px;">
+                            В ходе стажировки (трансфер-пилот) зафиксирована трудоголическая наклонность. Способен работать до двух суток без приёма пищи. Рекомендован контроль режима питания.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="stamp-area">
+                    ▬▬▬▬▬ МЕСТО ДЛЯ ПЕЧАТЕЙ ▬▬▬▬▬
+                </div>
+
+                <div class="stamp stamp-1">
+                    <div>NANOTRASEN<br>✦ЛИЧНОЕ ДЕЛО✦<br>— 3020 —</div>
+                </div>
+
+                <div class="stamp stamp-2">
+                    <div>NT SECTOR 16<br>◈ ОТДЕЛ ◈<br>АРХИВИЗАЦИИ</div>
+                </div>
+            </div>
+
+            <div class="paper paper-back">
+                <div class="fold-line fold-1"></div>
+                <div class="fold-line fold-2"></div>
+                
+                <div class="nt-watermark">NANOTRASEN</div>
+                
+                <div class="confidential-stripe">
+                    <span class="confidential-text">АРХИВИЗАЦИЯ</span>
+                </div>
+
+                <div class="back-header">
+                    <div class="back-title">Служебные записи</div>
+                    <div class="back-subtitle">Приложение к досье NT-ARC-17-LFH6S3W</div>
+                </div>
+
+                <div class="history-section">
+                    <div class="section-header">История переводов</div>
+                    
+                    <div class="history-entry">
+                        <div class="history-date">15/03/3020</div>
+                        <div class="history-text">
+                            Сотрудник зачислен в штат станции Fish-Station-14 сектора SunRise. Назначен трансфер-пилотом. Первичный инструктаж пройден.
+                        </div>
+                        <div class="history-author">— Офицер кадров К. Вернер</div>
+                    </div>
+
+                    <div class="history-entry">
+                        <div class="history-date">28/07/3020</div>
+                        <div class="history-text">
+                            Инициирован перевод на станцию Qillu (межсекторная программа обмена). Причина: оптимизация кадров. Статус: одобрено.
+                        </div>
+                        <div class="history-author">— Директор программы Л. Штайн</div>
+                    </div>
+
+                    <div class="history-entry">
+                        <div class="history-date">02/08/3020</div>
+                        <div class="history-text">
+                            Прибытие на станцию Qillu подтверждено. Адаптационный период пройден. Замечаний нет.
+                        </div>
+                        <div class="history-author">— Администрация Qillu</div>
+                    </div>
+                </div>
+
+                <div class="medical-section">
+                    <div class="medical-header">◈ Медицинские отметки</div>
+                    <div class="medical-text">
+                        Физическое состояние: норма для указанного биотипа. Рекомендовано регулярное питание — субъект склонен игнорировать базовые потребности при высокой нагрузке.
+                        <br><br>
+                        Особые отметки: периодический мониторинг психоэмоционального состояния.
+                    </div>
+                </div>
+
+                <div class="note">
+                    <strong>ПРИМЕЧАНИЕ:</strong> Подотчётное лицо при скреплении документа печатью подтверждает достоверность данных. При нарушениях применяются санкции согласно Кодексу NT-7. Корпорация NanoTrasen не несёт ответственности за утерю документа.
+                </div>
+
+                <div class="handwritten-note note-1">Проверить связь с S-21?</div>
+                <div class="handwritten-note note-2">Наблюдение продолжить</div>
+
+                <div class="stamp stamp-back-1">
+                    <div>МЕДИЦИНКСИЙ<br>✚ УТВЕРЖДЕНО ✚<br>QILLU</div>
+                </div>
+
+                <div class="stamp stamp-back-2">
+                    <div>TRANSFER<br>◈ COMPLETE ◈<br>3020</div>
+                </div>
+
+                <div class="barcode">
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                    <div class="barcode-line"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const scene = document.getElementById('scene');
+        const container = document.getElementById('documentContainer');
+        const paperShadow = document.getElementById('paperShadow');
+        const sideIndicator = document.getElementById('sideIndicator');
+        
+        let isFlipped = false;
+
+        scene.addEventListener('click', function() {
+            isFlipped = !isFlipped;
+            
+            container.classList.toggle('flipped');
+            paperShadow.classList.toggle('flipped');
+
+            if (isFlipped) {
+                sideIndicator.textContent = 'ОБОРОТНАЯ';
+                sideIndicator.style.background = 'rgba(180, 100, 100, 0.25)';
+            } else {
+                sideIndicator.textContent = 'ЛИЦЕВАЯ';
+                sideIndicator.style.background = 'rgba(255, 255, 255, 0.1)';
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.code === 'Space' || e.code === 'Enter') {
+                e.preventDefault();
+                scene.click();
+            }
+        });
+    </script>
+</body>
+</html>

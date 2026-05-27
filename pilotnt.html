@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Академия Пилотирования NT</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&family=Caveat:wght@400;500;600;700&family=Indie+Flower&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: 'Rajdhani', sans-serif;
+    background: linear-gradient(180deg, #0a0a12 0%, #0d1020 50%, #0a0a15 100%);
+    color: #e0e0e0;
+    overflow-x: hidden;
+}
+
+.space-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    background: 
+        radial-gradient(ellipse at 20% 20%, rgba(30, 60, 120, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(60, 30, 100, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(20, 40, 80, 0.1) 0%, transparent 70%);
+    animation: bgShift 20s ease-in-out infinite;
+}
+
+@keyframes bgShift {
+    0%, 100% { 
+        background-position: 0% 0%, 100% 100%, 50% 50%;
+        filter: hue-rotate(0deg);
+    }
+    50% { 
+        background-position: 100% 50%, 0% 50%, 50% 0%;
+        filter: hue-rotate(20deg);
+    }
+}
+
+.stars-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s infinite ease-in-out;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+.nebula {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    animation: nebulaPulse 15s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.nebula-1 {
+    top: 10%;
+    left: 10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(74, 158, 255, 0.4) 0%, transparent 70%);
+    animation-delay: 0s;
+}
+
+.nebula-2 {
+    bottom: 20%;
+    right: 5%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(138, 43, 226, 0.3) 0%, transparent 70%);
+    animation-delay: 5s;
+}
+
+.nebula-3 {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(30, 144, 255, 0.2) 0%, transparent 70%);
+    animation-delay: 10s;
+}
+
+@keyframes nebulaPulse {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.1); }
+}
+
+.shooting-star {
+    position: fixed;
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.8), transparent);
+    animation: shoot 3s linear infinite;
+    opacity: 0;
+    z-index: 2;
+}
+
+.shooting-star:nth-child(1) { top: 20%; left: -100px; animation-delay: 0s; }
+.shooting-star:nth-child(2) { top: 40%; left: -100px; animation-delay: 2s; }
+.shooting-star:nth-child(3) { top: 60%; left: -100px; animation-delay: 4s; }
+
+@keyframes shoot {
+    0% { left: -100px; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { left: 110%; opacity: 0; }
+}
+
+.page-container {
+    position: relative;
+    z-index: 10;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px 100px;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 70px;
+    position: relative;
+    animation: headerFadeIn 1.5s ease forwards;
+}
+
+@keyframes headerFadeIn {
+    0% { opacity: 0; transform: translateY(-30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.nt-logo {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 30px;
+    background: linear-gradient(135deg, #1a5a9a 0%, #0d3a6a 50%, #1a6aaa 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 
+        0 0 60px rgba(30, 144, 255, 0.4),
+        0 0 120px rgba(30, 144, 255, 0.2),
+        0 15px 50px rgba(0,0,0,0.5),
+        inset 0 2px 0 rgba(255,255,255,0.3),
+        inset 0 -5px 20px rgba(0,0,0,0.3);
+    animation: logoFloat 4s ease-in-out infinite, logoPulse 2s ease-in-out infinite;
+    position: relative;
+}
+
+.nt-logo::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    border: 2px solid rgba(74, 158, 255, 0.3);
+    animation: logoRing 3s linear infinite;
+}
+
+@keyframes logoRing {
+    0% { transform: rotate(0deg); opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { transform: rotate(360deg); opacity: 0.5; }
+}
+
+@keyframes logoFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes logoPulse {
+    0%, 100% { box-shadow: 0 0 60px rgba(30, 144, 255, 0.4), 0 0 120px rgba(30, 144, 255, 0.2), 0 15px 50px rgba(0,0,0,0.5), inset 0 2px 0 rgba(255,255,255,0.3), inset 0 -5px 20px rgba(0,0,0,0.3); }
+    50% { box-shadow: 0 0 80px rgba(30, 144, 255, 0.6), 0 0 150px rgba(30, 144, 255, 0.3), 0 15px 50px rgba(0,0,0,0.5), inset 0 2px 0 rgba(255,255,255,0.3), inset 0 -5px 20px rgba(0,0,0,0.3); }
+}
+
+.nt-logo-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 30px rgba(30, 144, 255, 1);
+    animation: textGlow 2s ease-in-out infinite;
+}
+
+@keyframes textGlow {
+    0%, 100% { text-shadow: 0 0 30px rgba(30, 144, 255, 0.8); }
+    50% { text-shadow: 0 0 50px rgba(30, 144, 255, 1), 0 0 80px rgba(30, 144, 255, 0.5); }
+}
+
+.page-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 700;
+    color: #4a9eff;
+    text-shadow: 
+        0 0 40px rgba(74, 158, 255, 0.6),
+        0 0 80px rgba(74, 158, 255, 0.3),
+        0 2px 10px rgba(0,0,0,0.8);
+    letter-spacing: 0.12em;
+    margin-bottom: 15px;
+    animation: titlePulse 3s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+    0%, 100% { text-shadow: 0 0 40px rgba(74, 158, 255, 0.6), 0 0 80px rgba(74, 158, 255, 0.3), 0 2px 10px rgba(0,0,0,0.8); }
+    50% { text-shadow: 0 0 60px rgba(74, 158, 255, 0.8), 0 0 100px rgba(74, 158, 255, 0.4), 0 2px 10px rgba(0,0,0,0.8); }
+}
+
+.page-subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.1rem;
+    color: #6a9aca;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    animation: subtitleFade 2s ease infinite;
+}
+
+@keyframes subtitleFade {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+.location-info {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    color: #5a7a9a;
+    margin-top: 15px;
+    letter-spacing: 0.15em;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    margin-bottom: 60px;
+}
+
+@media (max-width: 1000px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.notebook-section {
+    grid-column: 1 / -1;
+    animation: sectionSlideIn 1s ease forwards;
+    animation-delay: 0.3s;
+    opacity: 0;
+}
+
+@keyframes sectionSlideIn {
+    0% { opacity: 0; transform: translateY(50px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.4rem;
+    color: #4a9eff;
+    margin-bottom: 30px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid rgba(74, 158, 255, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+}
+
+.section-title::before {
+    content: '◆';
+    color: #4a9eff;
+    animation: iconPulse 2s ease-in-out infinite;
+    font-size: 1.2rem;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, #4a9eff, transparent);
+    animation: lineGlow 2s ease-in-out infinite;
+}
+
+@keyframes lineGlow {
+    0%, 100% { width: 100px; opacity: 1; }
+    50% { width: 200px; opacity: 0.7; }
+}
+
+@keyframes iconPulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+.notebook {
+    background: linear-gradient(135deg, #f8f4ec 0%, #f0eade 50%, #e8e0d0 100%);
+    border-radius: 5px 20px 20px 5px;
+    padding: 0;
+    box-shadow: 
+        12px 12px 40px rgba(0,0,0,0.5),
+        -3px 0 15px rgba(0,0,0,0.15),
+        inset 0 0 60px rgba(139, 119, 90, 0.08);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.notebook:hover {
+    transform: translateY(-5px) rotate(0.5deg);
+    box-shadow: 
+        15px 20px 50px rgba(0,0,0,0.55),
+        -3px 0 15px rgba(0,0,0,0.15),
+        inset 0 0 60px rgba(139, 119, 90, 0.08);
+}
+
+.notebook::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 55px;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        #c4b090 0%, 
+        #d8c8a8 15%,
+        #e8dcc8 30%,
+        #d8c8a8 50%,
+        #c4b090 70%,
+        #b0a080 100%
+    );
+    border-right: 4px solid #9a8a70;
+    box-shadow: inset -8px 0 20px rgba(0,0,0,0.15);
+}
+
+.notebook-spiral {
+    position: absolute;
+    top: 0;
+    left: 38px;
+    width: 35px;
+    height: 100%;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 25px 0;
+}
+
+.spiral-ring {
+    width: 22px;
+    height: 22px;
+    border: 4px solid #4a4a4a;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #999 0%, #777 40%, #555 100%);
+    box-shadow: 
+        3px 3px 8px rgba(0,0,0,0.4),
+        inset 2px 2px 4px rgba(255,255,255,0.3),
+        inset -1px -1px 3px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+}
+
+.notebook:hover .spiral-ring {
+    transform: rotate(15deg);
+}
+
+.notebook-content {
+    margin-left: 70px;
+    padding: 35px 35px 35px 25px;
+    position: relative;
+}
+
+.notebook-page {
+    background: repeating-linear-gradient(
+        transparent,
+        transparent 28px,
+        #b8c8dc 28px,
+        #b8c8dc 29px
+    );
+    padding: 12px 0;
+    min-height: 550px;
+    position: relative;
+}
+
+.notebook-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 30px;
+    width: 2px;
+    height: 100%;
+    background: rgba(255, 100, 100, 0.3);
+}
+
+.notebook-entry {
+    margin-bottom: 35px;
+    position: relative;
+    padding-left: 40px;
+    opacity: 0;
+    animation: writeIn 0.8s ease forwards;
+}
+
+.notebook-entry:nth-child(1) { animation-delay: 0.5s; }
+.notebook-entry:nth-child(2) { animation-delay: 0.8s; }
+.notebook-entry:nth-child(3) { animation-delay: 1.1s; }
+.notebook-entry:nth-child(4) { animation-delay: 1.4s; }
+.notebook-entry:nth-child(5) { animation-delay: 1.7s; }
+.notebook-entry:nth-child(6) { animation-delay: 2.0s; }
+
+@keyframes writeIn {
+    0% { opacity: 0; transform: translateX(-20px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+.entry-date {
+    font-family: 'Caveat', cursive;
+    font-size: 1.05rem;
+    color: #5a6a8a;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.entry-text {
+    font-family: 'Caveat', cursive;
+    font-size: 1.5rem;
+    color: #1a2a4a;
+    line-height: 2;
+    position: relative;
+}
+
+.entry-text.highlight {
+    background: linear-gradient(180deg, transparent 55%, rgba(255, 230, 80, 0.5) 55%);
+}
+
+.entry-text .underline {
+    text-decoration: underline;
+    text-decoration-color: #3a5a8a;
+    text-decoration-style: wavy;
+    text-decoration-thickness: 2px;
+}
+
+.entry-text .crossed {
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+    color: #7a7a7a;
+}
+
+.doodle {
+    position: absolute;
+    font-family: 'Caveat', cursive;
+    color: #3a5a9a;
+    transform: rotate(-5deg);
+    animation: doodleBounce 3s ease-in-out infinite;
+}
+
+@keyframes doodleBounce {
+    0%, 100% { transform: rotate(-5deg) scale(1); }
+    50% { transform: rotate(-3deg) scale(1.1); }
+}
+
+.doodle.star {
+    font-size: 2.2rem;
+}
+
+.margin-note {
+    position: absolute;
+    right: -15px;
+    font-family: 'Caveat', cursive;
+    font-size: 0.95rem;
+    color: #c04040;
+    transform: rotate(4deg);
+    white-space: nowrap;
+    animation: noteWiggle 4s ease-in-out infinite;
+}
+
+@keyframes noteWiggle {
+    0%, 100% { transform: rotate(4deg); }
+    50% { transform: rotate(6deg); }
+}
+
+.sticky-note {
+    position: absolute;
+    width: 130px;
+    padding: 18px;
+    background: linear-gradient(145deg, #fff9a0 0%, #ffee50 100%);
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.25);
+    transform: rotate(-4deg);
+    font-family: 'Caveat', cursive;
+    font-size: 1.05rem;
+    color: #3a3a20;
+    z-index: 20;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.sticky-note:hover {
+    transform: rotate(0deg) scale(1.1);
+    box-shadow: 6px 8px 20px rgba(0,0,0,0.3);
+    z-index: 30;
+}
+
+.sticky-note::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.08) 0%, transparent 100%);
+}
+
+.sticky-note.blue {
+    background: linear-gradient(145deg, #b0e0ff 0%, #70c0ff 100%);
+    color: #1a3050;
+}
+
+.sticky-note.pink {
+    background: linear-gradient(145deg, #ffc0d8 0%, #ff90b8 100%);
+    color: #4a1a2a;
+}
+
+.sticky-note.green {
+    background: linear-gradient(145deg, #b8f0b8 0%, #70d070 100%);
+    color: #1a3a1a;
+}
+
+.documents-section {
+    grid-column: 1 / -1;
+    animation: sectionSlideIn 1s ease forwards;
+    animation-delay: 0.6s;
+    opacity: 0;
+}
+
+.documents-container {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.document {
+    width: 420px;
+    background: linear-gradient(180deg, #ffffff 0%, #fafafa 40%, #f5f5f5 100%);
+    border-radius: 4px;
+    padding: 35px;
+    box-shadow: 
+        8px 12px 35px rgba(0,0,0,0.35),
+        0 0 1px rgba(0,0,0,0.2),
+        inset 0 0 50px rgba(0,0,0,0.02);
+    position: relative;
+    transform: rotate(-1.5deg);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+}
+
+.document:nth-child(2) {
+    transform: rotate(1.5deg);
+}
+
+.document:hover {
+    transform: rotate(0deg) translateY(-10px) scale(1.02);
+    box-shadow: 12px 25px 50px rgba(0,0,0,0.4);
+}
+
+.paper-clip {
+    position: absolute;
+    top: -12px;
+    right: 35px;
+    width: 28px;
+    height: 70px;
+    border: 5px solid #7a7a7a;
+    border-radius: 18px 18px 6px 6px;
+    border-bottom: none;
+    transform: rotate(12deg);
+    z-index: 10;
+    background: linear-gradient(90deg, #999, #777, #999);
+    transition: transform 0.3s ease;
+}
+
+.document:hover .paper-clip {
+    transform: rotate(8deg) translateY(-3px);
+}
+
+.paper-clip::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 35px;
+    border: 5px solid #7a7a7a;
+    border-radius: 12px 12px 4px 4px;
+    border-top: none;
+}
+
+.doc-header {
+    text-align: center;
+    border-bottom: 3px solid #1a4a7a;
+    padding-bottom: 18px;
+    margin-bottom: 22px;
+}
+
+.doc-logo {
+    width: 55px;
+    height: 55px;
+    background: linear-gradient(145deg, #1a5a8a 0%, #0d3a5a 100%);
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(26, 74, 122, 0.4);
+}
+
+.doc-title {
+    font-family: 'Courier Prime', monospace;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1a3a5a;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.doc-subtitle {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.85rem;
+    color: #5a6a7a;
+    margin-top: 6px;
+}
+
+.doc-body {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.9rem;
+    color: #2a2a2a;
+    line-height: 1.9;
+}
+
+.doc-row {
+    display: flex;
+    margin-bottom: 10px;
+    transition: background 0.3s ease;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+.doc-row:hover {
+    background: rgba(74, 158, 255, 0.08);
+}
+
+.doc-label {
+    min-width: 140px;
+    color: #5a6a7a;
+    font-weight: 700;
+}
+
+.doc-value {
+    color: #1a2a3a;
+}
+
+.doc-divider {
+    border: none;
+    border-top: 2px dashed #d0d0d0;
+    margin: 18px 0;
+}
+
+.redacted {
+    position: relative;
+    display: inline-block;
+}
+
+.redacted::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -3px;
+    right: -3px;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        #1a1a1a 0%, 
+        #2a2a2a 20%, 
+        #1a1a1a 40%,
+        #2a2a2a 60%,
+        #1a1a1a 80%,
+        #2a2a2a 100%
+    );
+    border-radius: 2px;
+    animation: redactedFlicker 0.5s ease-in-out infinite;
+}
+
+@keyframes redactedFlicker {
+    0%, 100% { opacity: 0.95; }
+    50% { opacity: 1; }
+}
+
+.stamp {
+    position: absolute;
+    bottom: 35px;
+    right: 35px;
+    width: 90px;
+    height: 90px;
+    border: 5px solid #1a6a3a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transform: rotate(-18deg);
+    opacity: 0.85;
+    transition: transform 0.4s ease, opacity 0.3s ease;
+}
+
+.document:hover .stamp {
+    transform: rotate(-12deg) scale(1.1);
+    opacity: 1;
+}
+
+.stamp-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.58rem;
+    color: #1a6a3a;
+    text-transform: uppercase;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.stamp-date {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.65rem;
+    color: #1a6a3a;
+    margin-top: 4px;
+}
+
+.stamp.blue {
+    border-color: #1a4a8a;
+}
+.stamp.blue .stamp-text,
+.stamp.blue .stamp-date {
+    color: #1a4a8a;
+}
+
+.signature-area {
+    margin-top: 35px;
+    padding-top: 18px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.signature {
+    font-family: 'Indie Flower', cursive;
+    font-size: 1.6rem;
+    color: #1a2a5a;
+    margin-bottom: 6px;
+}
+
+.signature-label {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.75rem;
+    color: #8a8a8a;
+    text-transform: uppercase;
+}
+
+.classification-banner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-35deg);
+    font-family: 'Orbitron', monospace;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: rgba(180, 50, 50, 0.12);
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.special-course-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+    color: #3a2a00;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 3px;
+    transform: rotate(-5deg);
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.id-section {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    padding: 50px 0;
+    animation: sectionSlideIn 1s ease forwards;
+    animation-delay: 0.9s;
+    opacity: 0;
+}
+
+.id-card {
+    width: 560px;
+    height: 360px;
+    background: linear-gradient(145deg, #1a4060 0%, #0d2845 35%, #1a5070 70%, #0d3050 100%);
+    border-radius: 20px;
+    padding: 28px;
+    position: relative;
+    box-shadow: 
+        0 25px 70px rgba(0,0,0,0.6),
+        0 0 0 4px rgba(74, 158, 255, 0.4),
+        0 0 100px rgba(74, 158, 255, 0.15),
+        inset 0 2px 0 rgba(255,255,255,0.15),
+        inset 0 -3px 10px rgba(0,0,0,0.3);
+    overflow: hidden;
+    transform-style: preserve-3d;
+    animation: cardFloat 5s ease-in-out infinite;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+.id-card:hover {
+    transform: translateY(-15px) rotateX(8deg) rotateY(0deg) scale(1.02);
+    box-shadow: 
+        0 40px 90px rgba(0,0,0,0.65),
+        0 0 0 4px rgba(74, 158, 255, 0.6),
+        0 0 120px rgba(74, 158, 255, 0.25),
+        inset 0 2px 0 rgba(255,255,255,0.15),
+        inset 0 -3px 10px rgba(0,0,0,0.3);
+}
+
+@keyframes cardFloat {
+    0%, 100% { transform: translateY(0) rotateX(5deg) rotateY(-3deg); }
+    50% { transform: translateY(-12px) rotateX(5deg) rotateY(3deg); }
+}
+
+.hologram-overlay {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 300%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        transparent 0%, 
+        rgba(74, 158, 255, 0.08) 20%, 
+        rgba(100, 200, 255, 0.15) 40%,
+        transparent 50%, 
+        rgba(74, 158, 255, 0.08) 60%,
+        rgba(150, 220, 255, 0.1) 80%, 
+        transparent 100%
+    );
+    pointer-events: none;
+    animation: hologramShift 4s linear infinite;
+}
+
+@keyframes hologramShift {
+    0% { left: -100%; }
+    100% { left: 0%; }
+}
+
+.hologram-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(255,255,255,0.04) 3px,
+        rgba(255,255,255,0.04) 6px
+    );
+    pointer-events: none;
+    animation: linesMove 0.5s linear infinite;
+}
+
+@keyframes linesMove {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 6px; }
+}
+
+.hologram-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(90deg, rgba(74, 158, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(74, 158, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+}
+
+.id-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 5;
+}
+
+.id-corp-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.id-corp-icon {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(145deg, #4a9eff 0%, #2a70cc 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: #fff;
+    box-shadow: 0 0 30px rgba(74, 158, 255, 0.6);
+    animation: corpIconPulse 2s ease-in-out infinite;
+}
+
+@keyframes corpIconPulse {
+    0%, 100% { box-shadow: 0 0 30px rgba(74, 158, 255, 0.6); }
+    50% { box-shadow: 0 0 50px rgba(74, 158, 255, 0.9); }
+}
+
+.id-corp-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    color: #8ac0e8;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+}
+
+.id-type {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #4a9eff;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    padding: 10px 24px;
+    border: 3px solid #4a9eff;
+    border-radius: 6px;
+    text-shadow: 0 0 15px rgba(74, 158, 255, 0.8);
+    box-shadow: 0 0 25px rgba(74, 158, 255, 0.3), inset 0 0 20px rgba(74, 158, 255, 0.1);
+    animation: typePulse 2s ease-in-out infinite;
+}
+
+@keyframes typePulse {
+    0%, 100% { box-shadow: 0 0 25px rgba(74, 158, 255, 0.3), inset 0 0 20px rgba(74, 158, 255, 0.1); }
+    50% { box-shadow: 0 0 40px rgba(74, 158, 255, 0.5), inset 0 0 25px rgba(74, 158, 255, 0.2); }
+}
+
+.id-body {
+    display: flex;
+    gap: 28px;
+    position: relative;
+    z-index: 5;
+}
+
+.id-photo-container {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+    z-index: 15;
+}
+
+.id-photo-frame {
+    width: 130px;
+    height: 165px;
+    background: linear-gradient(145deg, #2a5070 0%, #1a3858 100%);
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 
+        inset 0 0 25px rgba(0,0,0,0.6),
+        0 0 0 3px rgba(74, 158, 255, 0.4),
+        0 10px 30px rgba(0,0,0,0.4);
+    position: relative;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.id-card:hover .id-photo-frame {
+    transform: scale(1.05);
+    box-shadow: 
+        inset 0 0 25px rgba(0,0,0,0.6),
+        0 0 0 3px rgba(74, 158, 255, 0.6),
+        0 0 40px rgba(74, 158, 255, 0.3),
+        0 15px 40px rgba(0,0,0,0.5);
+}
+
+.id-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    border-radius: 8px;
+    filter: contrast(1.1) brightness(0.95);
+}
+
+.id-photo-frame::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(145deg, rgba(74, 158, 255, 0.15) 0%, transparent 60%);
+    border-radius: 12px;
+    pointer-events: none;
+}
+
+.id-photo-frame::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #4a9eff 0%, #2a70cc 50%, #4a9eff 100%);
+    z-index: -1;
+    animation: photoGlow 3s ease-in-out infinite;
+}
+
+@keyframes photoGlow {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+}
+
+.id-info {
+    flex: 1;
+    max-width: 300px;
+}
+
+.id-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    text-shadow: 0 0 15px rgba(255,255,255,0.4);
+}
+
+.id-position {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.05rem;
+    color: #6ad0ff;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(106, 208, 255, 0.5);
+}
+
+.id-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 22px;
+}
+
+.id-detail {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+}
+
+.id-detail-label {
+    color: #6a90b0;
+}
+
+.id-detail-value {
+    color: #c8e0f8;
+}
+
+.id-barcode {
+    position: absolute;
+    bottom: 22px;
+    right: 28px;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 45px;
+}
+
+.barcode-line {
+    width: 3px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 1px;
+}
+
+.id-number {
+    position: absolute;
+    bottom: 8px;
+    right: 28px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: #5a80a0;
+    letter-spacing: 0.25em;
+}
+
+.id-chip {
+    position: absolute;
+    bottom: 28px;
+    left: 28px;
+    width: 60px;
+    height: 48px;
+    background: linear-gradient(145deg, #d4b437 0%, #b89820 40%, #d4b437 70%, #aa8a18 100%);
+    border-radius: 6px;
+    box-shadow: 
+        inset 0 2px 0 rgba(255,255,255,0.5),
+        inset 0 -2px 5px rgba(0,0,0,0.2),
+        0 5px 12px rgba(0,0,0,0.4);
+    animation: chipShine 3s ease-in-out infinite;
+}
+
+@keyframes chipShine {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.2); }
+}
+
+.id-chip::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    background: 
+        linear-gradient(90deg, transparent 25%, rgba(0,0,0,0.15) 25%, rgba(0,0,0,0.15) 30%, transparent 30%),
+        linear-gradient(90deg, transparent 55%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0.15) 60%, transparent 60%),
+        linear-gradient(0deg, transparent 35%, rgba(0,0,0,0.15) 35%, rgba(0,0,0,0.15) 65%, transparent 65%);
+}
+
+.access-status {
+    position: absolute;
+    top: 95px;
+    left: 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-dot {
+    width: 14px;
+    height: 14px;
+    background: #00ff88;
+    border-radius: 50%;
+    box-shadow: 0 0 18px #00ff88, 0 0 35px rgba(0, 255, 136, 0.5);
+    animation: statusPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+    0%, 100% { box-shadow: 0 0 18px #00ff88, 0 0 35px rgba(0, 255, 136, 0.5); transform: scale(1); }
+    50% { box-shadow: 0 0 30px #00ff88, 0 0 55px rgba(0, 255, 136, 0.7); transform: scale(1.1); }
+}
+
+.status-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: #00ff88;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.025;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.5) 2px,
+        rgba(0,0,0,0.5) 4px
+    );
+}
+
+.vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 99;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.4) 100%);
+}
+
+@media (max-width: 600px) {
+    .id-card {
+        width: 380px;
+        height: 300px;
+        padding: 20px;
+    }
+    
+    .id-photo-frame {
+        width: 100px;
+        height: 125px;
+    }
+    
+    .id-photo-container {
+        top: 20px;
+        right: 20px;
+    }
+    
+    .id-name {
+        font-size: 1.3rem;
+    }
+    
+    .id-info {
+        max-width: 200px;
+    }
+    
+    .document {
+        width: 100%;
+        max-width: 420px;
+    }
+    
+    .notebook-content {
+        margin-left: 55px;
+        padding: 22px 18px 22px 18px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="space-bg"></div>
+<div class="stars-layer" id="stars"></div>
+<div class="nebula nebula-1"></div>
+<div class="nebula nebula-2"></div>
+<div class="nebula nebula-3"></div>
+<div class="shooting-star"></div>
+<div class="shooting-star"></div>
+<div class="shooting-star"></div>
+<div class="scanlines"></div>
+<div class="vignette"></div>
+
+<div class="page-container">
+    
+    <header class="page-header">
+        <div class="nt-logo">
+            <span class="nt-logo-text">NT</span>
+        </div>
+        <h1 class="page-title">Академия Пилотирования</h1>
+        <p class="page-subtitle">NanoTrasen Flight Academy</p>
+        <p class="location-info">Системы: Селестия • Терранис • Икария</p>
+    </header>
+    
+    <div class="content-grid">
+        
+        <section class="notebook-section">
+            <h2 class="section-title">Личные записи курсанта</h2>
+            
+            <div class="notebook">
+                <div class="notebook-spiral">
+                    <div class="spiral-ring"></div>
+                    <div class="spiral-ring"></div>
+                    <div class="spiral-ring"></div>
+                    <div class="spiral-ring"></div>
+                    <div class="spiral-ring"></div>
+                    <div class="spiral-ring"></div>
+                    <div class="spiral-ring"></div>
+                    <div class="spiral-ring"></div>
+                    <div class="spiral-ring"></div>
+                    <div class="spiral-ring"></div>
+                    <div class="spiral-ring"></div>
+                    <div class="spiral-ring"></div>
+                    <div class="spiral-ring"></div>
+                    <div class="spiral-ring"></div>
+                    <div class="spiral-ring"></div>
+                    <div class="spiral-ring"></div>
+                </div>
+                
+                <div class="notebook-content">
+                    <div class="notebook-page">
+                        
+                        <div class="notebook-entry">
+                            <div class="entry-date">День 1 — Система Селестия, 14.03.2562</div>
+                            <div class="entry-text">
+                                Прибыл в Академию. Филиал в Селестии — <span class="underline">огромный</span>. Ангары, 
+                                симуляторы, учебные корпуса... Меня зачислили на <span class="highlight">укороченный спец.курс</span> — 
+                                36 месяцев вместо стандартного. Инструктор сказал, что отсев 40%. Не буду среди них.
+                            </div>
+                            <div class="margin-note">← Спец.курс = больше нагрузки</div>
+                        </div>
+                        
+                        <div class="notebook-entry">
+                            <div class="entry-date">Месяц 2 — Первый курс</div>
+                            <div class="entry-text">
+                                Основы управления КК. Запуск двигателей, крен судна, аварийные коды. 
+                                Выучил <span class="underline">все стандартные протоколы связи</span>. 
+                                Тест на базовые знания — сдал с первого раза. <span class="crossed">Почти без ошибок.</span>
+                            </div>
+                            <div class="doodle star" style="right: 25px; top: 8px;">★★</div>
+                        </div>
+                        
+                        <div class="notebook-entry">
+                            <div class="entry-date">Месяц 5 — Второй курс</div>
+                            <div class="entry-text">
+                                Виртуальные симуляторы! Первая попытка — врезался в док-станцию. 
+                                <span class="crossed">Три раза.</span> Пять раз. Инструктор молча смотрел, потом сказал: 
+                                "Хотя бы реактор не взорвал". <span class="highlight">Это комплимент?</span>
+                            </div>
+                        </div>
+                        
+                        <div class="notebook-entry">
+                            <div class="entry-date">Месяц 14 — Практика на полигоне</div>
+                            <div class="entry-text">
+                                Доставили на космический полигон в нейтральной зоне. Первый <span class="underline">реальный вылет</span> 
+                                с 75% поддержкой ИИ. Руки тряслись. Но посадка — <span class="highlight">чистая!</span> 
+                                Без единой царапины. Симулятор даже поздравил синтетическим голосом.
+                            </div>
+                            <div class="margin-note">ЧИСТАЯ ПОСАДКА!</div>
+                        </div>
+                        
+                        <div class="notebook-entry">
+                            <div class="entry-date">Месяц 28 — Экстренные ситуации</div>
+                            <div class="entry-text">
+                                Обучение реакции на ЧС. Разгерметизация, отказ двигателя, пожар в отсеке... 
+                                Записал главное: <span class="highlight">"Сначала стабилизация, потом паника. 
+                                Не наоборот."</span> Преподаватель оценил мою скорость реакции.
+                            </div>
+                            <div class="doodle" style="right: 35px; bottom: 5px; transform: rotate(5deg);">🚀</div>
+                        </div>
+                        
+                        <div class="notebook-entry">
+                            <div class="entry-date">Месяц 36 — ВЫПУСК, 2565</div>
+                            <div class="entry-text">
+                                <span class="highlight">Спец.курс пройден за 3 года!</span> Получил лицензию класса Gamma (ККК-ОКК). 
+                                Назначение: <span class="underline">Fish-Station-14, сектор SunRise</span>. 
+                                Должность: трансфер-пилот. Первичный инструктаж — завтра.
+                            </div>
+                            <div class="margin-note">СДЕЛАЛ ЭТО!!!</div>
+                        </div>
+                        
+                        <div class="sticky-note" style="top: 40px; right: 30px; transform: rotate(5deg);">
+                            Спец.курс:<br>
+                            - 36 месяцев<br>
+                            - Класс Gamma<br>
+                            - ККК-ОКК допуск
+                        </div>
+                        
+                        <div class="sticky-note blue" style="bottom: 120px; right: 50px; transform: rotate(-6deg);">
+                            Полигон:<br>
+                            Нейтральная зона<br>
+                            Сектор NT-7
+                        </div>
+                        
+                        <div class="sticky-note green" style="bottom: 40px; right: 180px; transform: rotate(3deg);">
+                            Fish-Station-14<br>
+                            SunRise сектор<br>
+                            Трансфер-пилот ✓
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="documents-section">
+            <h2 class="section-title">Официальные документы</h2>
+            
+            <div class="documents-container">
+                
+                <div class="document">
+                    <div class="paper-clip"></div>
+                    <div class="special-course-badge">Спец.курс 3 года</div>
+                    <div class="classification-banner">Подтверждено</div>
+                    
+                    <div class="doc-header">
+                        <div class="doc-logo">NT</div>
+                        <div class="doc-title">Сертификат Квалификации</div>
+                        <div class="doc-subtitle">Универсальный • Пилот Космических Судов</div>
+                    </div>
+                    
+                    <div class="doc-body">
+                        <div class="doc-row">
+                            <span class="doc-label">ФИО:</span>
+                            <span class="doc-value">Иридий-Трифф</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-label">Раса:</span>
+                            <span class="doc-value"><span class="redacted">ЗАСЕКРЕЧЕНО</span></span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-label">ID сотрудника:</span>
+                            <span class="doc-value">NT-PIL-7842</span>
+                        </div>
+                        
+                        <hr class="doc-divider">
+                        
+                        <div class="doc-row">
+                            <span class="doc-label">Образование:</span>
+                            <span class="doc-value">Академия Пилотирования NT</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-label">Класс судов:</span>
+                            <span class="doc-value">Gamma (ККК-ОКК)</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-label">Форма обучения:</span>
+                            <span class="doc-value">Спец.курс (укороченный)</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-label">Срок обучения:</span>
+                            <span class="doc-value">36 месяцев (3 года)</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-label">Налёт часов:</span>
+                            <span class="doc-value">1247 ч.</span>
+                        </div>
+                        
+                        <hr class="doc-divider">
+                        
+                        <div class="doc-row">
+                            <span class="doc-label">Станция:</span>
+                            <span class="doc-value">Fish-Station-14</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-label">Сектор:</span>
+                            <span class="doc-value">SunRise</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-label">Должность:</span>
+                            <span class="doc-value">Трансфер-пилот</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-label">Инструктаж:</span>
+                            <span class="doc-value">Пройден ✓</span>
+                        </div>
+                        
+                        <div class="signature-area">
+                            <div class="signature">R. Markus</div>
+                            <div class="signature-label">Главный инструктор, система Селестия</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stamp blue">
+                        <span class="stamp-text">NanoTrasen<br>Certified</span>
+                        <span class="stamp-date">2565</span>
+                    </div>
+                </div>
+                
+                <div class="document">
+                    <div class="paper-clip"></div>
+                    
+                    <div class="doc-header">
+                        <div class="doc-logo">NT</div>
+                        <div class="doc-title">Оценочный лист</div>
+                        <div class="doc-subtitle">Итоговая аттестация • Спец.курс</div>
+                    </div>
+                    
+                    <div class="doc-body">
+                        <div class="doc-row">
+                            <span class="doc-label">Курсант:</span>
+                            <span class="doc-value">Иридий-Трифф</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-label">Группа:</span>
+                            <span class="doc-value">СПК-27Г (Спец.курс Gamma)</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-label">Локация:</span>
+                            <span class="doc-value">Система Селестия</span>
+                        </div>
+                        
+                        <hr class="doc-divider">
+                        
+                        <div class="doc-row">
+                            <span class="doc-label">Теория управления:</span>
+                            <span class="doc-value">91/100 — Отлично</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-label">Симулятор:</span>
+                            <span class="doc-value">88/100 — Отлично</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-label">Полигон (практика):</span>
+                            <span class="doc-value">94/100 — Отлично</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-label">Экстренные ситуации:</span>
+                            <span class="doc-value">96/100 — Отлично</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-label">Навигация ККК:</span>
+                            <span class="doc-value">85/100 — Хорошо</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-label">Протоколы ОКК:</span>
+                            <span class="doc-value">89/100 — Отлично</span>
+                        </div>
+                        
+                        <hr class="doc-divider">
+                        
+                        <div class="doc-row">
+                            <span class="doc-label" style="font-weight: 900;">ИТОГО:</span>
+                            <span class="doc-value" style="font-weight: 900;">90.5/100 — Отлично</span>
+                        </div>
+                        
+                        <div class="signature-area">
+                            <div class="signature">A. Chen</div>
+                            <div class="signature-label">Комиссия по аттестации, Академия NT</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stamp">
+                        <span class="stamp-text">Аттестован<br>Gamma</span>
+                        <span class="stamp-date">07.2565</span>
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+        
+        <section class="id-section">
+            <div class="id-card">
+                <div class="hologram-overlay"></div>
+                <div class="hologram-lines"></div>
+                <div class="hologram-grid"></div>
+                
+                <div class="id-header">
+                    <div class="id-corp-logo">
+                        <div class="id-corp-icon">NT</div>
+                        <div class="id-corp-name">NANOTRASEN<br>CORPORATION</div>
+                    </div>
+                    <div class="id-type">Пилот</div>
+                </div>
+                
+                <div class="id-photo-container">
+                    <div class="id-photo-frame">
+                        <img src="https://i.imgur.com/juFjaL0.png" alt="Photo" class="id-photo">
+                    </div>
+                </div>
+                
+                <div class="access-status">
+                    <div class="status-dot"></div>
+                    <span class="status-text">Активен</span>
+                </div>
+                
+                <div class="id-body">
+                    <div class="id-info">
+                        <div class="id-name">ИРИДИЙ-ТРИФФ</div>
+                        <div class="id-position">Трансфер-пилот • Класс Gamma</div>
+                        
+                        <div class="id-details">
+                            <div class="id-detail">
+                                <span class="id-detail-label">ID:</span>
+                                <span class="id-detail-value">NT-PIL-7842</span>
+                            </div>
+                            <div class="id-detail">
+                                <span class="id-detail-label">Допуск:</span>
+                                <span class="id-detail-value">ККК-ОКК</span>
+                            </div>
+                           
+                            <div class="id-detail">
+                                <span class="id-detail-label">Выдана:</span>
+                                <span class="id-detail-value">15.07.2565</span>
+                            </div>
+                            <div class="id-detail">
+                                <span class="id-detail-label">Истекает:</span>
+                                <span class="id-detail-value">15.07.2567</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="id-chip"></div>
+                
+                <div class="id-barcode" id="barcode"></div>
+                <div class="id-number">NT-PIL-7842-2565-GAMMA</div>
+            </div>
+        </section>
+        
+    </div>
+    
+</div>
+
+<script>
+function createStars() {
+    const container = document.getElementById('stars');
+    for (let i = 0; i < 200; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        const size = Math.random() * 3 + 0.5;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.animationDelay = Math.random() * 4 + 's';
+        star.style.animationDuration = (Math.random() * 4 + 2) + 's';
+        container.appendChild(star);
+    }
+}
+
+function createBarcode() {
+    const container = document.getElementById('barcode');
+    const pattern = [3,1,2,1,3,2,1,1,3,1,2,3,1,2,1,1,2,3,1,2,1,3,2,1,2,1,3,2,1];
+    
+    pattern.forEach((height, i) => {
+        const line = document.createElement('div');
+        line.className = 'barcode-line';
+        line.style.height = (height * 10 + 14) + 'px';
+        line.style.opacity = 0.6 + Math.random() * 0.4;
+        container.appendChild(line);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    createStars();
+    createBarcode();
+});
+</script>
+
+</body>
+</html>

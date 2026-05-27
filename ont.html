@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Центральное Командование • Иридий-Трифф</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jura:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            background: #000000;
+            color: #a8c8b8;
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        ::selection {
+            background: rgba(0, 255, 150, 0.3);
+            color: #fff;
+        }
+
+        /* Космический фон */
+        .space-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .nebula-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.5;
+            mix-blend-mode: screen;
+            pointer-events: none;
+        }
+
+        .stars-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .void-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            background: 
+                radial-gradient(ellipse 150% 100% at 50% 0%, rgba(5, 20, 10, 0.6) 0%, transparent 50%),
+                radial-gradient(ellipse 100% 150% at 0% 50%, rgba(10, 40, 20, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse 100% 150% at 100% 50%, rgba(10, 30, 20, 0.2) 0%, transparent 50%);
+        }
+
+        .emerald-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0;
+            animation: emeraldBreath 14s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        .emerald-glow:nth-child(1) {
+            background: radial-gradient(circle, rgba(0, 255, 120, 0.2) 0%, transparent 70%);
+            top: -20%;
+            left: -10%;
+            animation-delay: 0s;
+        }
+
+        .emerald-glow:nth-child(2) {
+            background: radial-gradient(circle, rgba(50, 200, 100, 0.15) 0%, transparent 70%);
+            bottom: -30%;
+            right: -15%;
+            animation-delay: -5s;
+            width: 500px;
+            height: 500px;
+        }
+
+        .emerald-glow:nth-child(3) {
+            background: radial-gradient(circle, rgba(80, 180, 120, 0.12) 0%, transparent 70%);
+            top: 40%;
+            left: 60%;
+            animation-delay: -10s;
+            width: 450px;
+            height: 450px;
+        }
+
+        @keyframes emeraldBreath {
+            0%, 100% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        .dust-field {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .dust {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(150, 220, 180, 0.5);
+            border-radius: 50%;
+        }
+
+        .glass-refraction {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 6;
+            pointer-events: none;
+            background: 
+                linear-gradient(135deg, transparent 40%, rgba(255, 255, 255, 0.015) 50%, transparent 60%);
+            animation: glassShift 25s ease-in-out infinite;
+        }
+
+        @keyframes glassShift {
+            0%, 100% { transform: translateX(-5%) translateY(-5%); }
+            50% { transform: translateX(5%) translateY(5%); }
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99;
+            background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
+        }
+
+        .condensation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.03;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        /* Главная структура */
+        .page-wrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 0 15px;
+        }
+
+        /* Боковые галереи */
+        .gallery-side {
+            width: 260px;
+            flex-shrink: 0;
+            padding-top: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gallery-left {
+            align-items: flex-end;
+        }
+
+        .gallery-right {
+            align-items: flex-start;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 4px;
+            overflow: hidden;
+            background: rgba(10, 35, 20, 0.6);
+            border: 1px solid rgba(100, 220, 150, 0.2);
+            transition: all 0.5s ease;
+            cursor: pointer;
+            opacity: 0;
+            flex-shrink: 0;
+        }
+
+        .gallery-item.visible {
+            opacity: 1;
+        }
+
+        .gallery-left .gallery-item {
+            transform: translateX(-30px);
+        }
+
+        .gallery-left .gallery-item.visible {
+            transform: translateX(0);
+        }
+
+        .gallery-right .gallery-item {
+            transform: translateX(30px);
+        }
+
+        .gallery-right .gallery-item.visible {
+            transform: translateX(0);
+        }
+
+        .gallery-item:hover {
+            border-color: rgba(100, 220, 150, 0.6);
+            box-shadow: 0 15px 50px rgba(0, 255, 120, 0.25);
+            transform: scale(1.05) !important;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: filter 0.4s ease;
+        }
+
+        .gallery-item:hover img {
+            filter: brightness(1.15);
+        }
+
+        /* Размеры изображений */
+        .size-s { width: 160px; }
+        .size-m { width: 200px; }
+        .size-l { width: 230px; }
+        .size-xl { width: 260px; }
+
+        /* Отступы для равномерного распределения вдоль текста */
+        .mt-30 { margin-top: 30px; }
+        .mt-80 { margin-top: 80px; }
+        .mt-100 { margin-top: 100px; }
+        .mt-150 { margin-top: 150px; }
+        .mt-200 { margin-top: 200px; }
+        .mt-220 { margin-top: 220px; }
+        .mt-250 { margin-top: 250px; }
+        .mt-280 { margin-top: 280px; }
+        .mt-300 { margin-top: 300px; }
+        .mt-320 { margin-top: 320px; }
+        .mt-350 { margin-top: 350px; }
+
+        /* Центральный контент */
+        .content-stream {
+            max-width: 700px;
+            flex-shrink: 0;
+        }
+
+        .opening-void {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .title-vessel {
+            text-align: center;
+            position: relative;
+        }
+
+        .title-reflection {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            transform: scaleY(-1);
+            opacity: 0.12;
+            filter: blur(3px);
+            mask-image: linear-gradient(transparent 30%, black 100%);
+            -webkit-mask-image: linear-gradient(transparent 30%, black 100%);
+            pointer-events: none;
+        }
+
+        .main-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.2rem, 6vw, 4rem);
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            color: transparent;
+            background: linear-gradient(180deg, 
+                #d8f8e8 0%, 
+                #6cd9a8 40%, 
+                #14aa60 70%,
+                #086838 100%
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .main-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(100, 220, 150, 0.6), transparent);
+        }
+
+        .subtitle-line {
+            font-family: 'Jura', sans-serif;
+            font-size: clamp(0.65rem, 1.8vw, 0.85rem);
+            font-weight: 300;
+            letter-spacing: 0.4em;
+            color: rgba(120, 180, 150, 0.6);
+            margin-top: 25px;
+            text-transform: uppercase;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0.4;
+            animation: fadeFloat 3s ease-in-out infinite;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 50px;
+            background: linear-gradient(180deg, rgba(100, 220, 150, 0.6), transparent);
+        }
+
+        @keyframes fadeFloat {
+            0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
+            50% { opacity: 0.2; transform: translateX(-50%) translateY(10px); }
+        }
+
+        .narrative-space {
+            padding: 60px 0 150px;
+        }
+
+        .chapter {
+            margin-bottom: 80px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .chapter.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .chapter-marker {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .marker-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(100, 220, 150, 0.3), transparent);
+        }
+
+        .marker-line.right {
+            background: linear-gradient(90deg, transparent, rgba(100, 220, 150, 0.3));
+        }
+
+        .marker-symbol {
+            font-family: 'Jura', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.25em;
+            color: rgba(100, 220, 150, 0.5);
+        }
+
+        .chapter-content {
+            position: relative;
+            padding: 40px;
+            background: linear-gradient(135deg, 
+                rgba(10, 35, 20, 0.75) 0%, 
+                rgba(8, 25, 15, 0.55) 50%,
+                rgba(5, 18, 10, 0.45) 100%
+            );
+            border-radius: 4px;
+            border-left: 1px solid rgba(100, 220, 150, 0.2);
+            border-top: 1px solid rgba(100, 220, 150, 0.1);
+            box-shadow: 
+                inset 0 0 60px rgba(0, 0, 0, 0.4),
+                0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .chapter-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse 80% 50% at 0% 0%, rgba(100, 220, 150, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .chapter-heading {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #b8e8d0;
+            margin-bottom: 25px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .chapter-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 45px;
+            height: 1px;
+            background: rgba(100, 220, 150, 0.5);
+        }
+
+        .prose {
+            font-size: 1.08rem;
+            line-height: 1.95;
+            color: #98b8a8;
+            text-align: justify;
+            hyphens: auto;
+        }
+
+        .prose p {
+            margin-bottom: 20px;
+        }
+
+        .prose p:last-child {
+            margin-bottom: 0;
+        }
+
+        .prose p::first-letter {
+            font-size: 1.2em;
+            color: #a8d8c0;
+        }
+
+        .accent {
+            color: #b8e8d0;
+            font-style: italic;
+        }
+
+        .name {
+            color: #6cd9a8;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .station {
+            font-family: 'Jura', sans-serif;
+            font-size: 0.92em;
+            color: #7aba9a;
+            letter-spacing: 0.07em;
+        }
+
+        .alert-status {
+            color: #ff6b6b;
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        .tech-term {
+            color: #4affa0;
+            font-style: italic;
+        }
+
+        .dialogue-fragment {
+            margin: 30px 0;
+            padding: 22px 30px;
+            background: linear-gradient(135deg, 
+                rgba(30, 60, 40, 0.5) 0%, 
+                rgba(20, 45, 30, 0.4) 100%
+            );
+            border-left: 2px solid rgba(100, 220, 150, 0.3);
+            position: relative;
+        }
+
+        .dialogue-fragment::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(100, 220, 150, 0.3), transparent);
+        }
+
+        .fragment-label {
+            font-family: 'Jura', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            color: rgba(100, 220, 150, 0.5);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .fragment-content {
+            font-family: 'Jura', sans-serif;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #4affa0;
+        }
+
+        .threat-status {
+            background: linear-gradient(135deg, rgba(255, 80, 80, 0.2), rgba(150, 0, 0, 0.3));
+            border: 1px solid rgba(255, 100, 100, 0.35);
+            border-radius: 4px;
+            padding: 20px 25px;
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 50, 50, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            animation: alertPulse 1.5s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes alertPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 50, 50, 0.4); }
+            50% { box-shadow: 0 0 20px 10px rgba(255, 50, 50, 0); }
+        }
+
+        .status-text {
+            flex: 1;
+        }
+
+        .status-title {
+            font-family: 'Jura', sans-serif;
+            color: #ff6b6b;
+            font-size: 0.8em;
+            margin-bottom: 3px;
+            letter-spacing: 0.1em;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 0;
+        }
+
+        .divider-inner {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .divider-line {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(100, 220, 150, 0.3), transparent);
+        }
+
+        .divider-dot {
+            width: 4px;
+            height: 4px;
+            background: rgba(100, 220, 150, 0.4);
+            border-radius: 50%;
+        }
+
+        /* Модальное окно */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            background: rgba(0, 0, 0, 0.92);
+        }
+
+        .modal-image-container {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            transform: scale(0.8);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .modal-overlay.active .modal-image-container {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-image {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 6px;
+            box-shadow: 
+                0 0 80px rgba(0, 255, 120, 0.2),
+                0 0 150px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(100, 220, 150, 0.3);
+        }
+
+        .modal-close {
+            position: fixed;
+            top: 30px;
+            right: 40px;
+            width: 50px;
+            height: 50px;
+            background: rgba(20, 40, 30, 0.8);
+            border: 1px solid rgba(100, 220, 150, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .modal-close:hover {
+            background: rgba(100, 220, 150, 0.2);
+            border-color: rgba(100, 220, 150, 0.6);
+            transform: rotate(90deg);
+        }
+
+        .modal-close::before,
+        .modal-close::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 2px;
+            background: #4affa0;
+        }
+
+        .modal-close::before {
+            transform: rotate(45deg);
+        }
+
+        .modal-close::after {
+            transform: rotate(-45deg);
+        }
+
+        .modal-hint {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Jura', sans-serif;
+            font-size: 0.8rem;
+            color: rgba(100, 220, 150, 0.5);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1350px) {
+            .gallery-side {
+                width: 200px;
+            }
+            .size-s { width: 140px; }
+            .size-m { width: 165px; }
+            .size-l { width: 185px; }
+            .size-xl { width: 200px; }
+        }
+
+        @media (max-width: 1100px) {
+            .gallery-side {
+                display: none;
+            }
+            .page-wrapper {
+                justify-content: center;
+            }
+            .content-stream {
+                max-width: 650px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .content-stream {
+                padding: 0 12px;
+            }
+            .chapter-content {
+                padding: 28px 20px;
+            }
+            .prose {
+                font-size: 1rem;
+                line-height: 1.85;
+                text-align: left;
+            }
+            .chapter {
+                margin-bottom: 60px;
+            }
+            .opening-void {
+                height: 85vh;
+            }
+            .dialogue-fragment {
+                padding: 18px;
+                margin: 22px -5px;
+            }
+            .modal-close {
+                top: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas class="space-canvas" id="spaceCanvas"></canvas>
+    <canvas class="nebula-layer" id="nebulaCanvas"></canvas>
+    <canvas class="stars-layer" id="starsCanvas"></canvas>
+    <div class="void-layer"></div>
+    <div class="emerald-glow"></div>
+    <div class="emerald-glow"></div>
+    <div class="emerald-glow"></div>
+    <div class="dust-field" id="dustField"></div>
+    <div class="glass-refraction"></div>
+    <div class="vignette"></div>
+    <div class="condensation"></div>
+
+    <div class="page-wrapper">
+        <!-- Левая галерея — 11 изображений равномерно вдоль всего текста -->
+<aside class="gallery-side gallery-left">
+    <div class="gallery-item size-m mt-30" onclick="openModal(this)">
+        <img src="https://i.imgur.com/a2oQ8KK.png" alt="">
+    </div>
+
+    <div class="gallery-item size-l mt-280" onclick="openModal(this)">
+        <img src="https://i.imgur.com/juFjaL0.png" alt="">
+    </div>
+
+    <div class="gallery-item size-s mt-220" onclick="openModal(this)">
+        <img src="https://i.imgur.com/tqtRbiF.png" alt="">
+    </div>
+
+    <div class="gallery-item size-xl mt-300" onclick="openModal(this)">
+        <img src="https://i.imgur.com/Jp2uOEL.png" alt="">
+    </div>
+
+    <div class="gallery-item size-m mt-250" onclick="openModal(this)">
+        <img src="https://i.imgur.com/2KyWGhK.png" alt="">
+    </div>
+
+    <div class="gallery-item size-l mt-320" onclick="openModal(this)">
+        <img src="https://i.imgur.com/QE40Eil.png" alt="">
+    </div>
+
+    <div class="gallery-item size-s mt-280" onclick="openModal(this)">
+        <img src="https://i.imgur.com/ZM7zGHq.png" alt="">
+    </div>
+
+    <div class="gallery-item size-xl mt-300" onclick="openModal(this)">
+        <img src="https://i.imgur.com/YmAoUKu.png" alt="">
+    </div>
+
+    <div class="gallery-item size-m mt-250" onclick="openModal(this)">
+        <img src="https://i.imgur.com/0AyGTGM.png" alt="">
+    </div>
+
+    <div class="gallery-item size-l mt-280" onclick="openModal(this)">
+        <img src="https://i.imgur.com/TsPh6NK.png" alt="">
+    </div>
+
+    <div class="gallery-item size-m mt-220" onclick="openModal(this)">
+        <img src="https://i.imgur.com/nkiKDmh.png" alt="">
+    </div>
+</aside>
+
+        <!-- Центральный контент -->
+        <main class="content-stream">
+            <section class="opening-void">
+                <div class="title-vessel">
+                    <h1 class="main-title">Центральное Командование</h1>
+                    <div class="title-reflection" aria-hidden="true">
+                        <span class="main-title">Центральное Командование</span>
+                    </div>
+                    <p class="subtitle-line">Испытание в сердце корпорации</p>
+                </div>
+                <div class="scroll-indicator">
+                    <div class="scroll-line"></div>
+                </div>
+            </section>
+
+            <section class="narrative-space">
+                <article class="chapter">
+                    <div class="chapter-marker">
+                        <span class="marker-symbol">I</span>
+                        <div class="marker-line right"></div>
+                    </div>
+                    <div class="chapter-content">
+                        <h2 class="chapter-heading">Будни оператора</h2>
+                        <div class="prose">
+                            <p>Жизнь <span class="name">Иридия-Триффа</span> на станциях <span class="station">Центрального Командования</span> в роли оператора отличалась невероятной насыщенностью событий. Каждая смена преподносила что-то новое — будь то рутинная бумажная работа или внезапный кризис, требующий немедленной реакции.</p>
+                            <p>Череда разнообразных событий не давала скучать. Среди особенно примечательных моментов — случаи, когда приходилось лично вылетать на подконтрольные станции в роли <span class="accent">представителя ОЦК</span>. Контингент на этих форпостах отличался весьма своеобразным характером, что регулярно порождало абсурдные ситуации.</p>
+                            <p>Апофеозом бюрократического абсурда становились моменты, когда <span class="name">Иридий</span> писал официальный отчёт на самого себя — документ, который затем возвращался к нему же, но уже в роли оператора ЦК. Корпоративная машина <span class="station">NanoTrasen</span> работала безупречно, даже когда это граничило с комедией.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="chapter">
+                    <div class="chapter-marker">
+                        <div class="marker-line"></div>
+                        <span class="marker-symbol">II</span>
+                        <div class="marker-line right"></div>
+                    </div>
+                    <div class="chapter-content">
+                        <h2 class="chapter-heading">Та самая смена</h2>
+                        <div class="prose">
+                            <p>Но один инцидент выделялся на фоне остальных. История, которую стоит рассказать подробно — с вниманием к деталям, которые дадут полное представление о том, что значит служба на станциях ЦК в <span class="accent">секторе Рыбы</span>.</p>
+                            <p>Смена началась как обычно. Стандартная рутина: перемещение факсового оборудования на оптимальную позицию, перестройка командного моста под удобную конфигурацию, проверка систем связи. Ничего необычного. Ничего, что могло бы предвещать грядущий хаос.</p>
+                            <p>Одна деталь выделялась: <span class="name">Иридий</span> был <span class="alert-status">совершенно один</span> на станции. Ни ассистентов, ни офицеров ЦК, ни технического персонала. Только он, гул систем жизнеобеспечения и мерцающие индикаторы приборных панелей.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="chapter">
+                    <div class="chapter-marker">
+                        <span class="marker-symbol">III</span>
+                        <div class="marker-line right"></div>
+                    </div>
+                    <div class="chapter-content">
+                        <h2 class="chapter-heading">Первые тревожные знаки</h2>
+                        <div class="prose">
+                            <p>Спустя сорок пять минут дежурства оператор направил стандартный запрос первичного отчёта подконтрольной станции — рутинная процедура для заполнения документации и подтверждения штатной работы всех систем.</p>
+                            <p>Именно в этот момент проявились <span class="alert-status">первые аномалии</span>. Подойдя к обзорному окну из уранового стекла для визуального осмотра периметра, <span class="name">Иридий</span> заметил нечто необычное — в космическом пространстве позади станции дрейфовал <span class="tech-term">череп неопознанного существа</span>.</p>
+                            <p>Казалось бы, космический мусор — не такая уж редкость. Однако пространство вокруг станций Центрального Командования всегда поддерживалось в идеальной чистоте. Обнаружить здесь органические останки было практически невозможно. Тем более — <span class="accent">чей-то труп</span>.</p>
+                            <p>Оператор не придал этому должного значения. Ошибка, которая чуть не стоила ему жизни.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="chapter">
+                    <div class="chapter-marker">
+                        <div class="marker-line"></div>
+                        <span class="marker-symbol">IV</span>
+                        <div class="marker-line right"></div>
+                    </div>
+                    <div class="chapter-content">
+                        <h2 class="chapter-heading">Когда станция ожила</h2>
+                        <div class="prose">
+                            <p>Через некоторое время на станции ЦК начался <span class="alert-status">абсолютный хаос</span>. Словно по невидимому сигналу, всё погрузилось в безумие: системы освещения начали отключаться секция за секцией, связь захлёбывалась статическими помехами, доступ к командным консолям был полностью утрачен.</p>
+
+                            <div class="threat-status">
+                                <div class="status-icon">⚠</div>
+                                <div class="status-text">
+                                    <div class="status-title">КОД НЕИЗВЕСТЕН</div>
+                                    <div>Множественные системные сбои • Неопознанная угроза</div>
+                                </div>
+                            </div>
+
+                            <p>С огромным трудом, буквально продираясь сквозь сбоящие протоколы, <span class="name">Иридий</span> успел отправить экстренное сообщение подконтрольной станции:</p>
+
+                            <div class="dialogue-fragment">
+                                <div class="fragment-label">Экстренная передача</div>
+                                <div class="fragment-content">
+                                    "ЦК ВРЕМЕННО НЕДОСТУПНО. КОД УГРОЗЫ НЕИЗВЕСТЕН. ОЖИДАЙТЕ ВОССТАНОВЛЕНИЯ СВЯЗИ."
+                                </div>
+                            </div>
+
+                            <p>После отправки сообщения единственным разумным решением стало вооружение. Оружейная ЦК содержала достаточно средств для самообороны — всё, что могло понадобиться для выживания в неизвестных условиях.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="chapter">
+                    <div class="chapter-marker">
+                        <span class="marker-symbol">V</span>
+                        <div class="marker-line right"></div>
+                    </div>
+                    <div class="chapter-content">
+                        <h2 class="chapter-heading">Встреча с кошмаром</h2>
+                        <div class="prose">
+                            <p>Возвращаясь к командному посту, оператор начал сталкиваться с <span class="tech-term">аномальными сущностями</span>. Позже, изучив архивные записи, он узнал их классификацию — <span class="accent">бихонкеры</span>, также известные как "летающие клоунские головы".</p>
+                            <p>Эти кошмарные создания парили в воздухе, издавая неприятный высокочастотный смех, и атаковали концентрированными лазерными лучами. Уворачиваясь — не всегда мастерски, но достаточно эффективно — <span class="name">Иридий</span> методично ликвидировал одно существо за другим.</p>
+                            <p>Каждый выстрел отдавался гулким эхом в опустевших коридорах. Каждое уничтоженное существо оставляло за собой странный светящийся след, который медленно растворялся в воздухе.</p>
+                            <p>Вернувшись в операторскую, он обнаружил зрелище, от которого кровь застыла в жилах — <span class="alert-status">посреди комнаты на стуле сидел он сам</span>. Точная копия. Неподвижно смотрящая прямо на оригинал.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="chapter">
+                    <div class="chapter-marker">
+                        <div class="marker-line"></div>
+                        <span class="marker-symbol">VI</span>
+                        <div class="marker-line right"></div>
+                    </div>
+                    <div class="chapter-content">
+                        <h2 class="chapter-heading">Ментальная ловушка</h2>
+                        <div class="prose">
+                            <p>Клон начал говорить. Голос был идентичен — та же тональность, те же интонации:</p>
+
+                            <div class="dialogue-fragment">
+                                <div class="fragment-label">Голос из пустоты</div>
+                                <div class="fragment-content">
+                                    "Помнишь меня?.. Вспомни, кто ты на самом деле... Давай уже закончим эту игру... Ты устал притворяться... Пора проснуться..."
+                                </div>
+                            </div>
+
+                            <p><span class="name">Иридия</span> предупреждали о существовании <span class="tech-term">ментальных клонов</span> — созданий, способных манипулировать восприятием реальности. Не раздумывая, он поднял оружие и выстрелил.</p>
+                            <p>Но клон оказался быстрее. <span class="accent">Ослепительная вспышка</span> ударила прямо в глаза, и реальность рассыпалась на осколки.</p>
+                            <p>Когда зрение вернулось, <span class="name">Иридий</span> обнаружил себя в <span class="alert-status">совершенно другом месте</span>. Белая комната. Стерильные стены. Запах антисептика. Рядом стоял врач в безупречно чистом халате.</p>
+                            <p>Но что-то было катастрофически неправильно. Голова раскалывалась. Руки казались чужими. А тело... <span class="alert-status">это было не его тело</span>. Человеческое, без привычной хитиновой структуры унатха.</p>
+                            <p>Врач заговорил мягким голосом, пытаясь убедить его, что всё пережитое — лишь кома. Что станции ЦК не существует. Что <span class="station">NanoTrasen</span> — выдумка больного разума.</p>
+                            <p>Но <span class="name">Иридий</span> отрицал каждое слово. Каждой частицей сознания он знал — <span class="accent">это ложь</span>. И когда его пальцы нащупали в кармане вспышку... он не колебался. Ослепив самого себя, он <span class="tech-term">вырвался из ментальной тюрьмы</span>.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="chapter">
+                    <div class="chapter-marker">
+                        <span class="marker-symbol">VII</span>
+                        <div class="marker-line right"></div>
+                    </div>
+                    <div class="chapter-content">
+                        <h2 class="chapter-heading">Пробуждение в руинах</h2>
+                        <div class="prose">
+                            <p>Реальность ударила по всем органам чувств одновременно. Он снова находился в операторской рубке ЦК, но станция превратилась в <span class="alert-status">зону боевых действий</span>.</p>
+                            <p>Его тело было покрыто <span class="tech-term">мясными наростами</span> — биологическими паразитами, которые гленифид использовал для удержания жертвы. По всей станции ревела сирена разгерметизации.</p>
+                            <p>Слева зияла огромная пробоина — <span class="accent">шаттл культистов Нар'Си</span> протаранил рубку, и на его обшивке виднелся зловещий символ кровавого бога.</p>
+                            <p>Перед оператором лежало мёртвое тело <span class="tech-term">гленифида</span> — паразитического существа, пожирающего воспоминания жертв и создающего ложные миры, пока разум медленно угасает от истощения. Судя по всему, именно оно захватило сознание <span class="name">Иридия</span>, когда тот возвращался из оружейной.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="chapter">
+                    <div class="chapter-marker">
+                        <div class="marker-line"></div>
+                        <span class="marker-symbol">VIII</span>
+                        <div class="marker-line right"></div>
+                    </div>
+                    <div class="chapter-content">
+                        <h2 class="chapter-heading">Спасение</h2>
+                        <div class="prose">
+                            <p>С трудом освободившись от органических оков, <span class="name">Иридий</span> заставил своё ослабевшее тело двигаться. Ноги подкашивались. Каждый шаг давался с огромным усилием. Но инстинкт выживания гнал его к выходу.</p>
+                            <p>За спиной рушились переборки. Атмосфера с шипением уходила в космос. Времени на раздумья не было.</p>
+                            <p>Двери шлюзовой камеры разъехались — и в проёме возникли силуэты в тяжёлой броне:</p>
+
+                            <div class="dialogue-fragment">
+                                <div class="fragment-label">Команда спасения</div>
+                                <div class="fragment-content">
+                                    "ЭСКАДРОН СМЕРТИ, ФОКСТРОТ! ПРЕДСТАВЬТЕСЬ!"
+                                </div>
+                            </div>
+
+                            <p><span class="name">Иридий</span> назвал свой идентификационный номер и должность. И произошло нечто неожиданное — бойцы элитного подразделения <span class="accent">отдали ему честь</span>. Оператор ЦК, переживший комбинированную атаку в одиночку, заслужил их уважение.</p>
+                            <p>Его передали в руки отряда <span class="station">РХБЗЗ</span> — специализированного подразделения радиационной, химической и биологической защиты.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="chapter">
+                    <div class="chapter-marker">
+                        <span class="marker-symbol">IX</span>
+                        <div class="marker-line right"></div>
+                    </div>
+                    <div class="chapter-content">
+                        <h2 class="chapter-heading">Восстановление</h2>
+                        <div class="prose">
+                            <p>Тело оператора было серьёзно повреждено воздействием гленифида. Некоторые органы находились на грани отказа. Было принято решение о <span class="tech-term">полном клонировании</span>.</p>
+                            <p>Процедура прошла успешно — новое тело было выращено в ускоренном режиме с полным сохранением нейронных связей и памяти. Пробуждение в клонирующей капсуле стало для <span class="name">Иридия</span> вторым рождением — буквально.</p>
+                            <p>Процесс восстановления занял несколько недель. Психологическая реабилитация после контакта с гленифидом требовала особого подхода. Шаг за шагом, сеанс за сеансом, оператор возвращался к полноценному функционированию.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="chapter">
+                    <div class="chapter-marker">
+                        <div class="marker-line"></div>
+                        <span class="marker-symbol">X</span>
+                        <div class="marker-line right"></div>
+                    </div>
+                    <div class="chapter-content">
+                        <h2 class="chapter-heading">Возвращение к службе</h2>
+                        <div class="prose">
+                            <p>Спустя месяц реабилитации <span class="name">Иридий-Трифф</span> был признан годным к дальнейшей службе. Инцидент был классифицирован как <span class="alert-status">"Прорыв Культистов"</span> — комбинированная атака культистов Нар'Си с использованием биологического оружия категории "гленифид".</p>
+                            <p>В личное дело оператора была внесена особая отметка о проявленной стойкости в экстремальной ситуации. Немногие способны вырваться из ментального захвата гленифида самостоятельно — большинство жертв просто угасают в сконструированной иллюзии.</p>
+                            <p>Этот опыт изменил <span class="name">Иридия</span>. Он стал более бдительным, более осторожным, но не утратил профессионализма. И он продолжал нести службу — теперь с полным пониманием того, <span class="accent">какие опасности могут скрываться в глубинах космоса</span>.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <div class="divider">
+                    <div class="divider-inner">
+                        <div class="divider-line"></div>
+                        <div class="divider-dot"></div>
+                        <div class="divider-line"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+<!-- Правая галерея — 10 изображений равномерно вдоль всего текста -->
+<aside class="gallery-side gallery-right">
+    <div class="gallery-item size-l mt-100" onclick="openModal(this)">
+        <img src="https://i.imgur.com/XmZf9DQ.png" alt="">
+    </div>
+
+    <div class="gallery-item size-s mt-300" onclick="openModal(this)">
+        <img src="https://i.imgur.com/TMqfPy8.png" alt="">
+    </div>
+
+    <div class="gallery-item size-xl mt-250" onclick="openModal(this)">
+        <img src="https://i.imgur.com/RmyT9WT.png" alt="">
+    </div>
+
+    <div class="gallery-item size-m mt-280" onclick="openModal(this)">
+        <img src="https://i.imgur.com/qxmdsQN.png" alt="">
+    </div>
+
+    <div class="gallery-item size-l mt-320" onclick="openModal(this)">
+        <img src="https://i.imgur.com/qCJEvh4.png" alt="">
+    </div>
+
+    <div class="gallery-item size-s mt-250" onclick="openModal(this)">
+        <img src="https://i.imgur.com/ZeSx8Yz.png" alt="">
+    </div>
+
+    <div class="gallery-item size-xl mt-300" onclick="openModal(this)">
+        <img src="https://i.imgur.com/lOhvx9c.jpeg" alt="">
+    </div>
+
+    <div class="gallery-item size-m mt-280" onclick="openModal(this)">
+        <img src="https://i.imgur.com/7d8CFou.png" alt="">
+    </div>
+
+    <div class="gallery-item size-l mt-350" onclick="openModal(this)">
+        <img src="https://i.imgur.com/H3ScUQJ.png" alt="">
+    </div>
+
+    <div class="gallery-item size-m mt-250" onclick="openModal(this)">
+        <img src="https://i.imgur.com/rx5Efuu.png" alt="">
+    </div>
+</aside>
+    </div>
+
+    <!-- Модальное окно для просмотра изображений -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-close" onclick="closeModal()"></div>
+        <div class="modal-image-container">
+            <img class="modal-image" id="modalImage" src="" alt="">
+        </div>
+        <div class="modal-hint">Нажмите в любом месте для закрытия</div>
+    </div>
+
+    <script>
+        // Космический фон
+        function initSpaceCanvas() {
+            const canvas = document.getElementById('spaceCanvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+            
+            const stars = [];
+            for (let i = 0; i < 900; i++) {
+                stars.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    radius: Math.random() * 1.5,
+                    opacity: Math.random(),
+                    twinkleSpeed: Math.random() * 0.02 + 0.01,
+                    color: Math.random() > 0.7 ? 
+                        `rgba(${100 + Math.random() * 100}, ${180 + Math.random() * 75}, ${120 + Math.random() * 80}, ` :
+                        `rgba(${180 + Math.random() * 75}, 255, ${200 + Math.random() * 55}, `
+                });
+            }
+            
+            let time = 0;
+            function draw() {
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, width, height);
+                stars.forEach(star => {
+                    const twinkle = Math.sin(time * star.twinkleSpeed) * 0.5 + 0.5;
+                    ctx.fillStyle = star.color + (star.opacity * twinkle) + ')';
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                time += 1;
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        function initNebulaCanvas() {
+            const canvas = document.getElementById('nebulaCanvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+            
+            let time = 0;
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+                for (let i = 0; i < 3; i++) {
+                    const offsetX = Math.sin(time * 0.0003 + i) * 100;
+                    const offsetY = Math.cos(time * 0.0002 + i) * 80;
+                    const gradient = ctx.createRadialGradient(
+                        width * (0.3 + i * 0.2) + offsetX,
+                        height * (0.4 + i * 0.1) + offsetY,
+                        0,
+                        width * (0.3 + i * 0.2) + offsetX,
+                        height * (0.4 + i * 0.1) + offsetY,
+                        width * (0.4 + i * 0.1)
+                    );
+                    const colors = [
+                        ['rgba(80, 200, 120, ', 'rgba(40, 150, 80, '],
+                        ['rgba(50, 180, 100, ', 'rgba(30, 120, 60, '],
+                        ['rgba(100, 220, 150, ', 'rgba(50, 150, 100, ']
+                    ];
+                    gradient.addColorStop(0, colors[i][0] + '0.18)');
+                    gradient.addColorStop(0.3, colors[i][1] + '0.10)');
+                    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, width, height);
+                }
+                time += 1;
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        function initStarsCanvas() {
+            const canvas = document.getElementById('starsCanvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+            
+            const shootingStars = [];
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+                if (Math.random() > 0.98) {
+                    shootingStars.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height * 0.5,
+                        length: Math.random() * 80 + 40,
+                        speed: Math.random() * 8 + 4,
+                        angle: Math.PI / 4 + Math.random() * 0.5,
+                        opacity: 1
+                    });
+                }
+                shootingStars.forEach((star, index) => {
+                    ctx.save();
+                    ctx.translate(star.x, star.y);
+                    ctx.rotate(star.angle);
+                    const gradient = ctx.createLinearGradient(0, 0, star.length, 0);
+                    gradient.addColorStop(0, `rgba(150, 255, 200, ${star.opacity})`);
+                    gradient.addColorStop(1, 'rgba(50, 200, 100, 0)');
+                    ctx.strokeStyle = gradient;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(star.length, 0);
+                    ctx.stroke();
+                    ctx.restore();
+                    star.x += Math.cos(star.angle) * star.speed;
+                    star.y += Math.sin(star.angle) * star.speed;
+                    star.opacity -= 0.01;
+                    if (star.opacity <= 0) shootingStars.splice(index, 1);
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        function createDust() {
+            const container = document.getElementById('dustField');
+            for (let i = 0; i < 60; i++) {
+                const dust = document.createElement('div');
+                dust.className = 'dust';
+                dust.style.left = Math.random() * 100 + '%';
+                dust.style.top = Math.random() * 100 + '%';
+                dust.style.width = (Math.random() * 2 + 1) + 'px';
+                dust.style.height = dust.style.width;
+                dust.style.opacity = Math.random() * 0.5 + 0.1;
+                dust.style.animation = `floatDust ${20 + Math.random() * 40}s ${Math.random() * -60}s linear infinite`;
+                container.appendChild(dust);
+            }
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes floatDust {
+                    0% { transform: translate(0, 0); opacity: 0; }
+                    10% { opacity: 0.5; }
+                    90% { opacity: 0.5; }
+                    100% { transform: translate(${Math.random() * 200 - 100}px, -100vh); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function observeElements() {
+            const elements = document.querySelectorAll('.chapter, .gallery-item');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
+            elements.forEach(el => observer.observe(el));
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            document.querySelectorAll('.emerald-glow').forEach((glow, index) => {
+                const factor = (index + 1) * 10;
+                glow.style.transform = `translate(${(mouseX - 0.5) * factor}px, ${(mouseY - 0.5) * factor}px)`;
+            });
+        });
+
+        // Модальное окно
+        function openModal(element) {
+            const modal = document.getElementById('modalOverlay');
+            const modalImg = document.getElementById('modalImage');
+            const img = element.querySelector('img');
+            
+            modalImg.src = img.src;
+            modalImg.alt = img.alt;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modalOverlay');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this || e.target.classList.contains('modal-hint')) {
+                closeModal();
+            }
+        });
+
+        document.querySelector('.modal-image-container').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initSpaceCanvas();
+            initNebulaCanvas();
+            initStarsCanvas();
+            createDust();
+            observeElements();
+        });
+    </script>
+</body>
+</html>
