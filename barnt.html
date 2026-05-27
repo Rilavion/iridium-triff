@@ -811,65 +811,71 @@
 
     <script>
         // Космический фон с глубиной
-        function initSpaceCanvas() {
-            const canvas = document.getElementById('spaceCanvas');
-            const ctx = canvas.getContext('2d');
+       function initSpaceCanvas() {
+    const canvas = document.getElementById('spaceCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    let width, height;
+    let prevWidth, prevHeight;
+    
+    // Создаём звёзды с нормализованными координатами (0..1)
+    const stars = [];
+    for (let i = 0; i < 800; i++) {
+        stars.push({
+            nx: Math.random(),  // нормализованная X (0..1)
+            ny: Math.random(),  // нормализованная Y (0..1)
+            radius: Math.random() * 1.5,
+            opacity: Math.random(),
+            speed: Math.random() * 0.05,
+            twinkleSpeed: Math.random() * 0.02 + 0.01,
+            color: Math.random() > 0.7 ? 
+                `rgba(${150 + Math.random() * 105}, ${180 + Math.random() * 75}, 255, ` :
+                Math.random() > 0.5 ?
+                `rgba(255, ${200 + Math.random() * 55}, ${150 + Math.random() * 105}, ` :
+                `rgba(255, 255, ${200 + Math.random() * 55}, `
+        });
+    }
+    
+    function resize() {
+        prevWidth = width;
+        prevHeight = height;
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    }
+    
+    resize();
+    window.addEventListener('resize', resize);
+    
+    let time = 0;
+    
+    function draw() {
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, width, height);
+        
+        stars.forEach(star => {
+            const twinkle = Math.sin(time * star.twinkleSpeed) * 0.5 + 0.5;
+            const currentOpacity = star.opacity * twinkle;
             
-            let width, height;
+            // Вычисляем реальные координаты из нормализованных
+            const x = star.nx * width;
+            const y = star.ny * height;
             
-            function resize() {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
-            }
+            ctx.fillStyle = star.color + currentOpacity + ')';
+            ctx.beginPath();
+            ctx.arc(x, y, star.radius, 0, Math.PI * 2);
+            ctx.fill();
             
-            resize();
-            window.addEventListener('resize', resize);
-            
-            // Создаём звёздное поле с разной глубиной
-            const stars = [];
-            for (let i = 0; i < 800; i++) {
-                stars.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    radius: Math.random() * 1.5,
-                    opacity: Math.random(),
-                    speed: Math.random() * 0.05,
-                    twinkleSpeed: Math.random() * 0.02 + 0.01,
-                    color: Math.random() > 0.7 ? 
-                        `rgba(${150 + Math.random() * 105}, ${180 + Math.random() * 75}, 255, ` :
-                        Math.random() > 0.5 ?
-                        `rgba(255, ${200 + Math.random() * 55}, ${150 + Math.random() * 105}, ` :
-                        `rgba(255, 255, ${200 + Math.random() * 55}, `
-                });
-            }
-            
-            let time = 0;
-            
-            function draw() {
-                ctx.fillStyle = '#000000';
-                ctx.fillRect(0, 0, width, height);
-                
-                // Рисуем звёзды с мерцанием
-                stars.forEach(star => {
-                    const twinkle = Math.sin(time * star.twinkleSpeed) * 0.5 + 0.5;
-                    const currentOpacity = star.opacity * twinkle;
-                    
-                    ctx.fillStyle = star.color + currentOpacity + ')';
-                    ctx.beginPath();
-                    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    // Небольшой параллакс-эффект
-                    star.x += star.speed * 0.1;
-                    if (star.x > width) star.x = 0;
-                });
-                
-                time += 1;
-                requestAnimationFrame(draw);
-            }
-            
-            draw();
-        }
+            // Параллакс-эффект в нормализованном пространстве
+            star.nx += star.speed * 0.1 / width;
+            if (star.nx > 1) star.nx = 0;
+        });
+        
+        time += 1;
+        requestAnimationFrame(draw);
+    }
+    
+    draw();
+}
 
         // Туманности
         function initNebulaCanvas() {
