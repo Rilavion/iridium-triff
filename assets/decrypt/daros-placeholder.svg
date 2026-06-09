@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 960" role="img" aria-label="DAROS POLEY placeholder portrait">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0c0c0c"/>
+      <stop offset="55%" stop-color="#14110f"/>
+      <stop offset="100%" stop-color="#050505"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="38%" r="45%">
+      <stop offset="0%" stop-color="#ffb74d" stop-opacity="0.33"/>
+      <stop offset="55%" stop-color="#5a2d10" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.08"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="720" height="960" fill="url(#bg)"/>
+  <rect width="720" height="960" fill="url(#glow)"/>
+  <g opacity="0.16">
+    <path d="M220 185L290 55l70 155z" fill="#ffb74d"/>
+    <path d="M500 185L430 55l-70 155z" fill="#ffb74d"/>
+  </g>
+  <g fill="#0b0b0b" stroke="#d9822b" stroke-opacity="0.45" stroke-width="2">
+    <path d="M180 670c18-152 74-302 177-302 97 0 160 144 183 302-53 37-116 58-183 58-69 0-132-20-177-58z" fill="#0b0b0b"/>
+    <path d="M234 288l63-155 58 181-73-34z" fill="#0b0b0b"/>
+    <path d="M480 288l-63-155-58 181 73-34z" fill="#0b0b0b"/>
+    <path d="M292 444c21-24 47-36 74-36s53 12 74 36c-15 9-29 16-44 20-9 2-19-4-30-4s-21 6-30 4c-15-4-29-11-44-20z" fill="#111"/>
+    <path d="M270 570c49 32 125 33 176 0-10 52-46 110-88 110s-78-58-88-110z" fill="#0b0b0b"/>
+  </g>
+  <rect x="76" y="84" width="568" height="792" rx="12" fill="none" stroke="#f08f2d" stroke-opacity="0.3" stroke-width="2" stroke-dasharray="10 8"/>
+  <g fill="#f9a94c" font-family="monospace" text-anchor="middle">
+    <text x="360" y="118" font-size="28" opacity="0.9">CAM_FEED :: NODE_D-17</text>
+    <text x="360" y="842" font-size="42" font-weight="700" letter-spacing="4">DAROS POLEY</text>
+    <text x="360" y="888" font-size="21" opacity="0.72">SIGNAL LOST / PROFILE RECONSTRUCTED</text>
+  </g>
+  <g opacity="0.18">
+    <rect x="0" y="122" width="720" height="4" fill="#fff"/>
+    <rect x="0" y="226" width="720" height="2" fill="#fff"/>
+    <rect x="0" y="355" width="720" height="3" fill="#fff"/>
+    <rect x="0" y="472" width="720" height="2" fill="#fff"/>
+    <rect x="0" y="644" width="720" height="4" fill="#fff"/>
+    <rect x="0" y="734" width="720" height="2" fill="#fff"/>
+  </g>
+  <rect width="720" height="960" filter="url(#noise)" opacity="0.5"/>
+</svg>

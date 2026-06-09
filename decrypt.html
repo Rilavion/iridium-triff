@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>НЕ_УНАТХ :: DECRYPT</title>
+<style>
+:root{
+    --bg:#000000;
+    --panel:#050505;
+    --line:#161616;
+    --soft:#9df8b5;
+    --soft-dim:rgba(157,248,181,.55);
+    --warn:#ff5a5a;
+    --amber:#f3a75d;
+    --cyan:#6ed6ff;
+    --violet:#ff76e1;
+    --rust:#ffb467;
+    --muted:#7c8b82;
+    --text:#d8e5db;
+    --shadow:0 0 0 1px rgba(255,255,255,.03), 0 0 40px rgba(0,0,0,.65);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+    min-height:100vh;
+    background:#000;
+    color:var(--text);
+    font-family:Consolas, Menlo, Monaco, "Courier New", monospace;
+    overflow-x:hidden;
+    position:relative;
+}
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(50,255,150,.05), transparent 30%),
+        radial-gradient(circle at 80% 15%, rgba(255,40,40,.04), transparent 28%),
+        radial-gradient(circle at 65% 80%, rgba(120,180,255,.05), transparent 32%),
+        #000;
+    pointer-events:none;
+    z-index:-3;
+}
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0 1px, transparent 1px 3px),
+        linear-gradient(180deg, rgba(255,255,255,.03), transparent 18%, transparent 82%, rgba(255,255,255,.03));
+    opacity:.22;
+    pointer-events:none;
+    z-index:200;
+}
+.noise,
+.scanline,
+.vignette,
+.field-grid{position:fixed;inset:0;pointer-events:none;}
+.noise{
+    z-index:-2;
+    opacity:.16;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    mix-blend-mode:screen;
+}
+.scanline{
+    z-index:180;
+    opacity:.25;
+    background:linear-gradient(180deg, transparent 0%, rgba(120,255,160,.08) 46%, rgba(120,255,160,.16) 50%, rgba(120,255,160,.08) 54%, transparent 100%);
+    animation:scanMove 8s linear infinite;
+}
+@keyframes scanMove{0%{transform:translateY(-105%)}100%{transform:translateY(105%)}}
+.vignette{
+    z-index:190;
+    background:radial-gradient(ellipse 70% 55% at 50% 40%, transparent 0%, rgba(0,0,0,.28) 65%, rgba(0,0,0,.78) 100%);
+}
+.field-grid{
+    z-index:-1;
+    opacity:.1;
+    background:
+        linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size:68px 68px;
+    mask-image:linear-gradient(180deg, rgba(0,0,0,.4), rgba(0,0,0,.9));
+}
+.topbar{
+    position:sticky;
+    top:0;
+    z-index:120;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:14px 22px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    background:rgba(0,0,0,.92);
+    backdrop-filter:blur(6px);
+}
+.topbar-left,
+.topbar-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.top-chip,
+.back-link{
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.02);
+    color:var(--soft);
+    padding:8px 12px;
+    font-size:.72rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+}
+.back-link{
+    cursor:pointer;
+    text-decoration:none;
+    transition:.25s ease;
+}
+.back-link:hover{border-color:rgba(157,248,181,.45);box-shadow:0 0 18px rgba(157,248,181,.12);transform:translateY(-1px)}
+.clock{color:var(--soft-dim);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;}
+.entry-gate{
+    min-height:calc(100vh - 62px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px 70px;
+    position:relative;
+    overflow:hidden;
+}
+.entry-gate::before,
+.entry-gate::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+}
+.entry-gate::before{
+    background:
+        linear-gradient(90deg, transparent 0%, rgba(255,0,0,.08) 32%, transparent 36%, transparent 64%, rgba(0,255,255,.05) 68%, transparent 72%),
+        repeating-linear-gradient(180deg, transparent 0 22px, rgba(255,255,255,.025) 22px 23px);
+    opacity:.5;
+}
+.entry-gate::after{
+    background:radial-gradient(circle at center, rgba(255,255,255,.02), transparent 60%);
+    animation:gatePulse 5s ease-in-out infinite;
+}
+@keyframes gatePulse{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.04);opacity:1}}
+.gate-window{
+    width:min(980px, 100%);
+    border:1px solid rgba(255,255,255,.1);
+    background:linear-gradient(180deg, rgba(7,7,7,.96), rgba(2,2,2,.94));
+    box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 90px rgba(0,0,0,.85);
+    position:relative;
+    padding:30px;
+    overflow:hidden;
+}
+.gate-window::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,.035) 50%, transparent 100%);
+    transform:translateX(-100%);
+    animation:gateSweep 6s linear infinite;
+}
+@keyframes gateSweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.gate-meta{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:18px}
+.gate-title{
+    font-size:clamp(2rem,6vw,4rem);
+    line-height:1;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:#f5f5f5;
+    position:relative;
+    margin-bottom:20px;
+    text-shadow:0 0 20px rgba(255,255,255,.08);
+}
+.gate-title::before,
+.gate-title::after{
+    content:attr(data-text);
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+}
+.gate-title::before{color:rgba(255,0,0,.65);transform:translate(2px,-1px);clip-path:inset(0 0 48% 0);animation:glitchA 1.1s steps(2) infinite}
+.gate-title::after{color:rgba(0,255,255,.6);transform:translate(-2px,1px);clip-path:inset(55% 0 0 0);animation:glitchB .9s steps(2) infinite}
+@keyframes glitchA{0%,100%{transform:translate(2px,-1px)}20%{transform:translate(-3px,1px)}40%{transform:translate(4px,0)}60%{transform:translate(1px,2px)}80%{transform:translate(-2px,-1px)}}
+@keyframes glitchB{0%,100%{transform:translate(-2px,1px)}20%{transform:translate(3px,-1px)}40%{transform:translate(-4px,0)}60%{transform:translate(-1px,-2px)}80%{transform:translate(2px,1px)}}
+.gate-copy{
+    max-width:760px;
+    color:#adb8b0;
+    line-height:1.8;
+    font-size:.98rem;
+    margin-bottom:28px;
+}
+.path-grid{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:18px;margin:24px 0 14px}
+.path-btn{
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.02);
+    color:#fff;
+    text-align:left;
+    padding:18px 18px 20px;
+    cursor:pointer;
+    position:relative;
+    overflow:hidden;
+    transition:.25s ease;
+    min-height:126px;
+}
+.path-btn::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,.08) 50%, transparent 100%);
+    transform:translateX(-130%);
+    transition:transform .45s ease;
+}
+.path-btn:hover::before{transform:translateX(130%)}
+.path-btn:hover{transform:translateY(-2px);box-shadow:0 0 28px rgba(255,255,255,.08)}
+.path-btn small{display:block;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+.path-btn strong{display:block;font-size:1.05rem;line-height:1.5;letter-spacing:.08em;text-transform:uppercase}
+.path-btn span{display:block;margin-top:10px;font-size:.88rem;line-height:1.7;color:#acb6af}
+.path-btn.decrypt{border-color:rgba(157,248,181,.2)}
+.path-btn.decrypt:hover{border-color:rgba(157,248,181,.5);box-shadow:0 0 40px rgba(157,248,181,.12)}
+.path-btn.iridium77{border-color:rgba(255,90,90,.2)}
+.path-btn.iridium77:hover{border-color:rgba(255,90,90,.5);box-shadow:0 0 40px rgba(255,90,90,.12)}
+.gate-note{
+    margin-top:18px;
+    min-height:22px;
+    color:var(--soft-dim);
+    font-size:.82rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+}
+.archive{
+    width:min(1320px, calc(100% - 32px));
+    margin:0 auto 120px;
+    display:none;
+}
+.archive.active{display:block;animation:archiveReveal .8s ease forwards}
+@keyframes archiveReveal{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.panel{
+    border:1px solid rgba(255,255,255,.09);
+    background:linear-gradient(180deg, rgba(6,6,6,.96), rgba(2,2,2,.94));
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+    margin-top:22px;
+}
+.panel::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,.02), transparent);
+    transform:translateX(-100%);
+    animation:softSweep 10s linear infinite;
+    pointer-events:none;
+}
+@keyframes softSweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.panel-inner{padding:28px}
+.panel-head{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+.panel-index{
+    color:var(--soft-dim);
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    font-size:.78rem;
+}
+.panel-title{
+    font-size:clamp(1.2rem,3vw,2rem);
+    line-height:1.25;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:#eff5f1;
+}
+.panel-subtitle{font-size:.88rem;color:var(--muted);line-height:1.7;max-width:760px}
+.hero-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:24px;padding:28px}
+.console-block,
+.evidence-frame,
+.side-card,
+.timeline-item,
+.roster-card,
+.glitch-tail{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.015)}
+.console-block{padding:22px;position:relative;overflow:hidden}
+.console-block::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(180deg, rgba(255,255,255,.02), transparent 30%, transparent 70%, rgba(255,255,255,.02));
+    pointer-events:none;
+}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(157,248,181,.2);padding:7px 10px;color:var(--soft);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:18px}
+.badge::before{content:"◆";font-size:.75rem}
+.hero-title{font-size:clamp(1.45rem,4vw,2.7rem);line-height:1.2;letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px}
+.hero-title strong{color:var(--soft)}
+.bootlog{display:grid;gap:10px;margin:20px 0 18px}
+.log-line{color:#b7c0ba;font-size:.93rem;line-height:1.7;min-height:1.6em}
+.log-line::before{content:"> ";color:var(--soft)}
+.hero-footer{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.foot-chip{border:1px solid rgba(255,255,255,.09);padding:8px 10px;color:#b8c2bc;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase}
+.evidence-frame{padding:12px;display:flex;flex-direction:column;gap:10px}
+.evidence-frame img{width:100%;display:block;object-fit:cover;background:#020202;border:1px solid rgba(255,255,255,.08);aspect-ratio:3/4;filter:saturate(.86) contrast(1.08)}
+.evidence-frame figcaption{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:#a9b2ad;line-height:1.7}
+.grid-two{display:grid;grid-template-columns:1.08fr .92fr;gap:24px;padding:28px}
+.archive-sheet{padding:22px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.015)}
+.archive-sheet p{line-height:1.95;font-size:.96rem;color:#c0cbc4;margin-bottom:16px;text-align:justify}
+.archive-sheet p:last-child{margin-bottom:0}
+.inline-tag{display:inline-block;padding:2px 8px;border:1px solid rgba(255,255,255,.09);color:var(--soft-dim);letter-spacing:.16em;text-transform:uppercase;font-size:.68rem;margin:0 4px 4px 0}
+.fact-list{display:grid;grid-template-columns:1fr;gap:10px;margin-top:20px}
+.fact-row{display:flex;justify-content:space-between;gap:16px;padding:10px 12px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.015);font-size:.88rem}
+.fact-row span:first-child{color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+.side-card{padding:18px}
+.side-card img{width:100%;display:block;border:1px solid rgba(255,255,255,.08);background:#020202;filter:contrast(1.05) saturate(.85)}
+.side-card h3{margin:14px 0 10px;font-size:1rem;letter-spacing:.14em;text-transform:uppercase;color:#f0f4f1}
+.side-card p{font-size:.9rem;line-height:1.8;color:#b7c0ba}
+.timeline-wrap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;padding:0 28px 28px}
+.timeline-item{padding:18px 18px 20px;position:relative;overflow:hidden}
+.timeline-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg, rgba(157,248,181,.7), transparent)}
+.timeline-year{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--soft-dim);margin-bottom:10px;padding-left:12px}
+.timeline-item h3{font-size:1rem;letter-spacing:.11em;text-transform:uppercase;margin-bottom:10px;padding-left:12px;color:#f2f5f3}
+.timeline-item p{font-size:.92rem;line-height:1.8;color:#bac5be;padding-left:12px;text-align:justify}
+.methods{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.method-tag{padding:7px 10px;border:1px solid rgba(255,255,255,.08);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#c1ccc5;background:rgba(255,255,255,.015)}
+.roster-head{padding:28px 28px 0}
+.roster-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;padding:24px 28px 28px}
+.roster-card{padding:12px;cursor:pointer;transition:.28s ease;position:relative;overflow:hidden}
+.roster-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.18);box-shadow:0 0 34px rgba(255,255,255,.06)}
+.roster-card::before{content:"";position:absolute;inset:-1px;background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,.09) 50%, transparent 100%);transform:translateX(-120%);transition:transform .45s ease;pointer-events:none}
+.roster-card:hover::before{transform:translateX(120%)}
+.roster-thumb{position:relative;margin-bottom:12px;border:1px solid rgba(255,255,255,.08);overflow:hidden;background:#030303;aspect-ratio:3/4}
+.roster-thumb img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.12) contrast(1.06)}
+.roster-thumb .stamp-mini{position:absolute;left:10px;bottom:10px;padding:5px 8px;background:rgba(0,0,0,.78);border:1px solid rgba(255,255,255,.16);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase}
+.roster-code{font-size:.72rem;color:var(--soft-dim);letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px}
+.roster-name{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;margin-bottom:8px;line-height:1.45}
+.roster-role{font-size:.84rem;color:#b8c2bc;line-height:1.75;min-height:54px}
+.roster-meta{display:flex;justify-content:space-between;gap:12px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#9dac9f}
+.tail-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;padding:28px}
+.glitch-tail{padding:20px;position:relative;overflow:hidden}
+.glitch-tail::before,
+.glitch-tail::after{content:"";position:absolute;left:0;right:0;height:1px;background:rgba(255,255,255,.08)}
+.glitch-tail::before{top:18px}.glitch-tail::after{bottom:18px}
+.glitch-text{font-size:.95rem;line-height:1.95;color:#ced6d1;white-space:pre-wrap}
+.glitch-text .corrupt{display:inline-block;color:var(--warn);text-shadow:-1px 0 rgba(0,255,255,.6),1px 0 rgba(255,0,0,.7);animation:wordGlitch .6s steps(2) infinite}
+@keyframes wordGlitch{0%,100%{transform:translate(0)}25%{transform:translate(-1px,1px)}50%{transform:translate(2px,-1px)}75%{transform:translate(-2px,0)}}
+.tail-warning{padding:20px;border:1px solid rgba(255,90,90,.15);background:linear-gradient(180deg, rgba(255,90,90,.06), rgba(255,255,255,.015))}
+.tail-warning h3{font-size:1rem;letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-bottom:12px}
+.tail-warning p{font-size:.92rem;line-height:1.85;color:#c3ccc7;margin-bottom:16px}
+.warning-list{display:grid;gap:10px;margin:18px 0}
+.warning-list li{list-style:none;padding:10px 12px;border:1px solid rgba(255,255,255,.07);font-size:.84rem;color:#aeb7b2;background:rgba(255,255,255,.015)}
+.plateau-btn{
+    width:100%;
+    border:1px solid rgba(255,255,255,.12);
+    background:#070707;
+    color:#fff;
+    padding:14px 16px;
+    cursor:pointer;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-size:.78rem;
+    transition:.25s ease;
+}
+.plateau-btn:hover{border-color:rgba(255,255,255,.4);box-shadow:0 0 34px rgba(255,255,255,.08);transform:translateY(-1px)}
+.record-modal,
+.plateau-overlay{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:22px;
+    background:rgba(0,0,0,.88);
+    z-index:500;
+}
+.record-modal.active,
+.plateau-overlay.active{display:flex}
+.record-shell{
+    width:min(1180px, 100%);
+    max-height:min(90vh, 900px);
+    overflow:auto;
+    border:1px solid rgba(255,255,255,.11);
+    background:linear-gradient(180deg, rgba(7,7,7,.98), rgba(2,2,2,.98));
+    box-shadow:0 0 0 1px rgba(255,255,255,.03), 0 0 90px rgba(0,0,0,.82);
+    position:relative;
+}
+.record-shell::-webkit-scrollbar{width:10px}
+.record-shell::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14)}
+.record-top{
+    position:sticky;
+    top:0;
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+    padding:18px 22px;
+    border-bottom:1px solid rgba(255,255,255,.09);
+    background:rgba(4,4,4,.95);
+    z-index:5;
+}
+.record-top h3{font-size:1rem;line-height:1.55;letter-spacing:.14em;text-transform:uppercase}
+.record-top small{display:block;color:var(--muted);margin-top:6px;letter-spacing:.16em;text-transform:uppercase}
+.close-btn{
+    min-width:42px;height:42px;border:1px solid rgba(255,255,255,.15);background:#070707;color:#fff;cursor:pointer;font-size:1rem;transition:.2s ease
+}
+.close-btn:hover{transform:rotate(90deg);border-color:rgba(255,255,255,.45)}
+.record-layout{display:grid;grid-template-columns:360px 1fr;gap:0}
+.record-left{border-right:1px solid rgba(255,255,255,.08);padding:22px}
+.record-photo{border:1px solid rgba(255,255,255,.1);background:#030303;overflow:hidden;margin-bottom:16px}
+.record-photo img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover}
+.record-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.record-tags span{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;padding:6px 8px;border:1px solid rgba(255,255,255,.1)}
+.record-right{padding:22px}
+.record-meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.record-meta-box{padding:12px 14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.018)}
+.record-meta-box label{display:block;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.record-meta-box div{font-size:.92rem;line-height:1.6}
+.record-summary{padding:16px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.015);margin-bottom:18px;line-height:1.9;font-size:.95rem;color:#c9d2cd}
+.record-columns{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.record-block{padding:16px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.018)}
+.record-block h4{font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:12px}
+.record-block ul{display:grid;gap:10px}
+.record-block li{list-style:none;line-height:1.8;font-size:.9rem;color:#c0cac4;padding-left:14px;position:relative}
+.record-block li::before{content:"▸";position:absolute;left:0;top:0}
+.record-note{margin-top:16px;padding:14px 16px;border:1px dashed rgba(255,255,255,.12);font-size:.86rem;line-height:1.85;color:#c5cfca}
+.theme-hiyoshi{--accent:#8ec7ff;--accentShadow:rgba(142,199,255,.2);--bg2:rgba(90,140,210,.05)}
+.theme-cadence{--accent:#ff76e1;--accentShadow:rgba(255,118,225,.22);--bg2:rgba(255,118,225,.06)}
+.theme-iridium{--accent:#e7f2ff;--accentShadow:rgba(231,242,255,.15);--bg2:rgba(255,255,255,.045)}
+.theme-daros{--accent:#ffb467;--accentShadow:rgba(255,180,103,.18);--bg2:rgba(255,180,103,.055)}
+.theme-hiyoshi .record-top,
+.theme-cadence .record-top,
+.theme-iridium .record-top,
+.theme-daros .record-top{border-bottom-color:var(--accentShadow)}
+.theme-hiyoshi .record-shell,
+.theme-cadence .record-shell,
+.theme-iridium .record-shell,
+.theme-daros .record-shell{box-shadow:0 0 0 1px rgba(255,255,255,.03), 0 0 90px var(--accentShadow)}
+.theme-hiyoshi .record-top h3,
+.theme-cadence .record-top h3,
+.theme-iridium .record-top h3,
+.theme-daros .record-top h3,
+.theme-hiyoshi .record-block h4,
+.theme-cadence .record-block h4,
+.theme-iridium .record-block h4,
+.theme-daros .record-block h4{color:var(--accent)}
+.theme-hiyoshi .record-meta-box,
+.theme-cadence .record-meta-box,
+.theme-iridium .record-meta-box,
+.theme-daros .record-meta-box,
+.theme-hiyoshi .record-summary,
+.theme-cadence .record-summary,
+.theme-iridium .record-summary,
+.theme-daros .record-summary,
+.theme-hiyoshi .record-block,
+.theme-cadence .record-block,
+.theme-iridium .record-block,
+.theme-daros .record-block{background:linear-gradient(180deg, var(--bg2), rgba(255,255,255,.018));border-color:rgba(255,255,255,.08)}
+.theme-hiyoshi .record-shell{background:linear-gradient(180deg, #04070b, #010203)}
+.theme-hiyoshi .record-photo img{filter:saturate(.78) contrast(1.08) hue-rotate(190deg)}
+.theme-cadence .record-shell{background:linear-gradient(180deg, #0d050a, #020103)}
+.theme-cadence .record-photo{position:relative}
+.theme-cadence .record-photo::after{content:"RETAIL CAM / 02:17";position:absolute;left:12px;bottom:10px;padding:6px 8px;background:rgba(0,0,0,.75);border:1px solid rgba(255,118,225,.35);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:#ffd0f4}
+.theme-cadence .record-photo img{filter:saturate(1.15) contrast(1.06)}
+.theme-iridium .record-shell{background:linear-gradient(180deg, #060606, #010101)}
+.theme-iridium .record-photo{position:relative}
+.theme-iridium .record-photo::after{content:"ELEVATOR NODE / 23:54 / CCTV-6";position:absolute;left:12px;bottom:10px;padding:6px 8px;background:rgba(0,0,0,.78);border:1px solid rgba(255,255,255,.22);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:#eff4ff}
+.theme-iridium .record-photo img{filter:grayscale(.22) contrast(1.18)}
+.theme-daros .record-shell{background:linear-gradient(180deg, #0a0704, #020101)}
+.theme-daros .record-photo img{filter:saturate(.8) contrast(1.1)}
+.plateau-card{
+    width:min(760px, 100%);
+    border:1px solid rgba(255,255,255,.16);
+    background:linear-gradient(180deg, #030303, #000);
+    padding:28px;
+    box-shadow:0 0 0 1px rgba(255,255,255,.03), 0 0 120px rgba(255,255,255,.08);
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+}
+.plateau-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(180deg, rgba(255,255,255,.05), transparent 18%, transparent 82%, rgba(255,255,255,.05));
+    pointer-events:none;
+}
+.plateau-card h3{font-size:clamp(1.3rem,4vw,2.4rem);line-height:1.35;letter-spacing:.18em;text-transform:uppercase;margin-bottom:18px;color:#fff}
+.plateau-card p{font-size:.95rem;line-height:1.9;color:#d7ded9;max-width:620px;margin:0 auto 12px}
+.plateau-bar{margin:22px auto;width:min(420px,100%);height:14px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.04);overflow:hidden}
+.plateau-fill{height:100%;width:100%;background:linear-gradient(90deg, rgba(255,255,255,.08), rgba(255,255,255,.95), rgba(255,255,255,.08));animation:plateauFlash 1.6s linear infinite}
+@keyframes plateauFlash{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.plateau-lines{display:grid;gap:10px;margin-top:20px}
+.plateau-lines div{padding:10px 12px;border:1px solid rgba(255,255,255,.08);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:#f5f5f5;background:rgba(255,255,255,.025)}
+.hidden-flow{display:none}
+@media (max-width:1100px){
+    .hero-grid,.grid-two,.tail-grid,.record-layout{grid-template-columns:1fr}
+    .record-left{border-right:none;border-bottom:1px solid rgba(255,255,255,.08)}
+    .roster-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:800px){
+    .timeline-wrap{grid-template-columns:1fr}
+    .path-grid{grid-template-columns:1fr}
+    .panel-inner,.hero-grid,.grid-two,.tail-grid,.roster-head,.roster-grid{padding:18px}
+    .topbar{padding:12px 14px}
+    .gate-window{padding:20px}
+    .record-meta-grid,.record-columns{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+    .archive{width:min(100% - 12px, 1320px)}
+    .roster-grid{grid-template-columns:1fr}
+    .hero-title{font-size:1.25rem}
+    .panel-title{font-size:1rem}
+    .gate-title{letter-spacing:.1em}
+    .gate-copy,.archive-sheet p,.timeline-item p,.record-summary{font-size:.92rem}
+}
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="field-grid"></div>
+<div class="scanline"></div>
+<div class="vignette"></div>
+
+<header class="topbar">
+    <div class="topbar-left">
+        <a class="back-link" href="index.html">← ВЕРНУТЬСЯ К УЗЛУ</a>
+        <div class="top-chip">НЕ_УНАТХ / АЛЬТЕРНАТИВНЫЙ КАНАЛ</div>
+        <div class="top-chip">ARCHIVE_MODE :: CRITICAL</div>
+    </div>
+    <div class="topbar-right">
+        <div class="clock" id="clock">00:00:00</div>
+    </div>
+</header>
+
+<section class="entry-gate" id="entryGate">
+    <div class="gate-window">
+        <div class="gate-meta">
+            <span>входной контур / скрытый сегмент</span>
+            <span>источник: НЕ_УНАТХ</span>
+            <span>целостность архива: 63%</span>
+        </div>
+        <h1 class="gate-title" data-text="НЕ_УНАТХ :: РАСЩЕПЛЕНИЕ">НЕ_УНАТХ :: РАСЩЕПЛЕНИЕ</h1>
+        <p class="gate-copy">
+            Найдено два ответвления. Оба помечены как <span class="inline-tag">несанкционированные</span>, оба содержат частично удалённые материалы.
+            Выберите, какой слой вскрывать первым. Один ведёт к <span class="inline-tag">частному детективному агентству</span>, другой — к более глубокому контуру,
+            который пока отмечен как <span class="inline-tag">нестабильный</span>.
+        </p>
+        <div class="path-grid">
+            <button class="path-btn decrypt" id="decryptBtn" type="button">
+                <small>ветка 01</small>
+                <strong>Детективное частное агентство “DECRYPT”</strong>
+                <span>Архив о становлении организации, корпоративном компромате, нейтральной политике и первом основном составе.</span>
+            </button>
+            <button class="path-btn iridium77" id="iridiumBtn" type="button">
+                <small>ветка 02</small>
+                <strong>ИРИДИЙ77</strong>
+                <span>Контур зафиксирован, но сборка материала ещё не завершена. При попытке входа наблюдаются жёсткие сбои доступа.</span>
+            </button>
+        </div>
+        <div class="gate-note" id="gateNote">ОЖИДАЕТСЯ ПОДТВЕРЖДЕНИЕ КАНАЛА…</div>
+    </div>
+</section>
+
+<main class="archive" id="archive">
+    <section class="panel">
+        <div class="hero-grid">
+            <div class="console-block">
+                <div class="badge">DECRYPT / RECOVERED NODE</div>
+                <h2 class="hero-title">ДЕТЕКТИВНОЕ ЧАСТНОЕ АГЕНТСТВО <strong>“DECRYPT”</strong></h2>
+                <div class="bootlog" id="bootlog"></div>
+                <div class="hero-footer">
+                    <div class="foot-chip">Y-27 / Spinward Periphery</div>
+                    <div class="foot-chip">Нейтральная политика</div>
+                    <div class="foot-chip">Корпоративный компромат</div>
+                    <div class="foot-chip">Следы инцидентов / зачистка</div>
+                </div>
+            </div>
+            <figure class="evidence-frame">
+                <img src="assets/decrypt/hiyoshi-elevator.png" alt="Хиоши Сузуки в лифте">
+                <figcaption>КАДР 03 / ЛИФТОВОЙ УЗЕЛ / ПРЕДПОЛАГАЕМЫЙ ОСНОВАТЕЛЬ ХИОШИ СУЗУКИ / ФИКСАЦИЯ ДО ПЕРЕНОСА ОФИСА В СРЕДНИЙ СЕКТОР</figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-inner">
+            <div class="panel-head">
+                <div>
+                    <div class="panel-index">01 / архивная сводка</div>
+                    <h2 class="panel-title">ОРГАНИЗАЦИЯ, КОТОРАЯ ВЫЖИЛА БЛАГОДАРЯ ГРЯЗНЫМ ЗАДАНИЯМ</h2>
+                </div>
+                <p class="panel-subtitle">Сводка собрана из фрагментов деловой истории, бытовых контрактов, полевых отчётов и восстановленных заметок. Некоторые значения реконструированы вручную.</p>
+            </div>
+            <div class="grid-two">
+                <div class="archive-sheet">
+                    <p><strong>“DECRYPT”</strong> зародилось в секторе <strong>Спинвардская Периферия</strong>, в самой гуще роста мегаполиса планеты <strong>Y-27</strong>. Первым известным основателем считается <strong>Хиоши Сузуки</strong>, прибывший на планету примерно за три года до резкого подъёма организации. Стартовый капитал составил <strong>400.000$</strong> — деньги, выданные ему родителями под тяжёлый залог и с ожиданием вернуть большую часть долга с наценкой, если он не сгорит в сточной канаве города раньше бизнеса.</p>
+                    <p>На старте агентство держалось на типичной детективной мелочёвке: <strong>слежка за неверными партнёрами</strong>, поиск пропавших посылок, локальные кражи, отпечатки, проверка съёмных квартир и любые бытовые запросы, от которых не веяло большими деньгами. Эти дела давали лишь кислород, но не рост. За примерно год такой работы офис трещал по швам, арендодатель поднимал цену, а долг перед семьёй пожирал львиную долю оборота.</p>
+                    <p>Почти на грани краха Хиоши сменил вектор: вместо дешёвого частного сыска он начал искать прибыль в <strong>корпоративных играх</strong> — добыче компромата, зачистке неудобных следов, маскировке причин “несчастных случаев”, скрытом наблюдении за конкурентами и деликатном удалении данных, которые не должны были дожить до утра. С этого момента “DECRYPT” перестало быть просто вывеской частного сыщика и превратилось в <strong>теневого посредника</strong>, который не работает ни на добро, ни на зло — только на выживание и баланс заказов.</p>
+                    <div class="fact-list">
+                        <div class="fact-row"><span>основатель</span><strong>Хиоши Сузуки</strong></div>
+                        <div class="fact-row"><span>точка зарождения</span><strong>Y-27 / Спинвардская Периферия</strong></div>
+                        <div class="fact-row"><span>стартовый капитал</span><strong>400.000$ наличными</strong></div>
+                        <div class="fact-row"><span>исходный профиль</span><strong>бытовой нишевой сыск</strong></div>
+                        <div class="fact-row"><span>поворотный профиль</span><strong>компромат / слежка / зачистка следов</strong></div>
+                    </div>
+                </div>
+                <aside class="side-card">
+                    <img src="assets/decrypt/society-triangle.png" alt="Слои общества Y-27">
+                    <h3>СЕКТОРНЫЙ ТРЕУГОЛЬНИК ГОРОДА</h3>
+                    <p>Город давно поделился на три слоя. <strong>Вершина</strong> — мега-корпорации и их закрытые кабинеты. <strong>Середина</strong> — легальные рынки и компании, которые уже на слуху у общества. <strong>Дно</strong> — подпольные рынки, нарко-базы, стрип-клубы и провальные бизнесы. “DECRYPT” выросло именно на стыке этих уровней, понимая, что самая дорогая информация всегда течёт сверху вниз, а самые удобные исполнители поднимаются снизу вверх.</p>
+                    <div class="methods">
+                        <span class="method-tag">верхний слой = заказчик</span>
+                        <span class="method-tag">средний слой = объект давления</span>
+                        <span class="method-tag">нижний слой = инструменты</span>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="roster-head">
+            <div class="panel-head">
+                <div>
+                    <div class="panel-index">02 / линия развития</div>
+                    <h2 class="panel-title">КАК “DECRYPT” ВЫЛЕЗЛО ИЗ НИЖНЕГО ПЛАТО</h2>
+                </div>
+                <p class="panel-subtitle">Временная шкала восстановлена по внутренним пометкам, слухам с нижнего плато и косвенным совпадениям из заказов среднего сектора.</p>
+            </div>
+        </div>
+        <div class="timeline-wrap">
+            <article class="timeline-item">
+                <div class="timeline-year">ФАЗА 01 / ПРИБЫТИЕ</div>
+                <h3>Хиоши получает шанс и долг одновременно</h3>
+                <p>Прибыв на Y-27, Хиоши запускает агентство почти в одиночку. Деньги есть, но это не свобода, а кабала: каждое решение с первого дня делается под весом семейного залога, который надо вернуть с запасом. “DECRYPT” появляется не из романтики, а из необходимости доказать, что его не нужно оттаскивать домой за шкирку.</p>
+            </article>
+            <article class="timeline-item">
+                <div class="timeline-year">ФАЗА 02 / БЫТОВОЙ СЫСК</div>
+                <h3>Мелкие дела, которые не спасают</h3>
+                <p>Слежка за изменами, отпечатки, кражи, утерянные посылки и поиски вещей — всё это даёт только жалкое топливо. Бизнес не умирает сразу, но и не растёт. К офису подбирается арендная удавка, а долг съедает доходы быстрее, чем появляются новые клиенты.</p>
+            </article>
+            <article class="timeline-item">
+                <div class="timeline-year">ФАЗА 03 / СМЕНА РЫНКА</div>
+                <h3>Вход в корпоративную грязь</h3>
+                <p>Хиоши приходит к простому правилу: <strong>“За каждым хищником следует свой охотник, и третий наблюдатель, который потом пожинает кости обоих.”</strong> Агентство переходит к корпоративным поручениям — слежке за врагами фирм, добыче компромата, зачистке цифровых и физических следов. Вывеску он не меняет намеренно: кому есть дело до ещё одного частного сыщика, пока рядом рушатся чужие акции?</p>
+            </article>
+            <article class="timeline-item">
+                <div class="timeline-year">ФАЗА 04 / ПЕРВЫЙ ПРОРЫВ</div>
+                <h3>Компромат продаёт лучше морали</h3>
+                <p>Один из первых серьёзных контрактов приходит от фирмы по продаже средств ухода за красотой. Цель — конкурент из среднего плато. Задача проста: снять босса другой фирмы в компрометирующей приватной обстановке, достаточно яркой, чтобы подмочить репутацию и сбить доверие рынка. Дело закрывается быстро, без скандала на месте, но с заметным следом в деловых кругах.</p>
+            </article>
+            <article class="timeline-item">
+                <div class="timeline-year">ФАЗА 05 / НАБОР</div>
+                <h3>Первый состав даёт второе дыхание</h3>
+                <p>В организацию приходят три новых фигуры: <strong>Каденс Слоан</strong>, <strong>Иридий</strong> и <strong>Дарос Полей</strong>. Каденс и Дарос вытащены из нижнего плато, Иридий передан через проверенную связь из среднего сектора. Вместе с ним у агентства появляется транспорт, который по молчаливому соглашению становится активом всей команды.</p>
+            </article>
+            <article class="timeline-item">
+                <div class="timeline-year">ФАЗА 06 / ВЫХОД В СРЕДНИЙ СЛОЙ</div>
+                <h3>Организация перестаёт просто собирать грязь — и начинает её конструировать</h3>
+                <p>После усиления штата “DECRYPT” берёт на себя сразу несколько параллельных заказов: от наблюдения и прослушки до прямого создания компромата и исчезновения неудобных улик. За полгода агентство вылезает из канализации в средний сектор и закрепляется там как полезный, неприятный и крайне удобный нейтральный инструмент.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="roster-head">
+            <div class="panel-head">
+                <div>
+                    <div class="panel-index">03 / основной состав</div>
+                    <h2 class="panel-title">ДОСЬЕ КЛЮЧЕВЫХ ФИГУР</h2>
+                </div>
+                <p class="panel-subtitle">Нажмите на карточку, чтобы открыть <strong>“выписку из криминальных записей”</strong>. Каждый файл оформлен отдельно — под методы, манеру и личный след фигуранта.</p>
+            </div>
+        </div>
+        <div class="roster-grid">
+            <article class="roster-card" data-record="hiyoshi">
+                <div class="roster-thumb">
+                    <img src="assets/decrypt/hiyoshi-elevator.png" alt="Хиоши Сузуки">
+                    <div class="stamp-mini">founder / broker</div>
+                </div>
+                <div class="roster-code">архив / d-01</div>
+                <h3 class="roster-name">Хиоши Сузуки</h3>
+                <p class="roster-role">Основатель, координатор, посредник между заказчиком и грязной работой. Никогда не показывает все карты одному исполнителю.</p>
+                <div class="roster-meta"><span>риск: высокий</span><span>доступ: нейтральный</span></div>
+            </article>
+            <article class="roster-card" data-record="cadence">
+                <div class="roster-thumb">
+                    <img src="assets/decrypt/arcana-cigarettes.jpeg" alt="Каденс Слоан">
+                    <div class="stamp-mini">field / social</div>
+                </div>
+                <div class="roster-code">архив / d-02</div>
+                <h3 class="roster-name">Каденс Слоан</h3>
+                <p class="roster-role">Полевой агент, социальный взлом, вход в магазины, клубы и чужие привычки. Работает там, где грубая сила сразу ломает задачу.</p>
+                <div class="roster-meta"><span>риск: высокий</span><span>доступ: скрытый</span></div>
+            </article>
+            <article class="roster-card" data-record="iridium">
+                <div class="roster-thumb">
+                    <img src="assets/decrypt/iridium-elevator.png" alt="Иридий">
+                    <div class="stamp-mini">transport / pressure</div>
+                </div>
+                <div class="roster-code">архив / d-03</div>
+                <h3 class="roster-name">Иридий</h3>
+                <p class="roster-role">Логистика, изъятие, сопровождение, вывоз людей и вещей из мест, где они не должны были задерживаться дольше нескольких минут.</p>
+                <div class="roster-meta"><span>риск: средне-высокий</span><span>доступ: мобильный</span></div>
+            </article>
+            <article class="roster-card" data-record="daros">
+                <div class="roster-thumb">
+                    <img src="assets/decrypt/daros-placeholder.svg" alt="Дарос Полей">
+                    <div class="stamp-mini">signals / locks</div>
+                </div>
+                <div class="roster-code">архив / d-04</div>
+                <h3 class="roster-name">Дарос Полей</h3>
+                <p class="roster-role">Вульпканин из нижнего плато, специализация на прослушке, запасных входах, ключах и маршрутах, о которых официально никто не знает.</p>
+                <div class="roster-meta"><span>риск: высокий</span><span>доступ: подземный</span></div>
+            </article>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-inner">
+            <div class="panel-head">
+                <div>
+                    <div class="panel-index">04 / хвост архива</div>
+                    <h2 class="panel-title">С ФРАГМЕНТА НАЧИНАЕТСЯ СБОЙ</h2>
+                </div>
+                <p class="panel-subtitle">Последний восстановленный кусок совпадает с лорной записью: дальше идёт резкое усиление глитча, а затем вмешивается защитный механизм.</p>
+            </div>
+            <div class="tail-grid">
+                <div class="glitch-tail">
+                    <div class="glitch-text">Начиная с этого этапа организация развилась ещё сильнее и <span class="corrupt">[глитч]</span> получила доступ к более дорогим заказам.
+Первый по-настоящему крупный контракт пришёл от <span class="corrupt">[удалено]</span>, после чего агентство закрепилось на среднем плато и начало работать не только как сборщик грязи, но и как её архитектор.
+
+Последняя читаемая строка:
+“начиная с <span class="corrupt">[глитч]</span> организация развилась и <span class="corrupt">[глитч]</span> получила свой первый и <span class="corrupt">[глитч]</span> заказ от <span class="corrupt">[глитч]</span>”</div>
+                </div>
+                <aside class="tail-warning">
+                    <h3>ОБНАРУЖЕН ЗАЩИТНЫЙ КОНТУР</h3>
+                    <p>В архиве виден след внешнего вмешательства. Дальнейшее чтение запускает белый протокол подавления и закрывает остаток файла. Именно так и должен ощущаться запрет: не удалением, а насильственным ослеплением доступа.</p>
+                    <ul class="warning-list">
+                        <li>порог допуска ниже требуемого</li>
+                        <li>идентификатор ветки помечен как нештатный</li>
+                        <li>дальнейшая расшифровка инициирует белое плато</li>
+                    </ul>
+                    <button class="plateau-btn" id="plateauBtn" type="button">ПРОДОЛЖИТЬ РАСШИФРОВКУ</button>
+                </aside>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div class="record-modal" id="recordModal" aria-hidden="true">
+    <div class="record-shell" id="recordShell"></div>
+</div>
+
+<div class="plateau-overlay" id="plateauOverlay" aria-hidden="true">
+    <div class="plateau-card">
+        <h3>АКТИВИРОВАН ЗАЩИТНЫЙ МЕХАНИЗМ NANOTRASEN</h3>
+        <p>ЗАМЕЧЕН НЕСАНКЦИОНИРОВАННЫЙ ДОПУСК. ИНИЦИИРУЕТСЯ <strong>БЕЛОЕ ПЛАТО</strong>. ОСТАТОК ФАЙЛА ИЗОЛИРОВАН, СВЕТОВЫЕ ШУМЫ ПЕРЕКРЫВАЮТ ЧТЕНИЕ, ВЕТКА ПЕРЕВЕДЕНА В РЕЖИМ ОСЛЕПЛЕНИЯ.</p>
+        <div class="plateau-bar"><div class="plateau-fill"></div></div>
+        <div class="plateau-lines">
+            <div>white plateau / override</div>
+            <div>archive fragment sealed</div>
+            <div>return while identity remains intact</div>
+        </div>
+        <button class="close-btn" id="plateauClose" style="margin-top:20px">✕</button>
+    </div>
+</div>
+
+<script>
+const records = {
+    hiyoshi: {
+        theme: 'theme-hiyoshi',
+        title: 'ВЫПИСКА ИЗ КРИМИНАЛЬНЫХ ЗАПИСЕЙ',
+        subtitle: 'Фигура: Хиоши Сузуки / вероятный основатель / связной первого контура',
+        photo: 'assets/decrypt/hiyoshi-elevator.png',
+        code: 'DCR-01-SUZ',
+        alias: 'Хиоши Сузуки',
+        role: 'Основатель / координатор / корпоративный посредник',
+        zone: 'Y-27 / нижнее → среднее плато',
+        risk: 'Высокий / юридически скользкий',
+        status: 'Не осуждён / слишком аккуратен',
+        summary: 'Субъект не похож на человека, который строит империю криком. Он строит её расчётом. Именно Хиоши перевёл “DECRYPT” из бытового сыскного болота в рынок корпоративной грязи, где информация стоит дороже крови. Предпочитает не светиться лично, держит цепь заказов разбитой на сегменты и почти никогда не даёт одному исполнителю полную картину операции.',
+        tags: ['NEUTRAL POLICY', 'BROKER', 'SANITATION'],
+        charges: [
+            'Незаконная организация скрытого наблюдения за частными и корпоративными целями.',
+            'Посредничество в продаже компрометирующих материалов между конфликтующими фирмами.',
+            'Систематическая зачистка следов после заказных “несчастных случаев” и информационных утечек.',
+            'Вероятное создание распределённой сети информаторов между нижним и средним секторами.'
+        ],
+        methods: [
+            'Не меняет вывеску агентства, чтобы маскировать реальный масштаб операций под образ бедного частного сыщика.',
+            'Разбивает контракты на слои: сбор, перенос, давление, утилизация следов.',
+            'Предпочитает работать чужими руками, но лично утверждает точки риска и цены молчания.',
+            'Поддерживает нейтральную политику: сегодня даёт нож одной стороне, завтра продаёт бронежилет другой.'
+        ],
+        note: 'Внешний рычаг давления на фигуранта — семейный долг, с которого фактически и начался весь бизнес. Именно он мог стать первичным мотивом перехода к более грязным, но более доходным заказам.'
+    },
+    cadence: {
+        theme: 'theme-cadence',
+        title: 'ВЫПИСКА ИЗ КРИМИНАЛЬНЫХ ЗАПИСЕЙ',
+        subtitle: 'Фигура: Каденс Слоан / полевая работа / социальный взлом',
+        photo: 'assets/decrypt/arcana-cigarettes.jpeg',
+        code: 'DCR-02-SLN',
+        alias: 'Каденс Слоан',
+        role: 'Полевой агент / социальная инженерия / вход через привычки',
+        zone: 'Магазины / клубы / шумные точки среднего плато',
+        risk: 'Высокий / маскируется под хаос',
+        status: 'Свободна / трудно привязать к месту',
+        summary: 'Яркая, розовая, заметная — и именно поэтому удобная. Каденс умеет использовать визуальный шум как дымовую завесу. Её работа начинается там, где объект расслабляется: у витрины, у кассы, в клубном коридоре, в привычке купить сигареты, задержаться ещё на минуту, обернуться не в ту сторону. Она не ломает двери. Она заставляет людей открывать их самим.',
+        tags: ['SOCIAL', 'HONEY TRAP', 'RETAIL CAM'],
+        charges: [
+            'Использование подставных покупок и фальшивых бытовых маршрутов для сбора коммерческих данных.',
+            'Незаконная съёмка и фиксация компрометирующих встреч в магазинах, приватных клубах и точках краткого отдыха.',
+            'Вероятное участие в провокации интимного и репутационного характера против руководителей среднего сектора.',
+            'Подкуп низового персонала: кассиров, курьеров, техников камер, клубных диспетчеров.'
+        ],
+        methods: [
+            'Работает через доверие, флирт, лёгкий абсурд и ощущение бытовой случайности.',
+            'Предпочитает помещения, где шум, музыка, сигаретный дым и поток людей стирают лишние детали.',
+            'Использует одноразовые контакты и обрывочные поручения, чтобы никто не держал её полную схему в голове.',
+            'Хорошо видит “слепые секунды” между обзором камер и человеческим вниманием.'
+        ],
+        note: 'Запись из магазина с покупкой сигарет считается одной из типичных для её профиля: никакой спешки, никакой паники, но каждый шаг уже встроен в чужой будущий компромат.'
+    },
+    iridium: {
+        theme: 'theme-iridium',
+        title: 'ВЫПИСКА ИЗ КРИМИНАЛЬНЫХ ЗАПИСЕЙ',
+        subtitle: 'Фигура: Иридий / логистика / давление / мобильный актив организации',
+        photo: 'assets/decrypt/iridium-elevator.png',
+        code: 'DCR-03-IRD',
+        alias: 'Иридий',
+        role: 'Транспорт / извлечение / сопровождение / силовое присутствие',
+        zone: 'Лифтовые узлы / подземные парковки / переходные маршруты',
+        risk: 'Средне-высокий / прямой контакт',
+        status: 'Не подтверждён / всплывает рядом со следом, но не в деле',
+        summary: 'Иридий вошёл в организацию не с улицы, а через переданный контакт со среднего плато. Вместе с ним у “DECRYPT” появился транспорт — и это резко увеличило мобильность всей схемы. Его зона ответственности — не красивые разговоры, а момент, когда нужно кого-то забрать, вывезти, дожать или просто молча присутствовать рядом, пока другой человек принимает неправильное решение.',
+        tags: ['TRANSPORT', 'PRESSURE', 'EXFIL'],
+        charges: [
+            'Использование незарегистрированного транспорта для перемещения исполнителей, материалов и изъятых объектов.',
+            'Силовое сопровождение свидетелей и объектов давления без официальных полномочий.',
+            'Наличие рядом с несколькими точками, где физические улики исчезали вскоре после инцидента.',
+            'Вероятное участие в вывозе людей после компрометирующих операций и постановочных сцен.'
+        ],
+        methods: [
+            'Работает через молчание, присутствие и скорость смены локации.',
+            'Использует лифтовые и парковочные узлы как короткие зоны передачи, где камеры редко собирают полную картину.',
+            'Не держит компромат при себе дольше необходимого: его задача — довести материал до следующего узла цепи.',
+            'Часто появляется в кадре до и после встречи, но почти никогда — в момент самого нарушения.'
+        ],
+        note: 'Фигура особенно важна из-за транспорта: без него “DECRYPT” могло собирать грязь, но не могло быстро обслуживать несколько заказов одновременно. После его появления организация буквально получила второе дыхание.'
+    },
+    daros: {
+        theme: 'theme-daros',
+        title: 'ВЫПИСКА ИЗ КРИМИНАЛЬНЫХ ЗАПИСЕЙ',
+        subtitle: 'Фигура: Дарос Полей / связь / замки / маршруты нижнего плато',
+        photo: 'assets/decrypt/daros-placeholder.svg',
+        code: 'DCR-04-PLY',
+        alias: 'Дарос Полей',
+        role: 'Прослушка / доступ / обходные каналы / подземная логистика',
+        zone: 'Нижнее плато / технические туннели / сервисные входы',
+        risk: 'Высокий / трудно наблюдаем',
+        status: 'Данные фрагментарны / лицо собиралось по кускам',
+        summary: 'Дарос — тот тип фигуранта, которого редко видят напрямую, но слишком часто замечают последствия его работы. Вульпканин из нижнего плато, ориентированный на запасные входы, дешёвые радиочастоты, сервисные ключи, забытые маршруты и всё то, чем город пользуется, но о чём предпочитает не помнить. Его роль — подготовить дверь ещё до того, как остальные решат, стоит ли в неё входить.',
+        tags: ['SIGNALS', 'LOCKS', 'UNDERCITY'],
+        charges: [
+            'Незаконный перехват частных и коммерческих переговоров на ближних частотах.',
+            'Копирование сервисных ключей, жетонов доступа и временных идентификаторов для обхода систем контроля.',
+            'Связи с теневыми курьерами, подпольными точками обмена и низовыми посредниками нижнего плато.',
+            'Подготовка цифровой и физической почвы для зачистки следов после корпоративных конфликтов.'
+        ],
+        methods: [
+            'Предпочитает короткие радиосеансы, одноразовые передатчики и кеши в местах, которые легальные службы считают мусором.',
+            'Работает через сервисные маршруты, подвалы, вентиляционные шахты и заброшенные технические коридоры.',
+            'Практически не держит визуальный след — чаще остаётся только изменение доступа и внезапная тишина в нужной точке.',
+            'Может подготавливать задачу задолго до фактического выхода полевой группы.'
+        ],
+        note: 'Полный визуальный портрет не восстановлен: сохранился лишь реконструированный контур профиля. Это уже само по себе многое говорит о качестве его маскировки.'
+    }
+};
+
+const logLines = [
+    'подтверждение ветки: decrypt',
+    'точка зарождения: y-27 / spinward periphery',
+    'основатель установлен: хиоши сузуки',
+    'исходный профиль: бытовой сыск / долговое давление',
+    'переходный профиль: компромат / слежка / зачистка',
+    'первый основной состав: каденс / иридий / дарос'
+];
+
+const gateNote = document.getElementById('gateNote');
+const decryptBtn = document.getElementById('decryptBtn');
+const iridiumBtn = document.getElementById('iridiumBtn');
+const archive = document.getElementById('archive');
+const entryGate = document.getElementById('entryGate');
+const bootlog = document.getElementById('bootlog');
+const recordModal = document.getElementById('recordModal');
+const recordShell = document.getElementById('recordShell');
+const plateauOverlay = document.getElementById('plateauOverlay');
+
+function updateClock(){
+    const el = document.getElementById('clock');
+    const d = new Date();
+    const time = [d.getHours(), d.getMinutes(), d.getSeconds()].map(v => String(v).padStart(2,'0')).join(':');
+    el.textContent = time;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+function typeLines(lines, container){
+    container.innerHTML = '';
+    let lineIndex = 0;
+    function next(){
+        if(lineIndex >= lines.length) return;
+        const div = document.createElement('div');
+        div.className = 'log-line';
+        container.appendChild(div);
+        const text = lines[lineIndex];
+        let i = 0;
+        const timer = setInterval(() => {
+            div.textContent = text.slice(0, i++);
+            if(i > text.length){
+                clearInterval(timer);
+                lineIndex += 1;
+                setTimeout(next, 110);
+            }
+        }, 18);
+    }
+    next();
+}
+
+function revealArchive(){
+    gateNote.textContent = 'КАНАЛ ПОДТВЕРЖДЁН / ИДЁТ ПОДЪЁМ АРХИВА…';
+    setTimeout(() => {
+        entryGate.classList.add('hidden-flow');
+        archive.classList.add('active');
+        window.scrollTo({top:0, behavior:'smooth'});
+        typeLines(logLines, bootlog);
+    }, 380);
+}
+
+decryptBtn.addEventListener('click', revealArchive);
+iridiumBtn.addEventListener('click', () => {
+    gateNote.textContent = 'ВЕТКА ИРИДИЙ77 ЗАПЕЧАТАНА / СБОРКА ЕЩЁ НЕ СОБРАНА / ВХОД ОТКЛОНЁН';
+});
+
+document.querySelectorAll('.roster-card').forEach(card => {
+    card.addEventListener('click', () => openRecord(card.dataset.record));
+});
+
+function openRecord(key){
+    const rec = records[key];
+    if(!rec) return;
+    recordShell.className = 'record-shell ' + rec.theme;
+    recordShell.innerHTML = `
+        <div class="record-top">
+            <div>
+                <h3>${rec.title}</h3>
+                <small>${rec.subtitle}</small>
+            </div>
+            <button class="close-btn" type="button" aria-label="Закрыть">✕</button>
+        </div>
+        <div class="record-layout">
+            <div class="record-left">
+                <div class="record-photo"><img src="${rec.photo}" alt="${rec.alias}"></div>
+                <div class="record-tags">
+                    ${rec.tags.map(tag => `<span>${tag}</span>`).join('')}
+                </div>
+            </div>
+            <div class="record-right">
+                <div class="record-meta-grid">
+                    <div class="record-meta-box"><label>код записи</label><div>${rec.code}</div></div>
+                    <div class="record-meta-box"><label>фигура</label><div>${rec.alias}</div></div>
+                    <div class="record-meta-box"><label>роль</label><div>${rec.role}</div></div>
+                    <div class="record-meta-box"><label>зона работы</label><div>${rec.zone}</div></div>
+                    <div class="record-meta-box"><label>уровень риска</label><div>${rec.risk}</div></div>
+                    <div class="record-meta-box"><label>статус</label><div>${rec.status}</div></div>
+                </div>
+                <div class="record-summary">${rec.summary}</div>
+                <div class="record-columns">
+                    <div class="record-block">
+                        <h4>зафиксированные нарушения</h4>
+                        <ul>${rec.charges.map(item => `<li>${item}</li>`).join('')}</ul>
+                    </div>
+                    <div class="record-block">
+                        <h4>подход и стиль</h4>
+                        <ul>${rec.methods.map(item => `<li>${item}</li>`).join('')}</ul>
+                    </div>
+                </div>
+                <div class="record-note"><strong>Архивная пометка:</strong> ${rec.note}</div>
+            </div>
+        </div>
+    `;
+    recordModal.classList.add('active');
+    recordModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    recordShell.querySelector('.close-btn').addEventListener('click', closeRecord);
+}
+
+function closeRecord(){
+    recordModal.classList.remove('active');
+    recordModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+}
+recordModal.addEventListener('click', (e) => {
+    if(e.target === recordModal) closeRecord();
+});
+
+document.getElementById('plateauBtn').addEventListener('click', () => {
+    plateauOverlay.classList.add('active');
+    plateauOverlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+});
+
+document.getElementById('plateauClose').addEventListener('click', () => {
+    plateauOverlay.classList.remove('active');
+    plateauOverlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+});
+plateauOverlay.addEventListener('click', (e) => {
+    if(e.target === plateauOverlay){
+        plateauOverlay.classList.remove('active');
+        plateauOverlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape'){
+        if(recordModal.classList.contains('active')) closeRecord();
+        if(plateauOverlay.classList.contains('active')){
+            plateauOverlay.classList.remove('active');
+            plateauOverlay.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+    }
+});
+</script>
+</body>
+</html>
