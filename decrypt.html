@@ -3,1036 +3,1003 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>НЕ_УНАТХ :: DECRYPT</title>
+<title>НЕ_УНАТХ :: скрытые файлы</title>
 <style>
 :root{
-    --bg:#000000;
-    --panel:#050505;
-    --line:#161616;
-    --soft:#9df8b5;
-    --soft-dim:rgba(157,248,181,.55);
-    --warn:#ff5a5a;
-    --amber:#f3a75d;
-    --cyan:#6ed6ff;
-    --violet:#ff76e1;
-    --rust:#ffb467;
-    --muted:#7c8b82;
-    --text:#d8e5db;
-    --shadow:0 0 0 1px rgba(255,255,255,.03), 0 0 40px rgba(0,0,0,.65);
+    --bg:#000;
+    --panel:rgba(7,9,9,.82);
+    --panel-2:rgba(10,12,12,.92);
+    --line:rgba(255,255,255,.09);
+    --soft:#d7e4db;
+    --muted:#7f8d86;
+    --green:#9cfab4;
+    --cyan:#8edfff;
+    --white:#f6faf8;
+    --danger:#ff6464;
+    --pink:#ff7ce7;
+    --amber:#ffb166;
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
 body{
     min-height:100vh;
-    background:#000;
-    color:var(--text);
-    font-family:Consolas, Menlo, Monaco, "Courier New", monospace;
     overflow-x:hidden;
+    background:#000;
+    color:var(--soft);
+    font-family:Consolas, Menlo, Monaco, "Courier New", monospace;
     position:relative;
 }
+body::before,
+body::after{content:"";position:fixed;inset:0;pointer-events:none}
 body::before{
-    content:"";
-    position:fixed;
-    inset:0;
+    z-index:-4;
     background:
-        radial-gradient(circle at 15% 20%, rgba(50,255,150,.05), transparent 30%),
-        radial-gradient(circle at 80% 15%, rgba(255,40,40,.04), transparent 28%),
-        radial-gradient(circle at 65% 80%, rgba(120,180,255,.05), transparent 32%),
+        radial-gradient(circle at 18% 18%, rgba(70,255,170,.06), transparent 24%),
+        radial-gradient(circle at 80% 15%, rgba(120,170,255,.06), transparent 22%),
+        radial-gradient(circle at 64% 82%, rgba(255,255,255,.035), transparent 24%),
         #000;
-    pointer-events:none;
-    z-index:-3;
 }
 body::after{
-    content:"";
-    position:fixed;
-    inset:0;
-    background:
-        repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0 1px, transparent 1px 3px),
-        linear-gradient(180deg, rgba(255,255,255,.03), transparent 18%, transparent 82%, rgba(255,255,255,.03));
-    opacity:.22;
-    pointer-events:none;
-    z-index:200;
-}
-.noise,
-.scanline,
-.vignette,
-.field-grid{position:fixed;inset:0;pointer-events:none;}
-.noise{
-    z-index:-2;
+    z-index:140;
     opacity:.16;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-    mix-blend-mode:screen;
+    background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 3px),
+        linear-gradient(180deg, rgba(255,255,255,.03), transparent 14%, transparent 86%, rgba(255,255,255,.03));
+}
+body.caught::before{animation:breachFlash .28s linear 2}
+@keyframes breachFlash{0%{filter:brightness(1)}50%{filter:brightness(3)}100%{filter:brightness(1)}}
+#bgCanvas,#glyphCanvas,.vignette,.noise,.scanline,.transition-curtain{position:fixed;inset:0;pointer-events:none}
+#bgCanvas{z-index:-3}
+#glyphCanvas{z-index:-2;opacity:.5}
+.noise{
+    z-index:-1;
+    opacity:.12;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
 }
 .scanline{
-    z-index:180;
-    opacity:.25;
-    background:linear-gradient(180deg, transparent 0%, rgba(120,255,160,.08) 46%, rgba(120,255,160,.16) 50%, rgba(120,255,160,.08) 54%, transparent 100%);
+    z-index:141;
+    opacity:.2;
+    background:linear-gradient(180deg, transparent 0%, rgba(170,255,210,.05) 40%, rgba(170,255,210,.14) 50%, rgba(170,255,210,.05) 60%, transparent 100%);
     animation:scanMove 8s linear infinite;
 }
-@keyframes scanMove{0%{transform:translateY(-105%)}100%{transform:translateY(105%)}}
+@keyframes scanMove{0%{transform:translateY(-110%)}100%{transform:translateY(110%)}}
 .vignette{
-    z-index:190;
-    background:radial-gradient(ellipse 70% 55% at 50% 40%, transparent 0%, rgba(0,0,0,.28) 65%, rgba(0,0,0,.78) 100%);
+    z-index:142;
+    background:radial-gradient(ellipse 72% 58% at 50% 45%, transparent 0%, rgba(0,0,0,.24) 65%, rgba(0,0,0,.78) 100%);
 }
-.field-grid{
-    z-index:-1;
-    opacity:.1;
-    background:
-        linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
-    background-size:68px 68px;
-    mask-image:linear-gradient(180deg, rgba(0,0,0,.4), rgba(0,0,0,.9));
+.transition-curtain{
+    z-index:420;
+    background:#000;
+    opacity:0;
+    transition:opacity .45s ease;
 }
-.topbar{
-    position:sticky;
+.transition-curtain.active{opacity:1;pointer-events:auto}
+.topline{
+    position:fixed;
     top:0;
+    left:0;
+    right:0;
     z-index:120;
     display:flex;
     align-items:center;
     justify-content:space-between;
     gap:16px;
-    padding:14px 22px;
-    border-bottom:1px solid rgba(255,255,255,.08);
-    background:rgba(0,0,0,.92);
-    backdrop-filter:blur(6px);
+    padding:13px 18px;
+    border-bottom:1px solid rgba(255,255,255,.07);
+    background:rgba(0,0,0,.76);
+    backdrop-filter:blur(8px);
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(-12px);
+    transition:opacity .45s ease, transform .45s ease;
 }
-.topbar-left,
-.topbar-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
-.top-chip,
-.back-link{
-    border:1px solid rgba(255,255,255,.12);
+body.archive-open .topline{opacity:1;pointer-events:auto;transform:translateY(0)}
+.topline-left,.topline-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.crumb,
+.ghost-link{
+    padding:8px 10px;
+    border:1px solid rgba(255,255,255,.1);
     background:rgba(255,255,255,.02);
-    color:var(--soft);
-    padding:8px 12px;
-    font-size:.72rem;
+    color:var(--muted);
+    font-size:.7rem;
     letter-spacing:.18em;
     text-transform:uppercase;
 }
-.back-link{
-    cursor:pointer;
-    text-decoration:none;
-    transition:.25s ease;
-}
-.back-link:hover{border-color:rgba(157,248,181,.45);box-shadow:0 0 18px rgba(157,248,181,.12);transform:translateY(-1px)}
-.clock{color:var(--soft-dim);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;}
-.entry-gate{
-    min-height:calc(100vh - 62px);
+.ghost-link{cursor:pointer;text-decoration:none;transition:.22s ease}
+.ghost-link:hover{color:var(--soft);border-color:rgba(255,255,255,.3);transform:translateY(-1px)}
+.clock{color:var(--muted);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase}
+main{position:relative;z-index:2;padding-top:0;transition:padding-top .45s ease}
+body.archive-open main{padding-top:62px}
+.boot-overlay,
+.protection-overlay,
+.sealed-overlay,
+.iridium77-overlay{
+    position:fixed;
+    inset:0;
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:40px 20px 70px;
-    position:relative;
-    overflow:hidden;
+    z-index:360;
+    background:rgba(0,0,0,.96);
 }
-.entry-gate::before,
-.entry-gate::after{
-    content:"";
+.boot-overlay{flex-direction:column;gap:20px;transition:opacity .8s ease, visibility .8s ease}
+.boot-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.boot-symbol-field{
     position:absolute;
     inset:0;
+    overflow:hidden;
     pointer-events:none;
 }
-.entry-gate::before{
-    background:
-        linear-gradient(90deg, transparent 0%, rgba(255,0,0,.08) 32%, transparent 36%, transparent 64%, rgba(0,255,255,.05) 68%, transparent 72%),
-        repeating-linear-gradient(180deg, transparent 0 22px, rgba(255,255,255,.025) 22px 23px);
-    opacity:.5;
-}
-.entry-gate::after{
-    background:radial-gradient(circle at center, rgba(255,255,255,.02), transparent 60%);
-    animation:gatePulse 5s ease-in-out infinite;
-}
-@keyframes gatePulse{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.04);opacity:1}}
-.gate-window{
-    width:min(980px, 100%);
-    border:1px solid rgba(255,255,255,.1);
-    background:linear-gradient(180deg, rgba(7,7,7,.96), rgba(2,2,2,.94));
-    box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 90px rgba(0,0,0,.85);
-    position:relative;
-    padding:30px;
-    overflow:hidden;
-}
-.gate-window::before{
-    content:"";
+.boot-row{
     position:absolute;
-    inset:0;
-    background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,.035) 50%, transparent 100%);
-    transform:translateX(-100%);
-    animation:gateSweep 6s linear infinite;
-}
-@keyframes gateSweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-.gate-meta{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:18px}
-.gate-title{
-    font-size:clamp(2rem,6vw,4rem);
-    line-height:1;
-    letter-spacing:.18em;
+    left:0;
+    right:0;
+    font-size:.86rem;
+    color:rgba(130,255,190,.18);
+    white-space:nowrap;
+    letter-spacing:.26em;
     text-transform:uppercase;
-    color:#f5f5f5;
-    position:relative;
-    margin-bottom:20px;
-    text-shadow:0 0 20px rgba(255,255,255,.08);
+    animation:bootRowDrift linear forwards;
 }
-.gate-title::before,
-.gate-title::after{
-    content:attr(data-text);
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-}
-.gate-title::before{color:rgba(255,0,0,.65);transform:translate(2px,-1px);clip-path:inset(0 0 48% 0);animation:glitchA 1.1s steps(2) infinite}
-.gate-title::after{color:rgba(0,255,255,.6);transform:translate(-2px,1px);clip-path:inset(55% 0 0 0);animation:glitchB .9s steps(2) infinite}
-@keyframes glitchA{0%,100%{transform:translate(2px,-1px)}20%{transform:translate(-3px,1px)}40%{transform:translate(4px,0)}60%{transform:translate(1px,2px)}80%{transform:translate(-2px,-1px)}}
-@keyframes glitchB{0%,100%{transform:translate(-2px,1px)}20%{transform:translate(3px,-1px)}40%{transform:translate(-4px,0)}60%{transform:translate(-1px,-2px)}80%{transform:translate(2px,1px)}}
-.gate-copy{
-    max-width:760px;
-    color:#adb8b0;
-    line-height:1.8;
-    font-size:.98rem;
-    margin-bottom:28px;
-}
-.path-grid{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:18px;margin:24px 0 14px}
-.path-btn{
-    border:1px solid rgba(255,255,255,.12);
-    background:rgba(255,255,255,.02);
-    color:#fff;
-    text-align:left;
-    padding:18px 18px 20px;
-    cursor:pointer;
+@keyframes bootRowDrift{0%{transform:translateY(40px);opacity:0}8%{opacity:1}100%{transform:translateY(-120px);opacity:0}}
+.boot-core{
+    width:min(720px,calc(100% - 28px));
+    border:1px solid rgba(255,255,255,.1);
+    background:linear-gradient(180deg, rgba(6,9,8,.9), rgba(2,3,3,.94));
+    box-shadow:0 0 0 1px rgba(255,255,255,.03),0 0 60px rgba(0,0,0,.8);
+    padding:22px;
     position:relative;
     overflow:hidden;
-    transition:.25s ease;
-    min-height:126px;
 }
-.path-btn::before{
+.boot-core::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,.06) 50%, transparent 100%);
+    transform:translateX(-100%);
+    animation:bootSweep 4.8s linear infinite;
+}
+@keyframes bootSweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.boot-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.boot-title{font-size:1rem;line-height:1.8;letter-spacing:.18em;text-transform:uppercase;color:var(--white);margin-bottom:18px}
+.boot-lines{display:grid;gap:8px;min-height:120px}
+.boot-line{font-size:.86rem;line-height:1.7;color:#b8c3bc;min-height:1.6em}
+.boot-line::before{content:"> ";color:var(--green)}
+.boot-progress{margin-top:16px;height:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);overflow:hidden}
+.boot-progress-fill{height:100%;width:0;background:linear-gradient(90deg, rgba(255,255,255,.08), rgba(156,250,180,.9), rgba(255,255,255,.08));transition:width .3s ease}
+.file-stage{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
+    transition:opacity .65s ease, transform .65s ease;
+}
+.file-stage.hidden{opacity:0;pointer-events:none;transform:scale(.985)}
+.file-space{
+    width:min(920px,100%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:26px;
+    flex-wrap:wrap;
+}
+.file-object{
+    width:min(360px,100%);
+    min-height:210px;
+    padding:18px;
+    border:1px solid rgba(255,255,255,.1);
+    background:linear-gradient(180deg, rgba(7,9,9,.68), rgba(2,2,2,.88));
+    box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 60px rgba(0,0,0,.55);
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    gap:16px;
+    color:var(--soft);
+    cursor:pointer;
+    transition:.28s ease;
+    position:relative;
+    overflow:hidden;
+}
+.file-object::before{
     content:"";
     position:absolute;
     inset:0;
     background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,.08) 50%, transparent 100%);
     transform:translateX(-130%);
-    transition:transform .45s ease;
+    transition:transform .5s ease;
 }
-.path-btn:hover::before{transform:translateX(130%)}
-.path-btn:hover{transform:translateY(-2px);box-shadow:0 0 28px rgba(255,255,255,.08)}
-.path-btn small{display:block;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
-.path-btn strong{display:block;font-size:1.05rem;line-height:1.5;letter-spacing:.08em;text-transform:uppercase}
-.path-btn span{display:block;margin-top:10px;font-size:.88rem;line-height:1.7;color:#acb6af}
-.path-btn.decrypt{border-color:rgba(157,248,181,.2)}
-.path-btn.decrypt:hover{border-color:rgba(157,248,181,.5);box-shadow:0 0 40px rgba(157,248,181,.12)}
-.path-btn.iridium77{border-color:rgba(255,90,90,.2)}
-.path-btn.iridium77:hover{border-color:rgba(255,90,90,.5);box-shadow:0 0 40px rgba(255,90,90,.12)}
-.gate-note{
-    margin-top:18px;
-    min-height:22px;
-    color:var(--soft-dim);
-    font-size:.82rem;
-    letter-spacing:.18em;
-    text-transform:uppercase;
+.file-object:hover::before{transform:translateX(130%)}
+.file-object:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.26)}
+.file-object.decrypt:hover{box-shadow:0 0 50px rgba(156,250,180,.12)}
+.file-object.iridium:hover{box-shadow:0 0 50px rgba(255,100,100,.12)}
+.file-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.file-icon{
+    width:78px;height:78px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0
 }
+.file-icon img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.05) saturate(.92)}
+.file-icon.symbol{font-size:2.2rem;color:var(--danger);text-shadow:-2px 0 rgba(0,255,255,.45),2px 0 rgba(255,0,0,.45)}
+.file-state{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding-top:4px}
+.file-name{font-size:1.05rem;line-height:1.7;letter-spacing:.13em;text-transform:uppercase;color:var(--white)}
+.file-meta{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding-top:16px;border-top:1px solid rgba(255,255,255,.08);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 .archive{
-    width:min(1320px, calc(100% - 32px));
-    margin:0 auto 120px;
+    width:min(1060px, calc(100% - 22px));
+    margin:0 auto 110px;
     display:none;
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity .7s ease, transform .7s ease;
 }
-.archive.active{display:block;animation:archiveReveal .8s ease forwards}
-@keyframes archiveReveal{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-.panel{
+.archive.active{display:block;opacity:1;transform:translateY(0)}
+.archive-shell{
     border:1px solid rgba(255,255,255,.09);
-    background:linear-gradient(180deg, rgba(6,6,6,.96), rgba(2,2,2,.94));
-    box-shadow:var(--shadow);
-    position:relative;
+    background:linear-gradient(180deg, rgba(6,8,8,.86), rgba(3,4,4,.93));
+    box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 90px rgba(0,0,0,.72);
     overflow:hidden;
-    margin-top:22px;
 }
-.panel::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:linear-gradient(90deg, transparent, rgba(255,255,255,.02), transparent);
-    transform:translateX(-100%);
-    animation:softSweep 10s linear infinite;
-    pointer-events:none;
+.archive-head{
+    display:grid;
+    grid-template-columns:140px 1fr;
+    gap:22px;
+    align-items:center;
+    padding:28px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
 }
-@keyframes softSweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-.panel-inner{padding:28px}
-.panel-head{
-    display:flex;
-    align-items:flex-end;
-    justify-content:space-between;
-    gap:16px;
-    flex-wrap:wrap;
-    margin-bottom:20px;
+.logo-box{
+    width:120px;height:120px;
+    border:1px solid rgba(255,255,255,.09);
+    background:rgba(255,255,255,.03);
+    display:flex;align-items:center;justify-content:center;
+    padding:10px;
 }
-.panel-index{
-    color:var(--soft-dim);
-    letter-spacing:.24em;
-    text-transform:uppercase;
-    font-size:.78rem;
+.logo-box img{width:100%;height:100%;object-fit:contain;display:block;filter:brightness(1.02) contrast(1.03)}
+.archive-kicker{font-size:.72rem;color:var(--muted);letter-spacing:.22em;text-transform:uppercase;margin-bottom:10px}
+.archive-name{font-size:clamp(1.2rem,4vw,2.6rem);line-height:1.25;letter-spacing:.11em;text-transform:uppercase;color:var(--white);margin-bottom:14px}
+.archive-name strong{color:var(--green)}
+.archive-sub{font-size:.92rem;line-height:1.9;color:#b8c3bc;max-width:760px}
+.data-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-bottom:1px solid rgba(255,255,255,.08)}
+.data-cell{padding:14px 16px;border-right:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.015)}
+.data-cell:last-child{border-right:none}
+.data-cell label{display:block;font-size:.67rem;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;margin-bottom:7px}
+.data-cell div{font-size:.88rem;line-height:1.6;color:#d3ddd7}
+.story-flow{padding:22px;display:grid;gap:18px}
+.story-card,
+.evidence-band,
+.roster-section,
+.corrupt-card,
+.sealed-plateau{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.015)}
+.story-card{padding:20px}
+.story-tag{font-size:.68rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
+.story-card p{font-size:.95rem;line-height:1.95;color:#cad3ce;text-align:justify;margin-bottom:16px}
+.story-card p:last-child{margin-bottom:0}
+.keyline{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.keyline span{padding:6px 8px;border:1px solid rgba(255,255,255,.09);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:#bcc7c0}
+.evidence-band{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;padding:18px}
+.evidence-photo{border:1px solid rgba(255,255,255,.08);background:#020202;padding:10px}
+.evidence-photo img{width:100%;display:block;object-fit:cover;aspect-ratio:16/10;border:1px solid rgba(255,255,255,.08);filter:contrast(1.08) saturate(.88)}
+.evidence-photo figcaption{margin-top:10px;font-size:.76rem;line-height:1.8;letter-spacing:.14em;text-transform:uppercase;color:#a8b2ad}
+.evidence-notes{display:grid;gap:14px}
+.note-box{padding:16px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02)}
+.note-box h3{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--white);margin-bottom:10px}
+.note-box p{font-size:.88rem;line-height:1.85;color:#bbc4bf}
+.note-box.quote p{font-style:italic;color:#d4ddd8}
+.roster-section{padding:18px}
+.roster-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.db-card{padding:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);cursor:pointer;transition:.25s ease;position:relative;overflow:hidden}
+.db-card::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,.08) 50%, transparent 100%);transform:translateX(-120%);transition:transform .45s ease}
+.db-card:hover::before{transform:translateX(120%)}
+.db-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.18);box-shadow:0 0 34px rgba(255,255,255,.05)}
+.db-photo{position:relative;border:1px solid rgba(255,255,255,.08);background:#030303;margin-bottom:12px;aspect-ratio:3/4;overflow:hidden}
+.db-photo img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.08) saturate(.9)}
+.db-stamp{position:absolute;left:8px;bottom:8px;padding:5px 7px;background:rgba(0,0,0,.8);border:1px solid rgba(255,255,255,.14);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:#dfe7e2}
+.db-card h3{font-size:.96rem;line-height:1.55;letter-spacing:.1em;text-transform:uppercase;color:var(--white);margin-bottom:8px}
+.db-mini{display:grid;gap:7px;font-size:.75rem;color:#bac4be;line-height:1.7}
+.db-mini div{display:flex;justify-content:space-between;gap:10px}
+.db-mini span:first-child{color:var(--muted);text-transform:uppercase;letter-spacing:.13em}
+.corrupt-card{padding:20px;position:relative;overflow:hidden}
+.corrupt-card::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(255,255,255,.025), transparent 20%, transparent 80%, rgba(255,255,255,.025));pointer-events:none}
+.corrupt-card p{font-size:.95rem;line-height:1.95;color:#d1d9d4;text-align:justify}
+.redaction{
+    display:inline-block;
+    vertical-align:middle;
+    height:1em;
+    width:var(--w,8ch);
+    background:repeating-linear-gradient(90deg, #070707 0 6px, #111 6px 9px);
+    box-shadow:0 0 0 1px rgba(255,255,255,.07), inset 0 0 18px rgba(0,0,0,.7);
+    transform:skewX(-7deg);
+    position:relative;
 }
-.panel-title{
-    font-size:clamp(1.2rem,3vw,2rem);
-    line-height:1.25;
-    letter-spacing:.12em;
-    text-transform:uppercase;
-    color:#eff5f1;
-}
-.panel-subtitle{font-size:.88rem;color:var(--muted);line-height:1.7;max-width:760px}
-.hero-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:24px;padding:28px}
-.console-block,
-.evidence-frame,
-.side-card,
-.timeline-item,
-.roster-card,
-.glitch-tail{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.015)}
-.console-block{padding:22px;position:relative;overflow:hidden}
-.console-block::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:linear-gradient(180deg, rgba(255,255,255,.02), transparent 30%, transparent 70%, rgba(255,255,255,.02));
-    pointer-events:none;
-}
-.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(157,248,181,.2);padding:7px 10px;color:var(--soft);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:18px}
-.badge::before{content:"◆";font-size:.75rem}
-.hero-title{font-size:clamp(1.45rem,4vw,2.7rem);line-height:1.2;letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px}
-.hero-title strong{color:var(--soft)}
-.bootlog{display:grid;gap:10px;margin:20px 0 18px}
-.log-line{color:#b7c0ba;font-size:.93rem;line-height:1.7;min-height:1.6em}
-.log-line::before{content:"> ";color:var(--soft)}
-.hero-footer{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
-.foot-chip{border:1px solid rgba(255,255,255,.09);padding:8px 10px;color:#b8c2bc;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase}
-.evidence-frame{padding:12px;display:flex;flex-direction:column;gap:10px}
-.evidence-frame img{width:100%;display:block;object-fit:cover;background:#020202;border:1px solid rgba(255,255,255,.08);aspect-ratio:3/4;filter:saturate(.86) contrast(1.08)}
-.evidence-frame figcaption{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:#a9b2ad;line-height:1.7}
-.grid-two{display:grid;grid-template-columns:1.08fr .92fr;gap:24px;padding:28px}
-.archive-sheet{padding:22px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.015)}
-.archive-sheet p{line-height:1.95;font-size:.96rem;color:#c0cbc4;margin-bottom:16px;text-align:justify}
-.archive-sheet p:last-child{margin-bottom:0}
-.inline-tag{display:inline-block;padding:2px 8px;border:1px solid rgba(255,255,255,.09);color:var(--soft-dim);letter-spacing:.16em;text-transform:uppercase;font-size:.68rem;margin:0 4px 4px 0}
-.fact-list{display:grid;grid-template-columns:1fr;gap:10px;margin-top:20px}
-.fact-row{display:flex;justify-content:space-between;gap:16px;padding:10px 12px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.015);font-size:.88rem}
-.fact-row span:first-child{color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
-.side-card{padding:18px}
-.side-card img{width:100%;display:block;border:1px solid rgba(255,255,255,.08);background:#020202;filter:contrast(1.05) saturate(.85)}
-.side-card h3{margin:14px 0 10px;font-size:1rem;letter-spacing:.14em;text-transform:uppercase;color:#f0f4f1}
-.side-card p{font-size:.9rem;line-height:1.8;color:#b7c0ba}
-.timeline-wrap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;padding:0 28px 28px}
-.timeline-item{padding:18px 18px 20px;position:relative;overflow:hidden}
-.timeline-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg, rgba(157,248,181,.7), transparent)}
-.timeline-year{font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--soft-dim);margin-bottom:10px;padding-left:12px}
-.timeline-item h3{font-size:1rem;letter-spacing:.11em;text-transform:uppercase;margin-bottom:10px;padding-left:12px;color:#f2f5f3}
-.timeline-item p{font-size:.92rem;line-height:1.8;color:#bac5be;padding-left:12px;text-align:justify}
-.methods{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
-.method-tag{padding:7px 10px;border:1px solid rgba(255,255,255,.08);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#c1ccc5;background:rgba(255,255,255,.015)}
-.roster-head{padding:28px 28px 0}
-.roster-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;padding:24px 28px 28px}
-.roster-card{padding:12px;cursor:pointer;transition:.28s ease;position:relative;overflow:hidden}
-.roster-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.18);box-shadow:0 0 34px rgba(255,255,255,.06)}
-.roster-card::before{content:"";position:absolute;inset:-1px;background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,.09) 50%, transparent 100%);transform:translateX(-120%);transition:transform .45s ease;pointer-events:none}
-.roster-card:hover::before{transform:translateX(120%)}
-.roster-thumb{position:relative;margin-bottom:12px;border:1px solid rgba(255,255,255,.08);overflow:hidden;background:#030303;aspect-ratio:3/4}
-.roster-thumb img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.12) contrast(1.06)}
-.roster-thumb .stamp-mini{position:absolute;left:10px;bottom:10px;padding:5px 8px;background:rgba(0,0,0,.78);border:1px solid rgba(255,255,255,.16);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase}
-.roster-code{font-size:.72rem;color:var(--soft-dim);letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px}
-.roster-name{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;margin-bottom:8px;line-height:1.45}
-.roster-role{font-size:.84rem;color:#b8c2bc;line-height:1.75;min-height:54px}
-.roster-meta{display:flex;justify-content:space-between;gap:12px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#9dac9f}
-.tail-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;padding:28px}
-.glitch-tail{padding:20px;position:relative;overflow:hidden}
-.glitch-tail::before,
-.glitch-tail::after{content:"";position:absolute;left:0;right:0;height:1px;background:rgba(255,255,255,.08)}
-.glitch-tail::before{top:18px}.glitch-tail::after{bottom:18px}
-.glitch-text{font-size:.95rem;line-height:1.95;color:#ced6d1;white-space:pre-wrap}
-.glitch-text .corrupt{display:inline-block;color:var(--warn);text-shadow:-1px 0 rgba(0,255,255,.6),1px 0 rgba(255,0,0,.7);animation:wordGlitch .6s steps(2) infinite}
-@keyframes wordGlitch{0%,100%{transform:translate(0)}25%{transform:translate(-1px,1px)}50%{transform:translate(2px,-1px)}75%{transform:translate(-2px,0)}}
-.tail-warning{padding:20px;border:1px solid rgba(255,90,90,.15);background:linear-gradient(180deg, rgba(255,90,90,.06), rgba(255,255,255,.015))}
-.tail-warning h3{font-size:1rem;letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-bottom:12px}
-.tail-warning p{font-size:.92rem;line-height:1.85;color:#c3ccc7;margin-bottom:16px}
-.warning-list{display:grid;gap:10px;margin:18px 0}
-.warning-list li{list-style:none;padding:10px 12px;border:1px solid rgba(255,255,255,.07);font-size:.84rem;color:#aeb7b2;background:rgba(255,255,255,.015)}
-.plateau-btn{
-    width:100%;
+.redaction::before{content:"";position:absolute;left:-6px;right:-6px;top:42%;height:2px;background:#000;box-shadow:0 -5px 0 #000,0 5px 0 #000;opacity:.95}
+.scramble{display:inline-block;min-width:8ch;color:var(--danger);text-shadow:-1px 0 rgba(0,255,255,.6),1px 0 rgba(255,0,0,.6)}
+.scramble.light{color:#fff;text-shadow:-1px 0 rgba(0,255,255,.4),1px 0 rgba(255,0,0,.4)}
+.sealed-plateau{display:none;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.015))}
+.sealed-plateau.active{display:block;animation:plateauShow .55s ease forwards}
+@keyframes plateauShow{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.sealed-plateau h3{font-size:.9rem;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:10px}
+.sealed-plateau p{font-size:.9rem;line-height:1.85;color:#c7d0cb}
+.modal,
+.protection-overlay,
+.iridium77-overlay{display:none}
+.modal.active,
+.protection-overlay.active,
+.iridium77-overlay.active{display:flex}
+.modal{position:fixed;inset:0;z-index:320;background:rgba(0,0,0,.88);align-items:center;justify-content:center;padding:20px}
+.record{
+    width:min(920px,100%);
+    max-height:90vh;
+    overflow:auto;
     border:1px solid rgba(255,255,255,.12);
-    background:#070707;
-    color:#fff;
-    padding:14px 16px;
-    cursor:pointer;
-    letter-spacing:.18em;
-    text-transform:uppercase;
-    font-size:.78rem;
-    transition:.25s ease;
+    background:linear-gradient(180deg, rgba(8,8,8,.98), rgba(2,2,2,.98));
+    box-shadow:0 0 0 1px rgba(255,255,255,.02),0 0 90px rgba(0,0,0,.84);
 }
-.plateau-btn:hover{border-color:rgba(255,255,255,.4);box-shadow:0 0 34px rgba(255,255,255,.08);transform:translateY(-1px)}
-.record-modal,
-.plateau-overlay{
-    position:fixed;
-    inset:0;
-    display:none;
+.record::-webkit-scrollbar{width:10px}
+.record::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14)}
+.record-head{position:sticky;top:0;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.95);z-index:5}
+.record-head h3{font-size:1rem;line-height:1.55;letter-spacing:.16em;text-transform:uppercase}
+.record-head small{display:block;margin-top:6px;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.close-btn{min-width:42px;height:42px;border:1px solid rgba(255,255,255,.16);background:#070707;color:#fff;cursor:pointer;transition:.2s ease}
+.close-btn:hover{transform:rotate(90deg);border-color:rgba(255,255,255,.42)}
+.record-body{display:grid;grid-template-columns:320px 1fr}
+.record-side{padding:18px;border-right:1px solid rgba(255,255,255,.08)}
+.record-side .photo{border:1px solid rgba(255,255,255,.08);background:#030303;overflow:hidden}
+.record-side .photo img{width:100%;display:block;aspect-ratio:3/4;object-fit:cover}
+.record-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.record-tags span{padding:6px 8px;border:1px solid rgba(255,255,255,.11);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase}
+.record-main{padding:18px}
+.police-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.police-box{padding:12px 14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02)}
+.police-box label{display:block;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.police-box div{font-size:.9rem;line-height:1.6}
+.record-summary{padding:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);font-size:.92rem;line-height:1.9;color:#ccd5d0;margin-bottom:14px}
+.record-section{padding:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.018);margin-bottom:14px}
+.record-section h4{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:10px}
+.record-section ul{display:grid;gap:8px}
+.record-section li{list-style:none;font-size:.9rem;line-height:1.8;color:#c6d0ca;padding-left:14px;position:relative}
+.record-section li::before{content:"▸";position:absolute;left:0;top:0}
+.record-note{font-size:.84rem;line-height:1.85;color:#c7d0cb;border:1px dashed rgba(255,255,255,.12);padding:12px 14px}
+.theme-hiyoshi .record-head h3,.theme-hiyoshi .record-section h4{color:var(--cyan)}
+.theme-cadence .record-head h3,.theme-cadence .record-section h4{color:var(--pink)}
+.theme-iridium .record-head h3,.theme-iridium .record-section h4{color:#f2f6fb}
+.theme-daros .record-head h3,.theme-daros .record-section h4{color:var(--amber)}
+.theme-hiyoshi .record-side .photo img{filter:saturate(.82) contrast(1.08) hue-rotate(190deg)}
+.theme-cadence .record-side .photo img{filter:saturate(1.15) contrast(1.08)}
+.theme-iridium .record-side .photo img{filter:grayscale(.18) contrast(1.15)}
+.theme-daros .record-side .photo img{filter:saturate(.75) contrast(1.1)}
+.protection-overlay{
+    z-index:380;
     align-items:center;
     justify-content:center;
-    padding:22px;
-    background:rgba(0,0,0,.88);
-    z-index:500;
+    padding:20px;
+    background:rgba(0,0,0,.82);
+    backdrop-filter:blur(2px);
 }
-.record-modal.active,
-.plateau-overlay.active{display:flex}
-.record-shell{
-    width:min(1180px, 100%);
-    max-height:min(90vh, 900px);
-    overflow:auto;
-    border:1px solid rgba(255,255,255,.11);
-    background:linear-gradient(180deg, rgba(7,7,7,.98), rgba(2,2,2,.98));
-    box-shadow:0 0 0 1px rgba(255,255,255,.03), 0 0 90px rgba(0,0,0,.82);
-    position:relative;
-}
-.record-shell::-webkit-scrollbar{width:10px}
-.record-shell::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14)}
-.record-top{
-    position:sticky;
-    top:0;
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    gap:16px;
-    padding:18px 22px;
-    border-bottom:1px solid rgba(255,255,255,.09);
-    background:rgba(4,4,4,.95);
-    z-index:5;
-}
-.record-top h3{font-size:1rem;line-height:1.55;letter-spacing:.14em;text-transform:uppercase}
-.record-top small{display:block;color:var(--muted);margin-top:6px;letter-spacing:.16em;text-transform:uppercase}
-.close-btn{
-    min-width:42px;height:42px;border:1px solid rgba(255,255,255,.15);background:#070707;color:#fff;cursor:pointer;font-size:1rem;transition:.2s ease
-}
-.close-btn:hover{transform:rotate(90deg);border-color:rgba(255,255,255,.45)}
-.record-layout{display:grid;grid-template-columns:360px 1fr;gap:0}
-.record-left{border-right:1px solid rgba(255,255,255,.08);padding:22px}
-.record-photo{border:1px solid rgba(255,255,255,.1);background:#030303;overflow:hidden;margin-bottom:16px}
-.record-photo img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover}
-.record-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.record-tags span{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;padding:6px 8px;border:1px solid rgba(255,255,255,.1)}
-.record-right{padding:22px}
-.record-meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:18px}
-.record-meta-box{padding:12px 14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.018)}
-.record-meta-box label{display:block;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
-.record-meta-box div{font-size:.92rem;line-height:1.6}
-.record-summary{padding:16px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.015);margin-bottom:18px;line-height:1.9;font-size:.95rem;color:#c9d2cd}
-.record-columns{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.record-block{padding:16px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.018)}
-.record-block h4{font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:12px}
-.record-block ul{display:grid;gap:10px}
-.record-block li{list-style:none;line-height:1.8;font-size:.9rem;color:#c0cac4;padding-left:14px;position:relative}
-.record-block li::before{content:"▸";position:absolute;left:0;top:0}
-.record-note{margin-top:16px;padding:14px 16px;border:1px dashed rgba(255,255,255,.12);font-size:.86rem;line-height:1.85;color:#c5cfca}
-.theme-hiyoshi{--accent:#8ec7ff;--accentShadow:rgba(142,199,255,.2);--bg2:rgba(90,140,210,.05)}
-.theme-cadence{--accent:#ff76e1;--accentShadow:rgba(255,118,225,.22);--bg2:rgba(255,118,225,.06)}
-.theme-iridium{--accent:#e7f2ff;--accentShadow:rgba(231,242,255,.15);--bg2:rgba(255,255,255,.045)}
-.theme-daros{--accent:#ffb467;--accentShadow:rgba(255,180,103,.18);--bg2:rgba(255,180,103,.055)}
-.theme-hiyoshi .record-top,
-.theme-cadence .record-top,
-.theme-iridium .record-top,
-.theme-daros .record-top{border-bottom-color:var(--accentShadow)}
-.theme-hiyoshi .record-shell,
-.theme-cadence .record-shell,
-.theme-iridium .record-shell,
-.theme-daros .record-shell{box-shadow:0 0 0 1px rgba(255,255,255,.03), 0 0 90px var(--accentShadow)}
-.theme-hiyoshi .record-top h3,
-.theme-cadence .record-top h3,
-.theme-iridium .record-top h3,
-.theme-daros .record-top h3,
-.theme-hiyoshi .record-block h4,
-.theme-cadence .record-block h4,
-.theme-iridium .record-block h4,
-.theme-daros .record-block h4{color:var(--accent)}
-.theme-hiyoshi .record-meta-box,
-.theme-cadence .record-meta-box,
-.theme-iridium .record-meta-box,
-.theme-daros .record-meta-box,
-.theme-hiyoshi .record-summary,
-.theme-cadence .record-summary,
-.theme-iridium .record-summary,
-.theme-daros .record-summary,
-.theme-hiyoshi .record-block,
-.theme-cadence .record-block,
-.theme-iridium .record-block,
-.theme-daros .record-block{background:linear-gradient(180deg, var(--bg2), rgba(255,255,255,.018));border-color:rgba(255,255,255,.08)}
-.theme-hiyoshi .record-shell{background:linear-gradient(180deg, #04070b, #010203)}
-.theme-hiyoshi .record-photo img{filter:saturate(.78) contrast(1.08) hue-rotate(190deg)}
-.theme-cadence .record-shell{background:linear-gradient(180deg, #0d050a, #020103)}
-.theme-cadence .record-photo{position:relative}
-.theme-cadence .record-photo::after{content:"RETAIL CAM / 02:17";position:absolute;left:12px;bottom:10px;padding:6px 8px;background:rgba(0,0,0,.75);border:1px solid rgba(255,118,225,.35);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:#ffd0f4}
-.theme-cadence .record-photo img{filter:saturate(1.15) contrast(1.06)}
-.theme-iridium .record-shell{background:linear-gradient(180deg, #060606, #010101)}
-.theme-iridium .record-photo{position:relative}
-.theme-iridium .record-photo::after{content:"ELEVATOR NODE / 23:54 / CCTV-6";position:absolute;left:12px;bottom:10px;padding:6px 8px;background:rgba(0,0,0,.78);border:1px solid rgba(255,255,255,.22);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:#eff4ff}
-.theme-iridium .record-photo img{filter:grayscale(.22) contrast(1.18)}
-.theme-daros .record-shell{background:linear-gradient(180deg, #0a0704, #020101)}
-.theme-daros .record-photo img{filter:saturate(.8) contrast(1.1)}
-.plateau-card{
-    width:min(760px, 100%);
-    border:1px solid rgba(255,255,255,.16);
-    background:linear-gradient(180deg, #030303, #000);
-    padding:28px;
-    box-shadow:0 0 0 1px rgba(255,255,255,.03), 0 0 120px rgba(255,255,255,.08);
-    text-align:center;
-    position:relative;
-    overflow:hidden;
-}
-.plateau-card::before{
+.protection-overlay::before{
     content:"";
     position:absolute;
     inset:0;
-    background:linear-gradient(180deg, rgba(255,255,255,.05), transparent 18%, transparent 82%, rgba(255,255,255,.05));
-    pointer-events:none;
+    background:
+        linear-gradient(90deg, rgba(255,255,255,.04), transparent 12%, transparent 88%, rgba(255,255,255,.04)),
+        radial-gradient(circle at center, rgba(255,255,255,.18), transparent 38%);
+    animation:protectFlash .9s ease forwards;
 }
-.plateau-card h3{font-size:clamp(1.3rem,4vw,2.4rem);line-height:1.35;letter-spacing:.18em;text-transform:uppercase;margin-bottom:18px;color:#fff}
-.plateau-card p{font-size:.95rem;line-height:1.9;color:#d7ded9;max-width:620px;margin:0 auto 12px}
-.plateau-bar{margin:22px auto;width:min(420px,100%);height:14px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.04);overflow:hidden}
-.plateau-fill{height:100%;width:100%;background:linear-gradient(90deg, rgba(255,255,255,.08), rgba(255,255,255,.95), rgba(255,255,255,.08));animation:plateauFlash 1.6s linear infinite}
-@keyframes plateauFlash{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-.plateau-lines{display:grid;gap:10px;margin-top:20px}
-.plateau-lines div{padding:10px 12px;border:1px solid rgba(255,255,255,.08);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:#f5f5f5;background:rgba(255,255,255,.025)}
-.hidden-flow{display:none}
-@media (max-width:1100px){
-    .hero-grid,.grid-two,.tail-grid,.record-layout{grid-template-columns:1fr}
-    .record-left{border-right:none;border-bottom:1px solid rgba(255,255,255,.08)}
+@keyframes protectFlash{0%{opacity:0}15%{opacity:1}55%{opacity:.3}100%{opacity:1}}
+.protection-card{
+    width:min(760px,100%);
+    border:1px solid rgba(255,255,255,.18);
+    background:linear-gradient(180deg, rgba(255,255,255,.95), rgba(241,244,245,.98));
+    color:#080808;
+    box-shadow:0 0 0 1px rgba(255,255,255,.25),0 0 120px rgba(255,255,255,.25);
+    padding:26px;
+    position:relative;
+    overflow:hidden;
+    animation:cardSnap .58s cubic-bezier(.25,.85,.25,1) forwards;
+}
+@keyframes cardSnap{0%{opacity:0;transform:scale(.92) translateY(24px)}35%{opacity:1;transform:scale(1.02) translateY(-2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.protection-card::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(0,0,0,.03) 0 2px, transparent 2px 4px);mix-blend-mode:multiply;pointer-events:none}
+.protection-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:16px}
+.protection-top small{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:#5d6164}
+.protection-card h3{font-size:clamp(1.1rem,3vw,2rem);line-height:1.45;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px}
+.protection-card p{font-size:.94rem;line-height:1.9;color:#111;margin-bottom:14px}
+.warning-bar{height:14px;border:1px solid rgba(0,0,0,.18);background:rgba(0,0,0,.06);overflow:hidden;margin:18px 0}
+.warning-fill{height:100%;width:100%;background:linear-gradient(90deg, rgba(0,0,0,.12), rgba(255,255,255,.95), rgba(0,0,0,.12));animation:whitePlate 1.6s linear infinite}
+@keyframes whitePlate{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.warning-grid{display:grid;gap:10px;margin-bottom:18px}
+.warning-grid div{padding:10px 12px;border:1px solid rgba(0,0,0,.1);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;background:rgba(0,0,0,.03)}
+.iridium77-overlay{z-index:340;padding:20px;background:rgba(0,0,0,.9)}
+.iridium77-card{width:min(600px,100%);padding:24px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg, rgba(8,8,8,.95), rgba(3,3,3,.98));text-align:center;box-shadow:0 0 90px rgba(255,0,0,.08)}
+.iridium77-card h3{font-size:1.2rem;line-height:1.6;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:10px}
+.iridium77-card p{font-size:.92rem;line-height:1.9;color:#cbd4cf;margin-bottom:16px}
+@media (max-width:980px){
+    .archive-head,.evidence-band,.record-body{grid-template-columns:1fr}
+    .record-side{border-right:none;border-bottom:1px solid rgba(255,255,255,.08)}
+    .data-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
     .roster-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media (max-width:800px){
-    .timeline-wrap{grid-template-columns:1fr}
-    .path-grid{grid-template-columns:1fr}
-    .panel-inner,.hero-grid,.grid-two,.tail-grid,.roster-head,.roster-grid{padding:18px}
-    .topbar{padding:12px 14px}
-    .gate-window{padding:20px}
-    .record-meta-grid,.record-columns{grid-template-columns:1fr}
-}
-@media (max-width:560px){
-    .archive{width:min(100% - 12px, 1320px)}
+@media (max-width:720px){
+    .police-grid{grid-template-columns:1fr}
+    .data-strip{grid-template-columns:1fr}
+    .archive-head{padding:20px}
+    .story-flow{padding:16px}
     .roster-grid{grid-template-columns:1fr}
-    .hero-title{font-size:1.25rem}
-    .panel-title{font-size:1rem}
-    .gate-title{letter-spacing:.1em}
-    .gate-copy,.archive-sheet p,.timeline-item p,.record-summary{font-size:.92rem}
+    .file-space{gap:18px}
+}
+@media (max-width:520px){
+    .topline{padding:10px 12px}
+    .crumb,.ghost-link{font-size:.62rem;padding:7px 8px}
+    .archive-name{letter-spacing:.08em}
+    .file-object{min-height:180px}
+    .boot-core{padding:18px}
 }
 </style>
 </head>
 <body>
+<canvas id="bgCanvas"></canvas>
+<canvas id="glyphCanvas"></canvas>
 <div class="noise"></div>
-<div class="field-grid"></div>
 <div class="scanline"></div>
 <div class="vignette"></div>
+<div class="transition-curtain" id="transitionCurtain"></div>
 
-<header class="topbar">
-    <div class="topbar-left">
-        <a class="back-link" href="index.html">← ВЕРНУТЬСЯ К УЗЛУ</a>
-        <div class="top-chip">НЕ_УНАТХ / АЛЬТЕРНАТИВНЫЙ КАНАЛ</div>
-        <div class="top-chip">ARCHIVE_MODE :: CRITICAL</div>
+<header class="topline">
+    <div class="topline-left">
+        <a class="ghost-link" href="index.html">← возврат</a>
+        <div class="crumb">не_унатх</div>
     </div>
-    <div class="topbar-right">
+    <div class="topline-right">
         <div class="clock" id="clock">00:00:00</div>
     </div>
 </header>
 
-<section class="entry-gate" id="entryGate">
-    <div class="gate-window">
-        <div class="gate-meta">
-            <span>входной контур / скрытый сегмент</span>
-            <span>источник: НЕ_УНАТХ</span>
-            <span>целостность архива: 63%</span>
+<div class="boot-overlay" id="bootOverlay">
+    <div class="boot-symbol-field" id="bootSymbolField"></div>
+    <div class="boot-core">
+        <div class="boot-head">
+            <span>carrier // chaos</span>
+            <span>branch split detected</span>
         </div>
-        <h1 class="gate-title" data-text="НЕ_УНАТХ :: РАСЩЕПЛЕНИЕ">НЕ_УНАТХ :: РАСЩЕПЛЕНИЕ</h1>
-        <p class="gate-copy">
-            Найдено два ответвления. Оба помечены как <span class="inline-tag">несанкционированные</span>, оба содержат частично удалённые материалы.
-            Выберите, какой слой вскрывать первым. Один ведёт к <span class="inline-tag">частному детективному агентству</span>, другой — к более глубокому контуру,
-            который пока отмечен как <span class="inline-tag">нестабильный</span>.
-        </p>
-        <div class="path-grid">
-            <button class="path-btn decrypt" id="decryptBtn" type="button">
-                <small>ветка 01</small>
-                <strong>Детективное частное агентство “DECRYPT”</strong>
-                <span>Архив о становлении организации, корпоративном компромате, нейтральной политике и первом основном составе.</span>
-            </button>
-            <button class="path-btn iridium77" id="iridiumBtn" type="button">
-                <small>ветка 02</small>
-                <strong>ИРИДИЙ77</strong>
-                <span>Контур зафиксирован, но сборка материала ещё не завершена. При попытке входа наблюдаются жёсткие сбои доступа.</span>
-            </button>
-        </div>
-        <div class="gate-note" id="gateNote">ОЖИДАЕТСЯ ПОДТВЕРЖДЕНИЕ КАНАЛА…</div>
+        <div class="boot-title">восстановление скрытых файлов из фрагмента НЕ_УНАТХ</div>
+        <div class="boot-lines" id="bootLines"></div>
+        <div class="boot-progress"><div class="boot-progress-fill" id="bootProgressFill"></div></div>
     </div>
-</section>
+</div>
 
-<main class="archive" id="archive">
-    <section class="panel">
-        <div class="hero-grid">
-            <div class="console-block">
-                <div class="badge">DECRYPT / RECOVERED NODE</div>
-                <h2 class="hero-title">ДЕТЕКТИВНОЕ ЧАСТНОЕ АГЕНТСТВО <strong>“DECRYPT”</strong></h2>
-                <div class="bootlog" id="bootlog"></div>
-                <div class="hero-footer">
-                    <div class="foot-chip">Y-27 / Spinward Periphery</div>
-                    <div class="foot-chip">Нейтральная политика</div>
-                    <div class="foot-chip">Корпоративный компромат</div>
-                    <div class="foot-chip">Следы инцидентов / зачистка</div>
+<main>
+    <section class="file-stage" id="fileStage">
+        <div class="file-space">
+            <button class="file-object decrypt" id="openDecrypt" type="button">
+                <div class="file-top">
+                    <div class="file-icon"><img src="assets/decrypt/logo.png" alt="Логотип DECRYPT"></div>
+                    <div class="file-state">recovered object / readable</div>
                 </div>
-            </div>
-            <figure class="evidence-frame">
-                <img src="assets/decrypt/hiyoshi-elevator.png" alt="Хиоши Сузуки в лифте">
-                <figcaption>КАДР 03 / ЛИФТОВОЙ УЗЕЛ / ПРЕДПОЛАГАЕМЫЙ ОСНОВАТЕЛЬ ХИОШИ СУЗУКИ / ФИКСАЦИЯ ДО ПЕРЕНОСА ОФИСА В СРЕДНИЙ СЕКТОР</figcaption>
-            </figure>
+                <div class="file-name">ДЕТЕКТИВНОЕ ЧАСТНОЕ АГЕНТСТВО “DECRYPT”</div>
+                <div class="file-meta"><span>y-27 archive</span><span>integrity 63%</span></div>
+            </button>
+            <button class="file-object iridium" id="openIridium77" type="button">
+                <div class="file-top">
+                    <div class="file-icon symbol">⚠</div>
+                    <div class="file-state">sealed object / unstable</div>
+                </div>
+                <div class="file-name">ИРИДИЙ77</div>
+                <div class="file-meta"><span>deep branch</span><span>access denied</span></div>
+            </button>
         </div>
     </section>
 
-    <section class="panel">
-        <div class="panel-inner">
-            <div class="panel-head">
-                <div>
-                    <div class="panel-index">01 / архивная сводка</div>
-                    <h2 class="panel-title">ОРГАНИЗАЦИЯ, КОТОРАЯ ВЫЖИЛА БЛАГОДАРЯ ГРЯЗНЫМ ЗАДАНИЯМ</h2>
+    <section class="archive" id="archive">
+        <div class="archive-shell">
+            <div class="archive-head">
+                <div class="logo-box">
+                    <img src="assets/decrypt/logo.png" alt="Логотип DECRYPT">
                 </div>
-                <p class="panel-subtitle">Сводка собрана из фрагментов деловой истории, бытовых контрактов, полевых отчётов и восстановленных заметок. Некоторые значения реконструированы вручную.</p>
+                <div>
+                    <div class="archive-kicker">восстановленный архив / y-27 / spinward periphery</div>
+                    <h1 class="archive-name">досье по организации <strong>decrypt</strong></h1>
+                    <p class="archive-sub">Перед читателем не сайт организации, а вытянутый из архивной темноты фрагмент о том, как частное агентство из дешёвого бытового сыска превратилось в аккуратный инструмент для корпоративного давления, компромата и исчезновения неудобных следов.</p>
+                </div>
             </div>
-            <div class="grid-two">
-                <div class="archive-sheet">
-                    <p><strong>“DECRYPT”</strong> зародилось в секторе <strong>Спинвардская Периферия</strong>, в самой гуще роста мегаполиса планеты <strong>Y-27</strong>. Первым известным основателем считается <strong>Хиоши Сузуки</strong>, прибывший на планету примерно за три года до резкого подъёма организации. Стартовый капитал составил <strong>400.000$</strong> — деньги, выданные ему родителями под тяжёлый залог и с ожиданием вернуть большую часть долга с наценкой, если он не сгорит в сточной канаве города раньше бизнеса.</p>
-                    <p>На старте агентство держалось на типичной детективной мелочёвке: <strong>слежка за неверными партнёрами</strong>, поиск пропавших посылок, локальные кражи, отпечатки, проверка съёмных квартир и любые бытовые запросы, от которых не веяло большими деньгами. Эти дела давали лишь кислород, но не рост. За примерно год такой работы офис трещал по швам, арендодатель поднимал цену, а долг перед семьёй пожирал львиную долю оборота.</p>
-                    <p>Почти на грани краха Хиоши сменил вектор: вместо дешёвого частного сыска он начал искать прибыль в <strong>корпоративных играх</strong> — добыче компромата, зачистке неудобных следов, маскировке причин “несчастных случаев”, скрытом наблюдении за конкурентами и деликатном удалении данных, которые не должны были дожить до утра. С этого момента “DECRYPT” перестало быть просто вывеской частного сыщика и превратилось в <strong>теневого посредника</strong>, который не работает ни на добро, ни на зло — только на выживание и баланс заказов.</p>
-                    <div class="fact-list">
-                        <div class="fact-row"><span>основатель</span><strong>Хиоши Сузуки</strong></div>
-                        <div class="fact-row"><span>точка зарождения</span><strong>Y-27 / Спинвардская Периферия</strong></div>
-                        <div class="fact-row"><span>стартовый капитал</span><strong>400.000$ наличными</strong></div>
-                        <div class="fact-row"><span>исходный профиль</span><strong>бытовой нишевой сыск</strong></div>
-                        <div class="fact-row"><span>поворотный профиль</span><strong>компромат / слежка / зачистка следов</strong></div>
+
+            <div class="data-strip">
+                <div class="data-cell"><label>основатель</label><div>Хиоши Сузуки</div></div>
+                <div class="data-cell"><label>стартовый капитал</label><div>400.000$ / семейный залог</div></div>
+                <div class="data-cell"><label>точка роста</label><div>Y-27 / мегаполис / среднее плато</div></div>
+                <div class="data-cell"><label>профиль</label><div>компромат / слежка / зачистка</div></div>
+            </div>
+
+            <div class="story-flow">
+                <article class="story-card">
+                    <div class="story-tag">архивный фрагмент / начало</div>
+                    <p>“DECRYPT” зародилось в секторе <strong>Спинвардская Периферия</strong>, в тяжёлом теле мегаполиса планеты <strong>Y-27</strong>. Хиоши Сузуки пришёл туда примерно за три года до прорыва агентства, с наличными, выданными ему родителями под залог, и с очень простым условием: либо он возвращает долг с прибылью, либо город пережёвывает его раньше, чем бизнес успеет стать чем-то серьёзным.</p>
+                    <p>Сначала агентство брало всё подряд: слежку за вторыми половинами, локальные кражи, отпечатки, пропавшие вещи, потерянные посылки, жалкие бытовые войны, где никто не хотел справедливости — только удобного виноватого. Такой рынок позволял не умереть сразу, но и не давал поднять голову. Аренда ползла вверх, офис трещал по швам, а родительский долг пожирал заработок быстрее, чем тот успевал остыть.</p>
+                    <div class="keyline">
+                        <span>бытовой сыск</span>
+                        <span>долговое давление</span>
+                        <span>офис на грани закрытия</span>
+                    </div>
+                </article>
+
+                <div class="evidence-band">
+                    <figure class="evidence-photo">
+                        <img src="assets/decrypt/hiyoshi-elevator.png" alt="Хиоши Сузуки в лифте">
+                        <figcaption>КАДР НАБЛЮДЕНИЯ / ЛИФТОВОЙ УЗЕЛ / ХИОШИ СУЗУКИ / ЗА НЕСКОЛЬКО МЕСЯЦЕВ ДО ВЫХОДА АГЕНТСТВА ИЗ НИЖНЕГО СЛОЯ</figcaption>
+                    </figure>
+                    <div class="evidence-notes">
+                        <div class="note-box">
+                            <h3>городская схема</h3>
+                            <p>К этому моменту Y-27 уже жил по простому треугольнику: наверху — мега-корпорации, в середине — фирмы и рынки с нормальным лицом, внизу — подполье, нарко-базы, стрип-клубы, провальные бизнесы и вся та грязь, без которой верх не выглядел бы чистым.</p>
+                        </div>
+                        <div class="note-box quote">
+                            <h3>зафиксированная формула</h3>
+                            <p>«За каждым хищником следует свой охотник, и третий наблюдатель, который потом пожинает кости обоих.»</p>
+                        </div>
                     </div>
                 </div>
-                <aside class="side-card">
-                    <img src="assets/decrypt/society-triangle.png" alt="Слои общества Y-27">
-                    <h3>СЕКТОРНЫЙ ТРЕУГОЛЬНИК ГОРОДА</h3>
-                    <p>Город давно поделился на три слоя. <strong>Вершина</strong> — мега-корпорации и их закрытые кабинеты. <strong>Середина</strong> — легальные рынки и компании, которые уже на слуху у общества. <strong>Дно</strong> — подпольные рынки, нарко-базы, стрип-клубы и провальные бизнесы. “DECRYPT” выросло именно на стыке этих уровней, понимая, что самая дорогая информация всегда течёт сверху вниз, а самые удобные исполнители поднимаются снизу вверх.</p>
-                    <div class="methods">
-                        <span class="method-tag">верхний слой = заказчик</span>
-                        <span class="method-tag">средний слой = объект давления</span>
-                        <span class="method-tag">нижний слой = инструменты</span>
+
+                <article class="story-card">
+                    <div class="story-tag">смена профиля / нейтральная политика</div>
+                    <p>Почти у края Хиоши сменил вектор: вместо дешёвого частного сыска он начал искать выгоду в <strong>корпоративных играх</strong>. Компромат на врагов фирмы, зачистка лишних данных, скрытие следов после очередного “несчастного случая”, перенос неудобной информации туда, где она станет оружием. Так “DECRYPT” перестало быть бедной вывеской частного детектива и стало нейтральным посредником между теми, кто готов платить, и теми, кто должен лишиться репутации, безопасности или сна.</p>
+                    <p>Вывеску он не менял намеренно. Кому вообще есть дело до очередного сыщика-самоучки, если город шумит деньгами, кровью и рекламой? Именно эта неприметность позволила агентству пробираться вверх по этажам Y-27, не вызывая у власти желания вдавить его обратно в сточную канаву.</p>
+                    <div class="keyline">
+                        <span>нейтральная позиция</span>
+                        <span>цифровая зачистка</span>
+                        <span>деликатное давление</span>
+                        <span>корпоративный компромат</span>
                     </div>
-                </aside>
-            </div>
-        </div>
-    </section>
+                </article>
 
-    <section class="panel">
-        <div class="roster-head">
-            <div class="panel-head">
-                <div>
-                    <div class="panel-index">02 / линия развития</div>
-                    <h2 class="panel-title">КАК “DECRYPT” ВЫЛЕЗЛО ИЗ НИЖНЕГО ПЛАТО</h2>
+                <div class="evidence-band">
+                    <figure class="evidence-photo">
+                        <img src="assets/decrypt/society-triangle.png" alt="Слои общества Y-27">
+                        <figcaption>СХЕМА / СЛОИ ГОРОДА / МАРШРУТ РОСТА АГЕНТСТВА ИЗ НИЖНЕГО ПЛАТО К СРЕДНЕМУ</figcaption>
+                    </figure>
+                    <div class="evidence-notes">
+                        <div class="note-box">
+                            <h3>первый реальный прорыв</h3>
+                            <p>Один из ранних заказов пришёл от фирмы по продаже средств ухода за красотой против другой такой же фирмы. Задача не требовала крови — только нужного угла камеры, приватного клуба и босса, которому хватило одной ночи, чтобы просесть в цене на рынке.</p>
+                        </div>
+                        <div class="note-box">
+                            <h3>последствие</h3>
+                            <p>Дело закрыли быстро и без лишней шумихи на месте, зато с громким эхом среди компаний среднего плато. С этого момента “DECRYPT” начали запоминать не как бедный сыск, а как инструмент, который лучше иметь рядом, чем против себя.</p>
+                        </div>
+                    </div>
                 </div>
-                <p class="panel-subtitle">Временная шкала восстановлена по внутренним пометкам, слухам с нижнего плато и косвенным совпадениям из заказов среднего сектора.</p>
-            </div>
-        </div>
-        <div class="timeline-wrap">
-            <article class="timeline-item">
-                <div class="timeline-year">ФАЗА 01 / ПРИБЫТИЕ</div>
-                <h3>Хиоши получает шанс и долг одновременно</h3>
-                <p>Прибыв на Y-27, Хиоши запускает агентство почти в одиночку. Деньги есть, но это не свобода, а кабала: каждое решение с первого дня делается под весом семейного залога, который надо вернуть с запасом. “DECRYPT” появляется не из романтики, а из необходимости доказать, что его не нужно оттаскивать домой за шкирку.</p>
-            </article>
-            <article class="timeline-item">
-                <div class="timeline-year">ФАЗА 02 / БЫТОВОЙ СЫСК</div>
-                <h3>Мелкие дела, которые не спасают</h3>
-                <p>Слежка за изменами, отпечатки, кражи, утерянные посылки и поиски вещей — всё это даёт только жалкое топливо. Бизнес не умирает сразу, но и не растёт. К офису подбирается арендная удавка, а долг съедает доходы быстрее, чем появляются новые клиенты.</p>
-            </article>
-            <article class="timeline-item">
-                <div class="timeline-year">ФАЗА 03 / СМЕНА РЫНКА</div>
-                <h3>Вход в корпоративную грязь</h3>
-                <p>Хиоши приходит к простому правилу: <strong>“За каждым хищником следует свой охотник, и третий наблюдатель, который потом пожинает кости обоих.”</strong> Агентство переходит к корпоративным поручениям — слежке за врагами фирм, добыче компромата, зачистке цифровых и физических следов. Вывеску он не меняет намеренно: кому есть дело до ещё одного частного сыщика, пока рядом рушатся чужие акции?</p>
-            </article>
-            <article class="timeline-item">
-                <div class="timeline-year">ФАЗА 04 / ПЕРВЫЙ ПРОРЫВ</div>
-                <h3>Компромат продаёт лучше морали</h3>
-                <p>Один из первых серьёзных контрактов приходит от фирмы по продаже средств ухода за красотой. Цель — конкурент из среднего плато. Задача проста: снять босса другой фирмы в компрометирующей приватной обстановке, достаточно яркой, чтобы подмочить репутацию и сбить доверие рынка. Дело закрывается быстро, без скандала на месте, но с заметным следом в деловых кругах.</p>
-            </article>
-            <article class="timeline-item">
-                <div class="timeline-year">ФАЗА 05 / НАБОР</div>
-                <h3>Первый состав даёт второе дыхание</h3>
-                <p>В организацию приходят три новых фигуры: <strong>Каденс Слоан</strong>, <strong>Иридий</strong> и <strong>Дарос Полей</strong>. Каденс и Дарос вытащены из нижнего плато, Иридий передан через проверенную связь из среднего сектора. Вместе с ним у агентства появляется транспорт, который по молчаливому соглашению становится активом всей команды.</p>
-            </article>
-            <article class="timeline-item">
-                <div class="timeline-year">ФАЗА 06 / ВЫХОД В СРЕДНИЙ СЛОЙ</div>
-                <h3>Организация перестаёт просто собирать грязь — и начинает её конструировать</h3>
-                <p>После усиления штата “DECRYPT” берёт на себя сразу несколько параллельных заказов: от наблюдения и прослушки до прямого создания компромата и исчезновения неудобных улик. За полгода агентство вылезает из канализации в средний сектор и закрепляется там как полезный, неприятный и крайне удобный нейтральный инструмент.</p>
-            </article>
-        </div>
-    </section>
 
-    <section class="panel">
-        <div class="roster-head">
-            <div class="panel-head">
-                <div>
-                    <div class="panel-index">03 / основной состав</div>
-                    <h2 class="panel-title">ДОСЬЕ КЛЮЧЕВЫХ ФИГУР</h2>
-                </div>
-                <p class="panel-subtitle">Нажмите на карточку, чтобы открыть <strong>“выписку из криминальных записей”</strong>. Каждый файл оформлен отдельно — под методы, манеру и личный след фигуранта.</p>
-            </div>
-        </div>
-        <div class="roster-grid">
-            <article class="roster-card" data-record="hiyoshi">
-                <div class="roster-thumb">
-                    <img src="assets/decrypt/hiyoshi-elevator.png" alt="Хиоши Сузуки">
-                    <div class="stamp-mini">founder / broker</div>
-                </div>
-                <div class="roster-code">архив / d-01</div>
-                <h3 class="roster-name">Хиоши Сузуки</h3>
-                <p class="roster-role">Основатель, координатор, посредник между заказчиком и грязной работой. Никогда не показывает все карты одному исполнителю.</p>
-                <div class="roster-meta"><span>риск: высокий</span><span>доступ: нейтральный</span></div>
-            </article>
-            <article class="roster-card" data-record="cadence">
-                <div class="roster-thumb">
-                    <img src="assets/decrypt/arcana-cigarettes.jpeg" alt="Каденс Слоан">
-                    <div class="stamp-mini">field / social</div>
-                </div>
-                <div class="roster-code">архив / d-02</div>
-                <h3 class="roster-name">Каденс Слоан</h3>
-                <p class="roster-role">Полевой агент, социальный взлом, вход в магазины, клубы и чужие привычки. Работает там, где грубая сила сразу ломает задачу.</p>
-                <div class="roster-meta"><span>риск: высокий</span><span>доступ: скрытый</span></div>
-            </article>
-            <article class="roster-card" data-record="iridium">
-                <div class="roster-thumb">
-                    <img src="assets/decrypt/iridium-elevator.png" alt="Иридий">
-                    <div class="stamp-mini">transport / pressure</div>
-                </div>
-                <div class="roster-code">архив / d-03</div>
-                <h3 class="roster-name">Иридий</h3>
-                <p class="roster-role">Логистика, изъятие, сопровождение, вывоз людей и вещей из мест, где они не должны были задерживаться дольше нескольких минут.</p>
-                <div class="roster-meta"><span>риск: средне-высокий</span><span>доступ: мобильный</span></div>
-            </article>
-            <article class="roster-card" data-record="daros">
-                <div class="roster-thumb">
-                    <img src="assets/decrypt/daros-placeholder.svg" alt="Дарос Полей">
-                    <div class="stamp-mini">signals / locks</div>
-                </div>
-                <div class="roster-code">архив / d-04</div>
-                <h3 class="roster-name">Дарос Полей</h3>
-                <p class="roster-role">Вульпканин из нижнего плато, специализация на прослушке, запасных входах, ключах и маршрутах, о которых официально никто не знает.</p>
-                <div class="roster-meta"><span>риск: высокий</span><span>доступ: подземный</span></div>
-            </article>
-        </div>
-    </section>
+                <article class="story-card">
+                    <div class="story-tag">первый основной состав</div>
+                    <p>Когда бизнесу потребовалось второе дыхание, Хиоши начал собирать команду. Так в ядре агентства оказались <strong>Каденс Слоан</strong>, <strong>Иридий</strong> и <strong>Дарос Полей</strong>. Каденс и Дарос были вытащены из нижнего плато, где хорошие навыки часто прячутся в плохих местах. Иридий пришёл через связь со среднего сектора — вместе с ним в распоряжении агентства появился автотранспорт, который мгновенно поднял темп операций.</p>
+                    <p>С этого момента “DECRYPT” могло брать не один-два заказа, а вести несколько линий сразу: наблюдение, перенос людей и вещей, подготовку доступа, создание компромата и исчезновение хвостов. Организация перестала просто собирать грязь — она научилась <strong>конструировать условия</strong>, при которых грязь появлялась в нужный момент и у нужного человека.</p>
+                </article>
 
-    <section class="panel">
-        <div class="panel-inner">
-            <div class="panel-head">
-                <div>
-                    <div class="panel-index">04 / хвост архива</div>
-                    <h2 class="panel-title">С ФРАГМЕНТА НАЧИНАЕТСЯ СБОЙ</h2>
-                </div>
-                <p class="panel-subtitle">Последний восстановленный кусок совпадает с лорной записью: дальше идёт резкое усиление глитча, а затем вмешивается защитный механизм.</p>
-            </div>
-            <div class="tail-grid">
-                <div class="glitch-tail">
-                    <div class="glitch-text">Начиная с этого этапа организация развилась ещё сильнее и <span class="corrupt">[глитч]</span> получила доступ к более дорогим заказам.
-Первый по-настоящему крупный контракт пришёл от <span class="corrupt">[удалено]</span>, после чего агентство закрепилось на среднем плато и начало работать не только как сборщик грязи, но и как её архитектор.
+                <section class="roster-section">
+                    <div class="story-tag">полицейская база / ключевые фигуры</div>
+                    <div class="roster-grid">
+                        <article class="db-card" data-record="hiyoshi">
+                            <div class="db-photo">
+                                <img src="assets/decrypt/hiyoshi-elevator.png" alt="Хиоши Сузуки">
+                                <div class="db-stamp">dcr-01</div>
+                            </div>
+                            <h3>Хиоши Сузуки</h3>
+                            <div class="db-mini">
+                                <div><span>роль</span><strong>основатель</strong></div>
+                                <div><span>статус</span><strong>под наблюдением</strong></div>
+                                <div><span>зона</span><strong>среднее плато</strong></div>
+                                <div><span>профиль</span><strong>посредник / координатор</strong></div>
+                            </div>
+                        </article>
+                        <article class="db-card" data-record="cadence">
+                            <div class="db-photo">
+                                <img src="assets/decrypt/arcana-cigarettes.jpeg" alt="Каденс Слоан">
+                                <div class="db-stamp">dcr-02</div>
+                            </div>
+                            <h3>Каденс Слоан</h3>
+                            <div class="db-mini">
+                                <div><span>роль</span><strong>полевая работа</strong></div>
+                                <div><span>статус</span><strong>активна</strong></div>
+                                <div><span>зона</span><strong>магазины / клубы</strong></div>
+                                <div><span>профиль</span><strong>социальный взлом</strong></div>
+                            </div>
+                        </article>
+                        <article class="db-card" data-record="iridium">
+                            <div class="db-photo">
+                                <img src="assets/decrypt/iridium-elevator.png" alt="Иридий">
+                                <div class="db-stamp">dcr-03</div>
+                            </div>
+                            <h3>Иридий</h3>
+                            <div class="db-mini">
+                                <div><span>роль</span><strong>логистика</strong></div>
+                                <div><span>статус</span><strong>след неустойчив</strong></div>
+                                <div><span>зона</span><strong>лифт / парковки</strong></div>
+                                <div><span>профиль</span><strong>транспорт / давление</strong></div>
+                            </div>
+                        </article>
+                        <article class="db-card" data-record="daros">
+                            <div class="db-photo">
+                                <img src="assets/decrypt/daros-placeholder.svg" alt="Дарос Полей">
+                                <div class="db-stamp">dcr-04</div>
+                            </div>
+                            <h3>Дарос Полей</h3>
+                            <div class="db-mini">
+                                <div><span>роль</span><strong>доступ / связь</strong></div>
+                                <div><span>статус</span><strong>данные фрагментарны</strong></div>
+                                <div><span>зона</span><strong>нижнее плато</strong></div>
+                                <div><span>профиль</span><strong>сигналы / замки</strong></div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
 
-Последняя читаемая строка:
-“начиная с <span class="corrupt">[глитч]</span> организация развилась и <span class="corrupt">[глитч]</span> получила свой первый и <span class="corrupt">[глитч]</span> заказ от <span class="corrupt">[глитч]</span>”</div>
+                <article class="corrupt-card" id="corruptTrigger">
+                    <div class="story-tag">хвост архива / повреждённый фрагмент</div>
+                    <p>Начиная с этого этапа организация развилась ещё сильнее и <span class="scramble" data-len="10"></span> получила доступ к более дорогим контрактам. Первый по-настоящему крупный заказ пришёл от <span class="redaction" style="--w:14ch"></span>, после чего агентство закрепилось в среднем секторе и стало не только собирать грязь, но и создавать условия, в которых она прилипала к нужным людям. Последняя читаемая строка расползается прямо на глазах: начиная с <span class="scramble light" data-len="8"></span> организация развилась и <span class="scramble" data-len="11"></span> получила свой первый и <span class="scramble light" data-len="9"></span> заказ от <span class="redaction" style="--w:11ch"></span>.</p>
+                </article>
+
+                <div class="sealed-plateau" id="sealedPlateau">
+                    <h3>остаток файла переведён в белое плато</h3>
+                    <p>Чтение дальше принудительно оборвано. Оставшийся фрагмент архивом больше не отдаётся: он не исчез — его ослепили. Если попробовать снова, защита ответит тем же светом.</p>
                 </div>
-                <aside class="tail-warning">
-                    <h3>ОБНАРУЖЕН ЗАЩИТНЫЙ КОНТУР</h3>
-                    <p>В архиве виден след внешнего вмешательства. Дальнейшее чтение запускает белый протокол подавления и закрывает остаток файла. Именно так и должен ощущаться запрет: не удалением, а насильственным ослеплением доступа.</p>
-                    <ul class="warning-list">
-                        <li>порог допуска ниже требуемого</li>
-                        <li>идентификатор ветки помечен как нештатный</li>
-                        <li>дальнейшая расшифровка инициирует белое плато</li>
-                    </ul>
-                    <button class="plateau-btn" id="plateauBtn" type="button">ПРОДОЛЖИТЬ РАСШИФРОВКУ</button>
-                </aside>
             </div>
         </div>
     </section>
 </main>
 
-<div class="record-modal" id="recordModal" aria-hidden="true">
-    <div class="record-shell" id="recordShell"></div>
+<div class="modal" id="recordModal">
+    <div class="record" id="recordBox"></div>
 </div>
 
-<div class="plateau-overlay" id="plateauOverlay" aria-hidden="true">
-    <div class="plateau-card">
-        <h3>АКТИВИРОВАН ЗАЩИТНЫЙ МЕХАНИЗМ NANOTRASEN</h3>
-        <p>ЗАМЕЧЕН НЕСАНКЦИОНИРОВАННЫЙ ДОПУСК. ИНИЦИИРУЕТСЯ <strong>БЕЛОЕ ПЛАТО</strong>. ОСТАТОК ФАЙЛА ИЗОЛИРОВАН, СВЕТОВЫЕ ШУМЫ ПЕРЕКРЫВАЮТ ЧТЕНИЕ, ВЕТКА ПЕРЕВЕДЕНА В РЕЖИМ ОСЛЕПЛЕНИЯ.</p>
-        <div class="plateau-bar"><div class="plateau-fill"></div></div>
-        <div class="plateau-lines">
-            <div>white plateau / override</div>
-            <div>archive fragment sealed</div>
-            <div>return while identity remains intact</div>
+<div class="protection-overlay" id="protectionOverlay">
+    <div class="protection-card">
+        <div class="protection-top">
+            <small>protective response / external authority</small>
+            <button class="close-btn" id="closeProtection" type="button">✕</button>
         </div>
-        <button class="close-btn" id="plateauClose" style="margin-top:20px">✕</button>
+        <h3>АКТИВИРОВАН ЗАЩИТНЫЙ МЕХАНИЗМ NANOTRASEN</h3>
+        <p>ЗАМЕЧЕН НЕСАНКЦИОНИРОВАННЫЙ ДОПУСК. ОСТАТОК ФРАГМЕНТА ЗАБЛОКИРОВАН, ПРОДОЛЖЕНИЕ ЧТЕНИЯ ПРЕСЕЧЕНО, ПУСКАЕТСЯ РЕЖИМ <strong>БЕЛОГО ПЛАТО</strong>. ТЕБЯ ЗАМЕТИЛИ ДО ТОГО, КАК АРХИВ УСПЕЛ РАСКРЫТЬ СЛЕДУЮЩЕЕ ИМЯ.</p>
+        <div class="warning-bar"><div class="warning-fill"></div></div>
+        <div class="warning-grid">
+            <div>unsanctioned access detected</div>
+            <div>archive branch isolated</div>
+            <div>white plateau activation</div>
+        </div>
+    </div>
+</div>
+
+<div class="iridium77-overlay" id="iridium77Overlay">
+    <div class="iridium77-card">
+        <h3>ИРИДИЙ77 / ВЕТКА ЕЩЁ НЕ СОБРАНА</h3>
+        <p>Контур существует, но его сборка ещё не завершена. Сейчас файл отвечает только помехами и не пускает внутрь глубже необходимого минимума.</p>
+        <button class="close-btn" id="closeIridium77" type="button">✕</button>
     </div>
 </div>
 
 <script>
+const bootLines = [
+    'carrier.signal // chaos symbols incoming',
+    'parsing branch split :: 02 file objects',
+    'recovering decrypt archive',
+    'recovering iridium77 shell',
+    'selector opening in void'
+];
+const chaosAlphabet = '▓▒░█/#<>[]{}01ψΩΛЖЯÆИҰ∎◢◣◤◥';
+const bootOverlay = document.getElementById('bootOverlay');
+const bootLinesBox = document.getElementById('bootLines');
+const bootProgressFill = document.getElementById('bootProgressFill');
+const bootSymbolField = document.getElementById('bootSymbolField');
+const fileStage = document.getElementById('fileStage');
+const archive = document.getElementById('archive');
+const curtain = document.getElementById('transitionCurtain');
+const protectionOverlay = document.getElementById('protectionOverlay');
+const sealedPlateau = document.getElementById('sealedPlateau');
+const recordModal = document.getElementById('recordModal');
+const recordBox = document.getElementById('recordBox');
+let protectionTriggered = false;
+
 const records = {
-    hiyoshi: {
-        theme: 'theme-hiyoshi',
-        title: 'ВЫПИСКА ИЗ КРИМИНАЛЬНЫХ ЗАПИСЕЙ',
-        subtitle: 'Фигура: Хиоши Сузуки / вероятный основатель / связной первого контура',
-        photo: 'assets/decrypt/hiyoshi-elevator.png',
-        code: 'DCR-01-SUZ',
-        alias: 'Хиоши Сузуки',
-        role: 'Основатель / координатор / корпоративный посредник',
-        zone: 'Y-27 / нижнее → среднее плато',
-        risk: 'Высокий / юридически скользкий',
-        status: 'Не осуждён / слишком аккуратен',
-        summary: 'Субъект не похож на человека, который строит империю криком. Он строит её расчётом. Именно Хиоши перевёл “DECRYPT” из бытового сыскного болота в рынок корпоративной грязи, где информация стоит дороже крови. Предпочитает не светиться лично, держит цепь заказов разбитой на сегменты и почти никогда не даёт одному исполнителю полную картину операции.',
-        tags: ['NEUTRAL POLICY', 'BROKER', 'SANITATION'],
-        charges: [
-            'Незаконная организация скрытого наблюдения за частными и корпоративными целями.',
-            'Посредничество в продаже компрометирующих материалов между конфликтующими фирмами.',
-            'Систематическая зачистка следов после заказных “несчастных случаев” и информационных утечек.',
-            'Вероятное создание распределённой сети информаторов между нижним и средним секторами.'
-        ],
-        methods: [
-            'Не меняет вывеску агентства, чтобы маскировать реальный масштаб операций под образ бедного частного сыщика.',
-            'Разбивает контракты на слои: сбор, перенос, давление, утилизация следов.',
-            'Предпочитает работать чужими руками, но лично утверждает точки риска и цены молчания.',
-            'Поддерживает нейтральную политику: сегодня даёт нож одной стороне, завтра продаёт бронежилет другой.'
-        ],
-        note: 'Внешний рычаг давления на фигуранта — семейный долг, с которого фактически и начался весь бизнес. Именно он мог стать первичным мотивом перехода к более грязным, но более доходным заказам.'
+    hiyoshi:{
+        theme:'theme-hiyoshi',
+        title:'выписка из криминальных записей',
+        subtitle:'хиоши сузуки / координатор / вероятный источник роста организации',
+        photo:'assets/decrypt/hiyoshi-elevator.png',
+        tags:['broker','neutral','sanitation'],
+        meta:[['код записи','DCR-01-SUZ'],['роль','основатель / посредник'],['статус','под наблюдением'],['зона','Y-27 / среднее плато'],['уровень риска','высокий'],['связь','корпоративные конфликты']],
+        summary:'Не любит работать собственными руками, но именно он двигает чужие. Классический организатор грязных задач: скрыт, спокоен, не даёт одному исполнителю полной картины и почти всегда сохраняет возможность отрицать собственное присутствие в деле.',
+        points:['Организация скрытого наблюдения за корпоративными целями.','Посредничество в передаче компрометирующих материалов между фирмами.','Координация зачистки цифровых и физических следов после “несчастных случаев”.'],
+        style:['Разбивает заказ на сегменты, чтобы никто не держал его целиком.','Предпочитает нейтральную политику и продаёт полезность обеим сторонам конфликта.','Держит репутацию бедного частного сыщика как маскировку.'],
+        note:'Первичный мотив роста: семейный долг, который сделал мелкий сыск слишком медленным и слишком бедным.'
     },
-    cadence: {
-        theme: 'theme-cadence',
-        title: 'ВЫПИСКА ИЗ КРИМИНАЛЬНЫХ ЗАПИСЕЙ',
-        subtitle: 'Фигура: Каденс Слоан / полевая работа / социальный взлом',
-        photo: 'assets/decrypt/arcana-cigarettes.jpeg',
-        code: 'DCR-02-SLN',
-        alias: 'Каденс Слоан',
-        role: 'Полевой агент / социальная инженерия / вход через привычки',
-        zone: 'Магазины / клубы / шумные точки среднего плато',
-        risk: 'Высокий / маскируется под хаос',
-        status: 'Свободна / трудно привязать к месту',
-        summary: 'Яркая, розовая, заметная — и именно поэтому удобная. Каденс умеет использовать визуальный шум как дымовую завесу. Её работа начинается там, где объект расслабляется: у витрины, у кассы, в клубном коридоре, в привычке купить сигареты, задержаться ещё на минуту, обернуться не в ту сторону. Она не ломает двери. Она заставляет людей открывать их самим.',
-        tags: ['SOCIAL', 'HONEY TRAP', 'RETAIL CAM'],
-        charges: [
-            'Использование подставных покупок и фальшивых бытовых маршрутов для сбора коммерческих данных.',
-            'Незаконная съёмка и фиксация компрометирующих встреч в магазинах, приватных клубах и точках краткого отдыха.',
-            'Вероятное участие в провокации интимного и репутационного характера против руководителей среднего сектора.',
-            'Подкуп низового персонала: кассиров, курьеров, техников камер, клубных диспетчеров.'
-        ],
-        methods: [
-            'Работает через доверие, флирт, лёгкий абсурд и ощущение бытовой случайности.',
-            'Предпочитает помещения, где шум, музыка, сигаретный дым и поток людей стирают лишние детали.',
-            'Использует одноразовые контакты и обрывочные поручения, чтобы никто не держал её полную схему в голове.',
-            'Хорошо видит “слепые секунды” между обзором камер и человеческим вниманием.'
-        ],
-        note: 'Запись из магазина с покупкой сигарет считается одной из типичных для её профиля: никакой спешки, никакой паники, но каждый шаг уже встроен в чужой будущий компромат.'
+    cadence:{
+        theme:'theme-cadence',
+        title:'выписка из криминальных записей',
+        subtitle:'каденс слоан / полевая работа / социальный взлом',
+        photo:'assets/decrypt/arcana-cigarettes.jpeg',
+        tags:['social','retail','compromise'],
+        meta:[['код записи','DCR-02-SLN'],['роль','полевой агент'],['статус','активна'],['зона','магазины / клубы'],['уровень риска','высокий'],['связь','камеры / кассы / свидетели']],
+        summary:'Работает через бытовую случайность: касса, сигареты, разговор, пауза, ошибка внимания. Не ломает двери, а заставляет людей открыть их самим и не заметить, что в этот момент их уже читают.',
+        points:['Скрытая фиксация компрометирующих встреч в публично-шумных местах.','Социальная инженерия через фальшивую случайность и доверие.','Подкуп низового персонала: кассиров, техников камер, клубных работников.'],
+        style:['Использует заметную внешность как дымовую завесу.','Любит пространства, где толпа стирает точный тайминг событий.','Лучше других видит “слепые секунды” между камерой и человеческим вниманием.'],
+        note:'Обычная покупка сигарет для её профиля нередко является не привычкой, а входом в следующую сцену.'
     },
-    iridium: {
-        theme: 'theme-iridium',
-        title: 'ВЫПИСКА ИЗ КРИМИНАЛЬНЫХ ЗАПИСЕЙ',
-        subtitle: 'Фигура: Иридий / логистика / давление / мобильный актив организации',
-        photo: 'assets/decrypt/iridium-elevator.png',
-        code: 'DCR-03-IRD',
-        alias: 'Иридий',
-        role: 'Транспорт / извлечение / сопровождение / силовое присутствие',
-        zone: 'Лифтовые узлы / подземные парковки / переходные маршруты',
-        risk: 'Средне-высокий / прямой контакт',
-        status: 'Не подтверждён / всплывает рядом со следом, но не в деле',
-        summary: 'Иридий вошёл в организацию не с улицы, а через переданный контакт со среднего плато. Вместе с ним у “DECRYPT” появился транспорт — и это резко увеличило мобильность всей схемы. Его зона ответственности — не красивые разговоры, а момент, когда нужно кого-то забрать, вывезти, дожать или просто молча присутствовать рядом, пока другой человек принимает неправильное решение.',
-        tags: ['TRANSPORT', 'PRESSURE', 'EXFIL'],
-        charges: [
-            'Использование незарегистрированного транспорта для перемещения исполнителей, материалов и изъятых объектов.',
-            'Силовое сопровождение свидетелей и объектов давления без официальных полномочий.',
-            'Наличие рядом с несколькими точками, где физические улики исчезали вскоре после инцидента.',
-            'Вероятное участие в вывозе людей после компрометирующих операций и постановочных сцен.'
-        ],
-        methods: [
-            'Работает через молчание, присутствие и скорость смены локации.',
-            'Использует лифтовые и парковочные узлы как короткие зоны передачи, где камеры редко собирают полную картину.',
-            'Не держит компромат при себе дольше необходимого: его задача — довести материал до следующего узла цепи.',
-            'Часто появляется в кадре до и после встречи, но почти никогда — в момент самого нарушения.'
-        ],
-        note: 'Фигура особенно важна из-за транспорта: без него “DECRYPT” могло собирать грязь, но не могло быстро обслуживать несколько заказов одновременно. После его появления организация буквально получила второе дыхание.'
+    iridium:{
+        theme:'theme-iridium',
+        title:'выписка из криминальных записей',
+        subtitle:'иридий / логистика / мобильный ресурс организации',
+        photo:'assets/decrypt/iridium-elevator.png',
+        tags:['transport','pressure','lift-node'],
+        meta:[['код записи','DCR-03-IRD'],['роль','транспорт / сопровождение'],['статус','след неустойчив'],['зона','лифт / парковки / узлы'],['уровень риска','средне-высокий'],['связь','исчезающие улики']],
+        summary:'Не тот, кто делает сцену громкой. Тот, кто появляется до неё и после неё. Отвечает за перемещение людей, вещей и следов. Его присутствие редко является доказательством, но почти всегда оказывается рядом, когда доказательства перестают существовать.',
+        points:['Использование незарегистрированного транспорта для перемещения участников операции.','Силовое сопровождение и вывоз объектов давления.','Повторяющееся появление в узлах, где физические улики исчезали вскоре после инцидентов.'],
+        style:['Работает через скорость смены локации и короткие зоны передачи.','Предпочитает лифты и парковки: места, где камера редко собирает весь эпизод.','Самый важный вклад — мобильность, которая дала агентству второе дыхание.'],
+        note:'С его приходом “DECRYPT” перестало быть медленным сборщиком грязи и стало сетью с нормальной логистикой.'
     },
-    daros: {
-        theme: 'theme-daros',
-        title: 'ВЫПИСКА ИЗ КРИМИНАЛЬНЫХ ЗАПИСЕЙ',
-        subtitle: 'Фигура: Дарос Полей / связь / замки / маршруты нижнего плато',
-        photo: 'assets/decrypt/daros-placeholder.svg',
-        code: 'DCR-04-PLY',
-        alias: 'Дарос Полей',
-        role: 'Прослушка / доступ / обходные каналы / подземная логистика',
-        zone: 'Нижнее плато / технические туннели / сервисные входы',
-        risk: 'Высокий / трудно наблюдаем',
-        status: 'Данные фрагментарны / лицо собиралось по кускам',
-        summary: 'Дарос — тот тип фигуранта, которого редко видят напрямую, но слишком часто замечают последствия его работы. Вульпканин из нижнего плато, ориентированный на запасные входы, дешёвые радиочастоты, сервисные ключи, забытые маршруты и всё то, чем город пользуется, но о чём предпочитает не помнить. Его роль — подготовить дверь ещё до того, как остальные решат, стоит ли в неё входить.',
-        tags: ['SIGNALS', 'LOCKS', 'UNDERCITY'],
-        charges: [
-            'Незаконный перехват частных и коммерческих переговоров на ближних частотах.',
-            'Копирование сервисных ключей, жетонов доступа и временных идентификаторов для обхода систем контроля.',
-            'Связи с теневыми курьерами, подпольными точками обмена и низовыми посредниками нижнего плато.',
-            'Подготовка цифровой и физической почвы для зачистки следов после корпоративных конфликтов.'
-        ],
-        methods: [
-            'Предпочитает короткие радиосеансы, одноразовые передатчики и кеши в местах, которые легальные службы считают мусором.',
-            'Работает через сервисные маршруты, подвалы, вентиляционные шахты и заброшенные технические коридоры.',
-            'Практически не держит визуальный след — чаще остаётся только изменение доступа и внезапная тишина в нужной точке.',
-            'Может подготавливать задачу задолго до фактического выхода полевой группы.'
-        ],
-        note: 'Полный визуальный портрет не восстановлен: сохранился лишь реконструированный контур профиля. Это уже само по себе многое говорит о качестве его маскировки.'
+    daros:{
+        theme:'theme-daros',
+        title:'выписка из криминальных записей',
+        subtitle:'дарос полей / доступ / сигналы / подземные маршруты',
+        photo:'assets/decrypt/daros-placeholder.svg',
+        tags:['signals','locks','undercity'],
+        meta:[['код записи','DCR-04-PLY'],['роль','доступ / связь'],['статус','фрагментарные данные'],['зона','нижнее плато'],['уровень риска','высокий'],['связь','служебные входы']],
+        summary:'Фигура, о которой почти всегда знают по следствию после работы, а не по самому факту присутствия. Его область — запасные ключи, сервисные маршруты, дешёвые частоты, обходы и входы, о которых официальные системы предпочитают забыть.',
+        points:['Перехват переговоров на низовых частотах и копирование служебных ключей.','Подготовка доступов до выхода основной полевой группы.','Связи с подпольными курьерами и маршрутизаторами нижнего плато.'],
+        style:['Любит одноразовые передатчики и временные идентификаторы.','Выходит через подвалы, вентиляцию, техкоридоры и мусорные сервисные зоны.','Чаще оставляет изменённый доступ, чем собственное лицо в кадре.'],
+        note:'Полный визуальный портрет не восстановлен — уже это говорит о качестве его маскировки.'
     }
 };
 
-const logLines = [
-    'подтверждение ветки: decrypt',
-    'точка зарождения: y-27 / spinward periphery',
-    'основатель установлен: хиоши сузуки',
-    'исходный профиль: бытовой сыск / долговое давление',
-    'переходный профиль: компромат / слежка / зачистка',
-    'первый основной состав: каденс / иридий / дарос'
-];
-
-const gateNote = document.getElementById('gateNote');
-const decryptBtn = document.getElementById('decryptBtn');
-const iridiumBtn = document.getElementById('iridiumBtn');
-const archive = document.getElementById('archive');
-const entryGate = document.getElementById('entryGate');
-const bootlog = document.getElementById('bootlog');
-const recordModal = document.getElementById('recordModal');
-const recordShell = document.getElementById('recordShell');
-const plateauOverlay = document.getElementById('plateauOverlay');
-
 function updateClock(){
-    const el = document.getElementById('clock');
     const d = new Date();
-    const time = [d.getHours(), d.getMinutes(), d.getSeconds()].map(v => String(v).padStart(2,'0')).join(':');
-    el.textContent = time;
+    document.getElementById('clock').textContent = [d.getHours(), d.getMinutes(), d.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');
 }
 updateClock();
-setInterval(updateClock, 1000);
+setInterval(updateClock,1000);
 
-function typeLines(lines, container){
-    container.innerHTML = '';
-    let lineIndex = 0;
-    function next(){
-        if(lineIndex >= lines.length) return;
-        const div = document.createElement('div');
-        div.className = 'log-line';
-        container.appendChild(div);
-        const text = lines[lineIndex];
-        let i = 0;
-        const timer = setInterval(() => {
-            div.textContent = text.slice(0, i++);
-            if(i > text.length){
-                clearInterval(timer);
-                lineIndex += 1;
-                setTimeout(next, 110);
-            }
-        }, 18);
+function randomLine(len=26){
+    let out='';
+    for(let i=0;i<len;i++) out += chaosAlphabet[Math.floor(Math.random()*chaosAlphabet.length)];
+    return out;
+}
+
+function spawnBootRows(){
+    let count = 0;
+    const timer = setInterval(() => {
+        const row = document.createElement('div');
+        row.className = 'boot-row';
+        row.style.top = (Math.random()*100)+'%';
+        row.style.animationDuration = (3 + Math.random()*2.8)+'s';
+        row.style.letterSpacing = (.12 + Math.random()*.22)+'em';
+        row.textContent = randomLine(26 + Math.floor(Math.random()*34));
+        bootSymbolField.appendChild(row);
+        setTimeout(()=>row.remove(), 5600);
+        count++;
+        if(count > 85) clearInterval(timer);
+    }, 75);
+}
+
+async function typeBoot(){
+    spawnBootRows();
+    for(let i=0;i<bootLines.length;i++){
+        const lineEl = document.createElement('div');
+        lineEl.className = 'boot-line';
+        bootLinesBox.appendChild(lineEl);
+        const line = bootLines[i];
+        for(let x=0;x<=line.length;x++){
+            lineEl.textContent = line.slice(0,x);
+            await new Promise(r=>setTimeout(r,18));
+        }
+        bootProgressFill.style.width = ((i+1)/bootLines.length*100)+'%';
+        await new Promise(r=>setTimeout(r,140));
     }
-    next();
+    await new Promise(r=>setTimeout(r,700));
+    bootOverlay.classList.add('hidden');
 }
 
-function revealArchive(){
-    gateNote.textContent = 'КАНАЛ ПОДТВЕРЖДЁН / ИДЁТ ПОДЪЁМ АРХИВА…';
+typeBoot();
+
+function openDecrypt(){
+    curtain.classList.add('active');
+    fileStage.classList.add('hidden');
     setTimeout(() => {
-        entryGate.classList.add('hidden-flow');
+        fileStage.style.display='none';
+        document.body.classList.add('archive-open');
         archive.classList.add('active');
-        window.scrollTo({top:0, behavior:'smooth'});
-        typeLines(logLines, bootlog);
-    }, 380);
+        setTimeout(() => curtain.classList.remove('active'), 180);
+        window.scrollTo({top:0,behavior:'smooth'});
+    }, 540);
 }
+document.getElementById('openDecrypt').addEventListener('click', openDecrypt);
 
-decryptBtn.addEventListener('click', revealArchive);
-iridiumBtn.addEventListener('click', () => {
-    gateNote.textContent = 'ВЕТКА ИРИДИЙ77 ЗАПЕЧАТАНА / СБОРКА ЕЩЁ НЕ СОБРАНА / ВХОД ОТКЛОНЁН';
-});
-
-document.querySelectorAll('.roster-card').forEach(card => {
-    card.addEventListener('click', () => openRecord(card.dataset.record));
-});
-
-function openRecord(key){
-    const rec = records[key];
-    if(!rec) return;
-    recordShell.className = 'record-shell ' + rec.theme;
-    recordShell.innerHTML = `
-        <div class="record-top">
-            <div>
-                <h3>${rec.title}</h3>
-                <small>${rec.subtitle}</small>
-            </div>
-            <button class="close-btn" type="button" aria-label="Закрыть">✕</button>
-        </div>
-        <div class="record-layout">
-            <div class="record-left">
-                <div class="record-photo"><img src="${rec.photo}" alt="${rec.alias}"></div>
-                <div class="record-tags">
-                    ${rec.tags.map(tag => `<span>${tag}</span>`).join('')}
-                </div>
-            </div>
-            <div class="record-right">
-                <div class="record-meta-grid">
-                    <div class="record-meta-box"><label>код записи</label><div>${rec.code}</div></div>
-                    <div class="record-meta-box"><label>фигура</label><div>${rec.alias}</div></div>
-                    <div class="record-meta-box"><label>роль</label><div>${rec.role}</div></div>
-                    <div class="record-meta-box"><label>зона работы</label><div>${rec.zone}</div></div>
-                    <div class="record-meta-box"><label>уровень риска</label><div>${rec.risk}</div></div>
-                    <div class="record-meta-box"><label>статус</label><div>${rec.status}</div></div>
-                </div>
-                <div class="record-summary">${rec.summary}</div>
-                <div class="record-columns">
-                    <div class="record-block">
-                        <h4>зафиксированные нарушения</h4>
-                        <ul>${rec.charges.map(item => `<li>${item}</li>`).join('')}</ul>
-                    </div>
-                    <div class="record-block">
-                        <h4>подход и стиль</h4>
-                        <ul>${rec.methods.map(item => `<li>${item}</li>`).join('')}</ul>
-                    </div>
-                </div>
-                <div class="record-note"><strong>Архивная пометка:</strong> ${rec.note}</div>
-            </div>
-        </div>
-    `;
-    recordModal.classList.add('active');
-    recordModal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    recordShell.querySelector('.close-btn').addEventListener('click', closeRecord);
-}
-
-function closeRecord(){
-    recordModal.classList.remove('active');
-    recordModal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-}
-recordModal.addEventListener('click', (e) => {
-    if(e.target === recordModal) closeRecord();
-});
-
-document.getElementById('plateauBtn').addEventListener('click', () => {
-    plateauOverlay.classList.add('active');
-    plateauOverlay.setAttribute('aria-hidden', 'false');
+document.getElementById('openIridium77').addEventListener('click', () => {
+    document.getElementById('iridium77Overlay').classList.add('active');
     document.body.style.overflow = 'hidden';
 });
-
-document.getElementById('plateauClose').addEventListener('click', () => {
-    plateauOverlay.classList.remove('active');
-    plateauOverlay.setAttribute('aria-hidden', 'true');
+document.getElementById('closeIridium77').addEventListener('click', () => {
+    document.getElementById('iridium77Overlay').classList.remove('active');
     document.body.style.overflow = '';
 });
-plateauOverlay.addEventListener('click', (e) => {
-    if(e.target === plateauOverlay){
-        plateauOverlay.classList.remove('active');
-        plateauOverlay.setAttribute('aria-hidden', 'true');
+document.getElementById('iridium77Overlay').addEventListener('click', e => {
+    if(e.target.id === 'iridium77Overlay'){
+        e.currentTarget.classList.remove('active');
         document.body.style.overflow = '';
     }
 });
 
-document.addEventListener('keydown', (e) => {
+function renderRecord(key){
+    const rec = records[key];
+    if(!rec) return;
+    recordBox.className = 'record ' + rec.theme;
+    recordBox.innerHTML = `
+        <div class="record-head">
+            <div>
+                <h3>${rec.title}</h3>
+                <small>${rec.subtitle}</small>
+            </div>
+            <button class="close-btn" type="button">✕</button>
+        </div>
+        <div class="record-body">
+            <div class="record-side">
+                <div class="photo"><img src="${rec.photo}" alt="${rec.subtitle}"></div>
+                <div class="record-tags">${rec.tags.map(tag=>`<span>${tag}</span>`).join('')}</div>
+            </div>
+            <div class="record-main">
+                <div class="police-grid">
+                    ${rec.meta.map(item=>`<div class="police-box"><label>${item[0]}</label><div>${item[1]}</div></div>`).join('')}
+                </div>
+                <div class="record-summary">${rec.summary}</div>
+                <div class="record-section">
+                    <h4>основные нарушения</h4>
+                    <ul>${rec.points.map(item=>`<li>${item}</li>`).join('')}</ul>
+                </div>
+                <div class="record-section">
+                    <h4>манера работы</h4>
+                    <ul>${rec.style.map(item=>`<li>${item}</li>`).join('')}</ul>
+                </div>
+                <div class="record-note"><strong>архивная пометка:</strong> ${rec.note}</div>
+            </div>
+        </div>`;
+    recordModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    recordBox.querySelector('.close-btn').addEventListener('click', closeRecord);
+}
+
+function closeRecord(){
+    recordModal.classList.remove('active');
+    document.body.style.overflow = protectionOverlay.classList.contains('active') ? 'hidden' : '';
+}
+
+document.querySelectorAll('.db-card').forEach(card=>card.addEventListener('click',()=>renderRecord(card.dataset.record)));
+recordModal.addEventListener('click',e=>{if(e.target===recordModal) closeRecord();});
+
+function scrambleTick(){
+    document.querySelectorAll('.scramble').forEach(el => {
+        const len = Number(el.dataset.len || 8);
+        let out = '';
+        for(let i=0;i<len;i++) out += chaosAlphabet[Math.floor(Math.random()*chaosAlphabet.length)];
+        el.textContent = out;
+    });
+}
+scrambleTick();
+setInterval(scrambleTick, 110);
+
+function triggerProtection(){
+    if(protectionTriggered) return;
+    protectionTriggered = true;
+    document.body.classList.add('caught');
+    document.body.style.overflow = 'hidden';
+    setTimeout(()=>{
+        protectionOverlay.classList.add('active');
+        sealedPlateau.classList.add('active');
+    }, 180);
+}
+
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if(entry.isIntersecting) triggerProtection();
+    });
+}, {threshold:.55});
+observer.observe(document.getElementById('corruptTrigger'));
+
+document.getElementById('closeProtection').addEventListener('click', () => {
+    protectionOverlay.classList.remove('active');
+    document.body.classList.remove('caught');
+    document.body.style.overflow = '';
+});
+protectionOverlay.addEventListener('click', e => {
+    if(e.target === protectionOverlay){
+        protectionOverlay.classList.remove('active');
+        document.body.classList.remove('caught');
+        document.body.style.overflow = '';
+    }
+});
+
+document.addEventListener('keydown', e => {
     if(e.key === 'Escape'){
         if(recordModal.classList.contains('active')) closeRecord();
-        if(plateauOverlay.classList.contains('active')){
-            plateauOverlay.classList.remove('active');
-            plateauOverlay.setAttribute('aria-hidden', 'true');
+        if(protectionOverlay.classList.contains('active')){
+            protectionOverlay.classList.remove('active');
+            document.body.classList.remove('caught');
+            document.body.style.overflow = '';
+        }
+        const irr = document.getElementById('iridium77Overlay');
+        if(irr.classList.contains('active')){
+            irr.classList.remove('active');
             document.body.style.overflow = '';
         }
     }
 });
+
+function initBackground(){
+    const bg = document.getElementById('bgCanvas');
+    const glyph = document.getElementById('glyphCanvas');
+    const bgc = bg.getContext('2d');
+    const gc = glyph.getContext('2d');
+    let w=0,h=0;
+    const fog = [];
+    const stars = [];
+    const glyphs = [];
+    function resize(){
+        w = bg.width = glyph.width = window.innerWidth;
+        h = bg.height = glyph.height = window.innerHeight;
+    }
+    function rand(a,b){return a + Math.random()*(b-a)}
+    function build(){
+        fog.length = 0; stars.length = 0; glyphs.length = 0;
+        for(let i=0;i<18;i++){
+            fog.push({x:rand(0,w), y:rand(0,h), r:rand(120,300), dx:rand(-.08,.08), dy:rand(-.06,.06), hue:Math.random()>0.5?'green':'cyan', alpha:rand(.03,.08)});
+        }
+        for(let i=0;i<110;i++){
+            stars.push({x:rand(0,w), y:rand(0,h), r:rand(.4,1.6), a:rand(.12,.7), s:rand(.003,.02)});
+        }
+        for(let i=0;i<36;i++){
+            glyphs.push({x:rand(0,w), y:rand(0,h), vy:rand(.12,.45), char:chaosAlphabet[Math.floor(Math.random()*chaosAlphabet.length)], size:rand(12,26), a:rand(.05,.16)});
+        }
+    }
+    function draw(){
+        bgc.clearRect(0,0,w,h);
+        bgc.fillStyle = '#000';
+        bgc.fillRect(0,0,w,h);
+        fog.forEach(f => {
+            f.x += f.dx; f.y += f.dy;
+            if(f.x < -f.r) f.x = w + f.r; if(f.x > w + f.r) f.x = -f.r;
+            if(f.y < -f.r) f.y = h + f.r; if(f.y > h + f.r) f.y = -f.r;
+            const g = bgc.createRadialGradient(f.x,f.y,0,f.x,f.y,f.r);
+            if(f.hue==='green'){
+                g.addColorStop(0, `rgba(70,255,170,${f.alpha})`);
+                g.addColorStop(.55, `rgba(30,120,80,${f.alpha*.45})`);
+            }else{
+                g.addColorStop(0, `rgba(120,180,255,${f.alpha})`);
+                g.addColorStop(.55, `rgba(40,80,140,${f.alpha*.4})`);
+            }
+            g.addColorStop(1, 'rgba(0,0,0,0)');
+            bgc.fillStyle = g;
+            bgc.beginPath();
+            bgc.arc(f.x,f.y,f.r,0,Math.PI*2);
+            bgc.fill();
+        });
+        stars.forEach(s => {
+            s.a += Math.sin(Date.now()*0.001*s.s)*0.002;
+            bgc.fillStyle = `rgba(255,255,255,${Math.max(.08,Math.min(.8,s.a))})`;
+            bgc.beginPath();
+            bgc.arc(s.x,s.y,s.r,0,Math.PI*2);
+            bgc.fill();
+        });
+
+        gc.clearRect(0,0,w,h);
+        glyphs.forEach(g => {
+            g.y += g.vy;
+            if(g.y > h + 30){ g.y = -20; g.x = rand(0,w); g.char = chaosAlphabet[Math.floor(Math.random()*chaosAlphabet.length)]; }
+            if(Math.random()>.96) g.char = chaosAlphabet[Math.floor(Math.random()*chaosAlphabet.length)];
+            gc.fillStyle = `rgba(190,255,220,${g.a})`;
+            gc.font = `${g.size}px monospace`;
+            gc.fillText(g.char, g.x, g.y);
+        });
+        requestAnimationFrame(draw);
+    }
+    resize();
+    build();
+    draw();
+    window.addEventListener('resize', () => { resize(); build(); });
+}
+initBackground();
 </script>
-</body>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0914b1a9f8f9dc1',t:'MTc4MTAyMDI0MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
