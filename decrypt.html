@@ -11,12 +11,13 @@
     --тусклый:#7c857f;
     --зелёный:#9dffbf;
     --красный:#ff7272;
-    --голубой:#c7e1ff;
+    --голубой:#8fb2ff;
     --розовый:#f0a6ff;
     --серый-лист:#d8d5cf;
     --серый-лист-2:#c5c2bb;
     --серый-лист-3:#b1aea8;
     --чернила:#1e1a17;
+    --рукопись:"Segoe Print","Bradley Hand","Comic Sans MS",cursive;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -102,9 +103,7 @@ body.архив-открыт .кнопка-возврата{display:block}
 .корешок::before{content:"";position:absolute;left:14px;right:14px;top:14px;bottom:14px;border:1px solid rgba(255,255,255,.08)}
 .кольца{position:absolute;left:52px;top:18px;bottom:18px;width:24px;display:flex;flex-direction:column;justify-content:space-evenly;z-index:2}
 .кольца span{display:block;width:16px;height:16px;border-radius:50%;border:3px solid #505050;background:linear-gradient(145deg,#9d9d9d,#6e6e6e);box-shadow:inset 1px 1px 2px rgba(255,255,255,.2),1px 2px 4px rgba(0,0,0,.25)}
-.рельсы{position:absolute;top:28px;bottom:30px;left:50%;transform:translateX(-50%);width:min(860px, calc(100% - 40px));pointer-events:none;z-index:18}
-.рельсы::before,.рельсы::after{content:"";position:absolute;top:0;bottom:0;width:1px;background:rgba(160,255,200,.09)}
-.рельсы::before{left:20px}.рельсы::after{right:20px}
+.рельсы{position:absolute;top:28px;bottom:30px;left:50%;transform:translateX(-50%);width:min(860px, calc(100% - 40px));pointer-events:none;z-index:18;opacity:0}
 .страницы{position:relative;display:flex;flex-direction:column;gap:30px;align-items:center}
 .страница{
     position:relative;width:min(860px, 100%);min-height:1180px;padding:28px 28px 34px 34px;
@@ -127,14 +126,14 @@ body.архив-открыт .кнопка-возврата{display:block}
 .пятно.b{width:90px;height:60px;left:7%;bottom:12%;border-radius:50%;background:rgba(90,78,62,.14);filter:blur(.8px)}
 .угол{right:-1px;bottom:-1px;width:80px;height:80px;background:linear-gradient(135deg, rgba(0,0,0,0) 52%, rgba(94,84,71,.22) 53%, rgba(255,255,255,.16) 100%);clip-path:polygon(100% 0,100% 100%,0 100%);opacity:.6}
 .поле-текста{position:relative;z-index:1}
-.поле-текста::before{content:"";position:absolute;left:22px;top:0;bottom:0;width:2px;background:rgba(180,60,60,.18);pointer-events:none}
-.абзац{position:relative;margin:0 0 18px 34px;color:var(--чернила);font-size:1.02rem;line-height:1.95;text-shadow:0 .2px 0 rgba(255,255,255,.08)}
+.абзац{position:relative;margin:0 0 18px 18px;color:var(--чернила);font-size:1.05rem;line-height:1.9;font-family:var(--рукопись);letter-spacing:.02em;text-shadow:0 .2px 0 rgba(255,255,255,.08)}
 .абзац.повреждённый{color:#2c2320}
-.символ{display:inline-block;min-width:.02em;white-space:pre;color:var(--чернила)}
+.символ{display:inline-block;min-width:.02em;white-space:pre;color:var(--чернила);transition:color .18s ease, text-shadow .18s ease, opacity .18s ease}
+.символ.внутри-призмы{color:#f4f7f6;text-shadow:0 0 8px rgba(255,255,255,.18)}
 .имя-участника{pointer-events:none;cursor:default;transition:.18s ease;position:relative}
-.имя-участника.активно{pointer-events:auto;cursor:pointer;color:#0f2d1f;box-shadow:inset 0 -1px 0 rgba(60,112,80,.34);text-shadow:0 0 6px rgba(80,160,110,.18)}
+.имя-участника.активно{pointer-events:auto;cursor:pointer;color:var(--голубой);box-shadow:inset 0 -1px 0 rgba(130,170,255,.44);text-shadow:0 0 7px rgba(130,170,255,.22)}
 
-.призма{position:absolute;z-index:20;display:none;width:min(860px, calc(100% - 40px));height:260px;border:1px solid rgba(160,255,200,.42);background:linear-gradient(180deg, rgba(70,255,170,.08), rgba(70,255,170,.04));box-shadow:0 0 44px rgba(100,255,180,.14), inset 0 0 40px rgba(100,255,180,.08);overflow:hidden;pointer-events:none}
+.призма{position:absolute;z-index:20;display:none;width:min(860px, calc(100% - 40px));height:260px;border:1px solid rgba(160,255,200,.42);background:linear-gradient(180deg, rgba(10,16,12,.68), rgba(10,16,12,.58));box-shadow:0 0 44px rgba(100,255,180,.14), inset 0 0 40px rgba(100,255,180,.08);overflow:hidden;pointer-events:none;backdrop-filter:brightness(.72) contrast(1.05)}
 .призма.активна{display:block}.призма *{pointer-events:auto}
 .призма.сбой{animation:сбойПризмы .18s linear infinite;border-color:rgba(255,120,120,.44);box-shadow:0 0 50px rgba(255,80,80,.15), inset 0 0 40px rgba(255,80,80,.08)}
 @keyframes сбойПризмы{0%,100%{transform:translateY(0)}25%{transform:translateY(1px)}50%{transform:translateY(-1px)}75%{transform:translateY(2px)}}
@@ -146,6 +145,7 @@ body.архив-открыт .кнопка-возврата{display:block}
 .фиксатор{border:1px solid rgba(160,255,200,.2);background:rgba(0,0,0,.22);color:#d7ffe4;padding:2px 6px;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;cursor:pointer;pointer-events:auto}
 .фиксатор.активен{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.28)}
 .внутренний-шум{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.08;mix-blend-mode:screen;pointer-events:none}
+.призма-затемнение{position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.22), rgba(0,0,0,.12));mix-blend-mode:multiply;pointer-events:none}
 
 .сканер{position:absolute;top:0;right:0;width:320px;height:780px;z-index:25;transform:translateX(120%);transition:transform .55s cubic-bezier(.22,.8,.2,1)}
 .сканер.активен{transform:translateX(0)}
@@ -158,8 +158,7 @@ body.архив-открыт .кнопка-возврата{display:block}
 .экран-сканера{position:relative;height:100%;border:1px solid rgba(160,255,200,.2);background:radial-gradient(circle at center, rgba(70,130,90,.16), rgba(0,12,5,.94));padding:14px;overflow:hidden}
 .экран-сканера .шум{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.10;mix-blend-mode:screen}
 .экран-сканера .рябь{position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(150,255,200,.06) 0 1px, transparent 1px 3px);opacity:.5}
-.данные-сканера{position:relative;z-index:1;display:grid;gap:10px;font-size:.72rem;line-height:1.8;letter-spacing:.15em;text-transform:uppercase;color:#bcffcf}
-.поле-сканера{position:relative;z-index:1;margin-top:14px;padding:12px;border:1px solid rgba(160,255,200,.18);background:rgba(0,0,0,.18);min-height:280px;color:#a2ffc0;font-size:.74rem;line-height:1.75;letter-spacing:.14em;text-transform:uppercase;white-space:pre-wrap}
+.поле-сканера{position:absolute;left:14px;right:14px;top:14px;bottom:14px;border:1px solid rgba(160,255,200,.18);background:rgba(0,0,0,.16);white-space:pre-wrap}
 
 .досье{position:fixed;top:70px;right:-430px;width:390px;z-index:90;transition:right .5s cubic-bezier(.22,.8,.2,1)}
 .досье.активно{right:18px}
@@ -171,6 +170,8 @@ body.архив-открыт .кнопка-возврата{display:block}
 .верх-досье small{display:block;margin-top:6px;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:#60584f}
 .закрыть-досье{min-width:40px;height:40px;border:1px solid rgba(0,0,0,.14);background:rgba(255,255,255,.34);cursor:pointer;transition:.2s ease}
 .закрыть-досье:hover{transform:rotate(90deg)}
+.фото-досье{position:relative;z-index:1;margin-bottom:14px;border:1px solid rgba(0,0,0,.12);background:rgba(255,255,255,.18);padding:8px}
+.фото-досье img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;filter:grayscale(1) contrast(1.08)}
 .поля-досье{position:relative;z-index:1;display:grid;gap:10px}
 .поле-досье{padding:10px 12px;border:1px solid rgba(0,0,0,.1);background:rgba(255,255,255,.22);font-size:.88rem;line-height:1.72;color:#17130f}
 .поле-досье strong{display:block;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:#5d5449;margin-bottom:5px}
@@ -253,12 +254,7 @@ body.архив-открыт .кнопка-возврата{display:block}
                     <div class="экран-сканера">
                         <div class="шум"></div>
                         <div class="рябь"></div>
-                        <div class="данные-сканера">
-                            <div>архивная призма</div>
-                            <div>режим: чтение бумажного носителя</div>
-                            <div id="состояниеСканера">состояние: ожидание</div>
-                        </div>
-                        <div class="поле-сканера" id="полеСканера">нет устойчивого чтения</div>
+                        <div class="поле-сканера" id="полеСканера"></div>
                     </div>
                 </div>
             </aside>
@@ -275,6 +271,7 @@ body.архив-открыт .кнопка-возврата{display:block}
             </div>
             <button class="закрыть-досье" id="закрытьДосье" type="button">✕</button>
         </div>
+        <div class="фото-досье"><img id="фотоДосье" src="" alt=""></div>
         <div class="поля-досье" id="поляДосье"></div>
     </div>
 </div>
@@ -282,6 +279,7 @@ body.архив-открыт .кнопка-возврата{display:block}
 <script>
 const азбука = '▓▒░█/#<>[]{}01ψΩΛЖЯÆИҰ∎◢◣◤◥';
 const буквы = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЭЮЯ0123456789';
+const мёртвыйАлфавит = 'אבגדהוזחטיכלמנסעפצקרשתװױײ׳״₪';
 const страницыДанных = [
     [
         ['Детективное частное агентство “DECRYPT” так-же как и большинство нишевых организациях зародилось в секторе Спинвардская Периферия, в самой гуще развития мегаполиса на планете Y-27, первый основатель организации стал ', {member:'hiyoshi', text:'Хиоши Сузуки'}, ', прибывший на планету около 3х лет назад, на небольшой межтрансовом шаттле из солнечной системы. Начальный капитал организации составил 400.000$ наличными что были выделены Хиоши его родителями под залог, с ожиданием того что тот вернёт более 70% залога свыше, если не прогорит в сточной канаве планеты.'],
@@ -302,10 +300,10 @@ const страницыДанных = [
     ]
 ];
 const досьеДанные = {
-    hiyoshi:{name:'Хиоши Сузуки', fields:[['ФИО','Хиоши Сузуки'],['пол','мужской'],['раса','человек'],['рост','178 см'],['вес','71 кг'],['статус','след оборван'],['родная планета','Земля / солнечная система'],['краткая характеристика','Основатель. Поднял агентство из бытового сыска в рынок корпоративной грязи, предпочитая дробить заказы так, чтобы никто не видел всей картины целиком.']]} ,
-    cadence:{name:'Каденс Слоан', fields:[['ФИО','Каденс Слоан'],['пол','женский'],['раса','аркана'],['рост','171 см'],['вес','57 кг'],['статус','последний след нестабилен'],['родная планета','не зафиксирована'],['краткая характеристика','Полевой элемент. Сцены вокруг неё выглядят бытовыми, но именно через такие места в архиве чаще всего начинается чужой компромат.']]} ,
-    iridium:{name:'Иридий', fields:[['ФИО','Иридий'],['пол','мужской'],['раса','человек'],['рост','188 см'],['вес','79 кг'],['статус','следы разорваны'],['родная планета','Ме<span>▓</span>р<span>◢</span>к<span>█</span>у<span>Æ</span>р<span>Я</span>и<span>01</span>-<span>█</span><span>◣</span>'],['краткая характеристика','Принёс агентству подвижность. Возникает рядом с узлами вывоза, передачи и слишком быстрым исчезновением хвостов.']]} ,
-    daros:{name:'Дарос Полей', fields:[['ФИО','Дарос Полей'],['пол','мужской'],['раса','вульпканин'],['рост','182 см'],['вес','68 кг'],['статус','данные неполные'],['родная планета','не подтверждена'],['краткая характеристика','Связан с частотами, служебными проходами, запасными ключами и нижним плато. От него осталось меньше лица, чем метода.']]} 
+    hiyoshi:{name:'Хиоши Сузуки', photo:'assets/decrypt/hiyoshi-elevator.png', fields:[['ФИО','Хиоши Сузуки'],['пол','мужской'],['раса','человек'],['рост','178 см'],['вес','71 кг'],['статус','след оборван'],['родная планета','Земля / солнечная система'],['краткая характеристика','Основатель. Поднял агентство из бытового сыска в рынок корпоративной грязи, предпочитая дробить заказы так, чтобы никто не видел всей картины целиком.']]} ,
+    cadence:{name:'Каденс Слоан', photo:'assets/decrypt/arcana-cigarettes.jpeg', fields:[['ФИО','Каденс Слоан'],['пол','женский'],['раса','аркана'],['рост','171 см'],['вес','57 кг'],['статус','последний след нестабилен'],['родная планета','не зафиксирована'],['краткая характеристика','Полевой элемент. Сцены вокруг неё выглядят бытовыми, но именно через такие места в архиве чаще всего начинается чужой компромат.']]} ,
+    iridium:{name:'Иридий', photo:'assets/decrypt/iridium-elevator.png', fields:[['ФИО','Иридий'],['пол','мужской'],['раса','человек'],['рост','188 см'],['вес','79 кг'],['статус','следы разорваны'],['родная планета','Ме<span>▓</span>р<span>◢</span>к<span>█</span>у<span>Æ</span>р<span>Я</span>и<span>01</span>-<span>█</span><span>◣</span>'],['краткая характеристика','Принёс агентству подвижность. Возникает рядом с узлами вывоза, передачи и слишком быстрым исчезновением хвостов.']]} ,
+    daros:{name:'Дарос Полей', photo:'assets/decrypt/daros-placeholder.svg', fields:[['ФИО','Дарос Полей'],['пол','мужской'],['раса','вульпканин'],['рост','182 см'],['вес','68 кг'],['статус','данные неполные'],['родная планета','не подтверждена'],['краткая характеристика','Связан с частотами, служебными проходами, запасными ключами и нижним плато. От него осталось меньше лица, чем метода.']]} 
 };
 
 const экранФайлов = document.getElementById('экранФайлов');
@@ -319,9 +317,9 @@ const призма = document.getElementById('призма');
 const фиксаторПризмы = document.getElementById('фиксаторПризмы');
 const сканер = document.getElementById('сканер');
 const полеСканера = document.getElementById('полеСканера');
-const состояниеСканера = document.getElementById('состояниеСканера');
 const досье = document.getElementById('досье');
 const имяДосье = document.getElementById('имяДосье');
+const фотоДосье = document.getElementById('фотоДосье');
 const поляДосье = document.getElementById('поляДосье');
 const шторка = document.getElementById('шторка');
 
@@ -331,6 +329,7 @@ let призмаПоказана = false;
 let призмаЗафиксирована = false;
 let тащимПризму = false;
 let смещениеПризмыY = 0;
+let позицияПризмыX = 27;
 let позицияПризмыY = 24;
 let границыСтраниц = null;
 let размерПризмыW = 0;
@@ -343,11 +342,12 @@ const ipPromise = получитьIPv4();
 function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function случайныйСимвол(){return азбука[Math.floor(Math.random()*азбука.length)]}
 function случайнаяБуква(){return буквы[Math.floor(Math.random()*буквы.length)]}
+function чужаяБуква(){return мёртвыйАлфавит[Math.floor(Math.random()*мёртвыйАлфавит.length)]}
 function испорченный(real){
     if(/[0-9]/.test(real)) return String(Math.floor(Math.random()*10));
-    if(/[A-Za-zА-Яа-яЁё]/.test(real)) return случайнаяБуква();
+    if(/[A-Za-zА-Яа-яЁё]/.test(real)) return чужаяБуква();
     if(/[\.,:;!?\-—()«»"'`]/.test(real)) return случайныйСимвол();
-    return случайныйСимвол();
+    return Math.random()>.55 ? чужаяБуква() : случайныйСимвол();
 }
 
 async function получитьJSON(url, timeout=2200){
@@ -525,6 +525,7 @@ function измеритьГлифы(){
     if(первая){
         const r = первая.getBoundingClientRect();
         размерПризмыW = r.width - 54;
+        позицияПризмыX = первая.offsetLeft + 27;
         призма.style.width = размерПризмыW + 'px';
     }
     глифы = Array.from(страницы.querySelectorAll('.символ')).map(el=>{
@@ -548,15 +549,14 @@ function скрытьПризму(){
     сканер.classList.remove('активен','сбой');
     фиксаторПризмы.classList.remove('активен');
     фиксаторПризмы.textContent = 'свободно';
-    состояниеСканера.textContent = 'состояние: ожидание';
-    полеСканера.textContent = 'нет устойчивого чтения';
+    полеСканера.textContent = '';
     Object.values(участники).forEach(v=>v.el.classList.remove('активно'));
     глифы.forEach(g=>{g.progress=0; g.el.textContent=g.base;});
 }
 function поставитьПризмуY(y){
     if(!границыСтраниц) return;
     позицияПризмыY = Math.max(0, Math.min(границыСтраниц.height - размерПризмыH, y));
-    призма.style.left = '27px';
+    призма.style.left = позицияПризмыX + 'px';
     призма.style.top = позицияПризмыY + 'px';
 }
 кнопкаПризмы.addEventListener('click', ()=>{призмаПоказана ? скрытьПризму() : показатьПризму();});
@@ -623,14 +623,21 @@ function обновитьЧтение(){
     let кусок = '';
     Object.values(участники).forEach(v=>v.visible=0);
     for(const g of глифы){
-        const inRect = g.x >= 27 && g.x <= 27 + размерПризмыW && g.y >= позицияПризмыY && g.y <= позицияПризмыY + размерПризмыH;
+        const inRect = g.x >= позицияПризмыX && g.x <= позицияПризмыX + размерПризмыW && g.y >= позицияПризмыY && g.y <= позицияПризмыY + размерПризмыH;
         if(inRect){
             g.progress = Math.min(1, g.progress + (g.damaged ? .03 : .04));
-            if(g.damaged){ g.el.textContent = битыйПереход(g.real, g.progress); сбой = true; }
-            else { g.el.textContent = переходный(g.real, g.progress); if(g.member && участники[g.member]) участники[g.member].visible += g.progress; }
+            g.el.classList.add('внутри-призмы');
+            if(g.damaged){
+                g.el.textContent = битыйПереход(g.real, g.progress);
+                сбой = true;
+            } else {
+                g.el.textContent = переходный(g.real, g.progress);
+                if(g.member && участники[g.member]) участники[g.member].visible += g.progress;
+            }
             if(кусок.length < 220) кусок += g.el.textContent;
         } else {
             g.progress = 0;
+            g.el.classList.remove('внутри-призмы');
             g.el.textContent = g.base;
         }
     }
@@ -640,8 +647,7 @@ function обновитьЧтение(){
     });
     призма.classList.toggle('сбой', сбой);
     сканер.classList.toggle('сбой', сбой);
-    состояниеСканера.textContent = 'состояние: ' + (сбой ? 'сбой чтения' : 'чтение идёт');
-    полеСканера.textContent = кусок.trim() ? кусок.trim().slice(0,220) : 'нет устойчивого чтения';
+    полеСканера.textContent = кусок.trim() ? кусок.trim().slice(0,220) : '';
     document.body.classList.toggle('пойман', сбой);
 }
 setInterval(обновитьЧтение, 55);
@@ -650,6 +656,8 @@ function открытьДосье(key){
     const data = досьеДанные[key];
     if(!data) return;
     имяДосье.textContent = data.name;
+    фотоДосье.src = data.photo;
+    фотоДосье.alt = data.name;
     поляДосье.innerHTML = '';
     data.fields.forEach(([k,v])=>{
         const row = document.createElement('div');
@@ -689,5 +697,5 @@ window.addEventListener('resize', ()=>{ if(архив.classList.contains('акт
 запуститьМатрицу();
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a098b54b6b9a9d94',t:'MTc4MTA5Nzk5MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
