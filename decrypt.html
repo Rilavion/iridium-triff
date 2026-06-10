@@ -6,377 +6,502 @@
 <title>НЕ_УНАТХ</title>
 <style>
 :root{
-    --чёрный:#000;
-    --текст:#d7dfd8;
-    --тусклый:#717d76;
-    --линия:rgba(255,255,255,.09);
-    --плёнка:rgba(255,255,255,.025);
-    --зелёный:#9bffbc;
-    --лед:#c7e5ff;
-    --тревога:#ff6a6a;
-    --бумага1:#ece1cd;
-    --бумага2:#dcccad;
-    --бумага3:#cfbb97;
-    --чернила:#231d17;
+    --чёрный:#000000;
+    --белый:#e6ece8;
+    --тусклый:#78817c;
+    --зелёный:#9effbc;
+    --красный:#ff6f6f;
+    --лёд:#c7e1ff;
+    --розовый:#ff8be3;
+    --ржавчина:#ffbf7d;
+    --бумага1:#eee2ce;
+    --бумага2:#ddccb0;
+    --бумага3:#ccb58f;
+    --чернила:#251f18;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
     min-height:100vh;
     overflow-x:hidden;
-    background:#000;
-    color:var(--текст);
+    background:var(--чёрный);
+    color:var(--белый);
     font-family:Consolas, Menlo, Monaco, "Courier New", monospace;
     position:relative;
 }
-body::before,
-body::after{content:"";position:fixed;inset:0;pointer-events:none}
-body::before{background:#000;z-index:-4}
-body::after{z-index:160;background:repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 3px);opacity:.12}
-body.пойман{animation:рывок .25s linear 2}
-@keyframes рывок{0%{filter:brightness(1)}50%{filter:brightness(2.1)}100%{filter:brightness(1)}}
-
-#фонСимволов,.виньетка,.сканЛиния,.шторка{position:fixed;inset:0;pointer-events:none}
-#фонСимволов{z-index:-3;background:#000}
-.виньетка{z-index:161;background:radial-gradient(ellipse 78% 62% at 50% 46%, transparent 0%, rgba(0,0,0,.22) 68%, rgba(0,0,0,.84) 100%)}
-.сканЛиния{z-index:162;opacity:.12;background:linear-gradient(180deg, transparent 0%, rgba(160,255,210,.04) 40%, rgba(160,255,210,.12) 50%, rgba(160,255,210,.04) 60%, transparent 100%);animation:скан 9s linear infinite}
-@keyframes скан{0%{transform:translateY(-110%)}100%{transform:translateY(110%)}}
-.шторка{z-index:320;background:#000;opacity:0;transition:opacity .42s ease}
+#матрица{position:fixed;inset:0;z-index:0;pointer-events:none;background:#000}
+.шторка{position:fixed;inset:0;z-index:60;background:#000;opacity:0;pointer-events:none;transition:opacity .35s ease}
 .шторка.активна{opacity:1;pointer-events:auto}
 
-.верхняяПолоса{
-    position:fixed;top:0;left:0;right:0;z-index:120;
-    display:flex;align-items:center;justify-content:space-between;gap:12px;
-    padding:11px 14px;border-bottom:1px solid var(--линия);
-    background:rgba(0,0,0,.84);backdrop-filter:blur(8px);
-    opacity:0;pointer-events:none;transform:translateY(-10px);
-    transition:opacity .38s ease, transform .38s ease;
+.экран-файлов{
+    position:relative;
+    z-index:2;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
 }
-body.архивОткрыт .верхняяПолоса{opacity:1;pointer-events:auto;transform:translateY(0)}
-.верхЛево,.верхПраво{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.кнопкаВернуть,.меткаУзла{
-    padding:8px 10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.02);
-    color:var(--тусклый);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase
+.поле-файлов{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:110px;
+    flex-wrap:wrap;
 }
-.кнопкаВернуть{cursor:pointer;transition:.2s ease}
-.кнопкаВернуть:hover{color:var(--текст);border-color:rgba(255,255,255,.28);transform:translateY(-1px)}
-.часы{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--тусклый)}
-main{position:relative;z-index:2;padding-top:0;transition:padding-top .4s ease}
-body.архивОткрыт main{padding-top:56px}
-
-.загрузка,
-.загрузкаАрхива,
-.иридий77{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:260;background:rgba(0,0,0,.96)}
-.загрузка{flex-direction:column;gap:18px;transition:opacity .7s ease, visibility .7s ease}
-.загрузка.скрыта{opacity:0;visibility:hidden;pointer-events:none}
-.полеШума{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-.шумСтрока{position:absolute;left:0;right:0;white-space:nowrap;color:rgba(150,255,190,.18);font-size:.86rem;letter-spacing:.21em;text-transform:uppercase;animation:дрейф linear forwards}
-@keyframes дрейф{0%{transform:translateY(40px);opacity:0}8%{opacity:1}100%{transform:translateY(-120px);opacity:0}}
-.окноЗагрузки{
-    width:min(700px, calc(100% - 28px));
-    padding:20px;border:1px solid rgba(255,255,255,.1);
-    background:linear-gradient(180deg, rgba(5,6,6,.94), rgba(1,1,1,.98));
-    box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 70px rgba(0,0,0,.82);
-    overflow:hidden;position:relative
-}
-.окноЗагрузки::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,.05) 50%, transparent 100%);transform:translateX(-100%);animation:пробег 4.5s linear infinite}
-@keyframes пробег{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-.шапкаЗагрузки{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--тусклый)}
-.заголовокЗагрузки{font-size:.95rem;line-height:1.8;letter-spacing:.17em;text-transform:uppercase;color:#fff;margin-bottom:16px}
-.строкиЗагрузки{display:grid;gap:8px;min-height:120px}
-.строкаЗагрузки{font-size:.85rem;line-height:1.7;color:#c0c8c2;min-height:1.6em}
-.строкаЗагрузки::before{content:"> ";color:var(--зелёный)}
-.полосаЗагрузки{margin-top:16px;height:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);overflow:hidden}
-.полосаЗагрузки div{height:100%;width:0;background:linear-gradient(90deg, rgba(255,255,255,.08), rgba(155,255,188,.95), rgba(255,255,255,.08));transition:width .25s ease}
-
-.сценаФайлов{
-    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;
-    transition:opacity .5s ease, transform .5s ease
-}
-.сценаФайлов.скрыта{opacity:0;pointer-events:none;transform:scale(.985)}
-.полеФайлов{display:flex;align-items:center;justify-content:center;gap:96px;flex-wrap:wrap}
 .файл{
-    border:none;background:transparent;color:inherit;cursor:pointer;
-    display:flex;flex-direction:column;align-items:center;gap:16px;position:relative;
-    transition:transform .24s ease, filter .24s ease;animation:плавание 6s ease-in-out infinite
+    appearance:none;
+    border:none;
+    background:transparent;
+    color:inherit;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:16px;
+    position:relative;
+    animation:плавание 8s ease-in-out infinite;
+    transition:filter .22s ease;
 }
-.файл:nth-child(2){animation-duration:7s;animation-delay:-1.6s}
-@keyframes плавание{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.файл:nth-child(2){animation-duration:9.4s;animation-delay:-1.8s}
 .файл:hover{filter:brightness(1.08)}
-.файл::after{content:"";position:absolute;top:18px;left:50%;width:126px;height:162px;transform:translateX(-50%);background:radial-gradient(circle at center, rgba(255,255,255,.06), transparent 70%);filter:blur(18px);opacity:.5}
-.листФайла{
-    width:130px;height:160px;position:relative;z-index:1;
-    background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-    border:1px solid rgba(255,255,255,.13);
-    box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 40px rgba(0,0,0,.48)
+.файл::after{
+    content:"";
+    position:absolute;
+    top:14px;
+    left:50%;
+    transform:translateX(-50%);
+    width:132px;
+    height:170px;
+    background:radial-gradient(circle at center, rgba(255,255,255,.05), transparent 72%);
+    filter:blur(18px);
+    opacity:.42;
 }
-.листФайла::before{content:"";position:absolute;right:-1px;top:-1px;border-top:24px solid rgba(255,255,255,.1);border-left:24px solid transparent}
-.листФайла::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(255,255,255,.03), transparent 28%, transparent 72%, rgba(255,255,255,.02))}
-.внутриЛиста{position:absolute;inset:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.015);overflow:hidden}
-.внутриЛиста::before,.внутриЛиста::after{content:"";position:absolute;left:10px;right:10px;height:1px;background:rgba(255,255,255,.12)}
-.внутриЛиста::before{top:34px;box-shadow:0 22px 0 rgba(255,255,255,.08),0 44px 0 rgba(255,255,255,.08),0 66px 0 rgba(255,255,255,.08)}
-.внутриЛиста::after{top:18px;left:auto;right:12px;width:26px;height:26px;background:linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.01));clip-path:polygon(0 0, 100% 0, 100% 100%)}
-.битый{animation:битый 2.8s steps(2) infinite, плавание 6.8s ease-in-out infinite}
-@keyframes битый{0%,100%{filter:none}10%{transform:translate(1px,-1px)}14%{transform:translate(-2px,1px)}18%{transform:none}62%{transform:translate(2px,0)}66%{transform:translate(-1px,0)}70%{transform:none}}
-.имяФайла{position:relative;z-index:1;max-width:260px;text-align:center;font-size:.92rem;line-height:1.75;letter-spacing:.14em;text-transform:uppercase;color:#eef4f0}
-
-.архив{width:min(1320px, calc(100% - 24px));margin:0 auto 80px;display:none;opacity:0;transform:translateY(16px);transition:opacity .5s ease, transform .5s ease}
-.архив.активен{display:block;opacity:1;transform:translateY(0)}
-.корпусАрхива{position:relative;padding:18px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg, rgba(4,5,5,.88), rgba(1,1,1,.96));box-shadow:0 0 0 1px rgba(255,255,255,.02),0 0 90px rgba(0,0,0,.74)}
-.загрузкаАрхива{z-index:240;transition:opacity .7s ease, visibility .7s ease}
-.загрузкаАрхива.скрыта{opacity:0;visibility:hidden;pointer-events:none}
-.архивныеСтроки{display:grid;gap:8px;min-height:180px}
-.архивныеСтроки div{font-size:.86rem;line-height:1.75;color:#c0c8c2;min-height:1.6em}
-.архивныеСтроки div::before{content:"> ";color:var(--зелёный)}
-
-.архивнаяПометка{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px;padding:14px 16px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.015)}
-.архивнаяПометка div{font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;line-height:1.75;color:#eef4f0}
-.архивнаяПометка .статус{color:var(--тревога)}
-
-.зонаТетради{position:relative;padding-right:356px}
-.переключательПризмы{
-    position:absolute;right:0;top:10px;z-index:16;width:44px;height:150px;
-    border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg, rgba(9,10,10,.98), rgba(2,2,2,.98));
-    color:#d9e5dd;writing-mode:vertical-rl;text-orientation:mixed;letter-spacing:.18em;text-transform:uppercase;font-size:.72rem;
-    cursor:pointer;transition:.22s ease
+@keyframes плавание{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.иконка-файла{
+    position:relative;
+    width:132px;
+    height:164px;
+    border:1px solid rgba(255,255,255,.14);
+    background:linear-gradient(180deg, rgba(255,255,255,.085), rgba(255,255,255,.03));
+    box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 44px rgba(0,0,0,.45);
+    overflow:hidden;
+    animation:дыханиеФайла 4.8s ease-in-out infinite;
 }
-.переключательПризмы:hover{border-color:rgba(255,255,255,.28);transform:translateX(-2px)}
+.иконка-файла::before{
+    content:"";
+    position:absolute;
+    right:-1px;
+    top:-1px;
+    border-top:24px solid rgba(255,255,255,.12);
+    border-left:24px solid transparent;
+}
+.иконка-файла::after{
+    content:"";
+    position:absolute;
+    inset:14px;
+    border:1px solid rgba(255,255,255,.08);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.02), transparent 30%, transparent 70%, rgba(255,255,255,.02)),
+        repeating-linear-gradient(180deg, transparent 0 22px, rgba(255,255,255,.09) 22px 23px);
+}
+.файл.битый .иконка-файла,
+.файл.битый .имя-файла{animation:сбой 3.2s steps(2) infinite, плавание 9.4s ease-in-out infinite}
+.файл:not(.битый) .иконка-файла,
+.файл:not(.битый) .имя-файла{animation:дрожь 6.4s steps(2) infinite, дыханиеФайла 4.8s ease-in-out infinite}
+@keyframes дыханиеФайла{0%,100%{box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 44px rgba(0,0,0,.45)}50%{box-shadow:0 0 0 1px rgba(255,255,255,.03), 0 0 60px rgba(255,255,255,.05)}}
+@keyframes дрожь{0%,100%{transform:none}8%{transform:translate(1px,0)}10%{transform:none}47%{transform:translate(-1px,1px)}49%{transform:none}}
+@keyframes сбой{0%,100%{transform:none}12%{transform:translate(-2px,1px)}16%{transform:translate(2px,-1px)}20%{transform:none}61%{transform:translate(1px,0)}65%{transform:translate(-2px,0)}69%{transform:none}}
+.имя-файла{
+    max-width:260px;
+    text-align:center;
+    font-size:.92rem;
+    line-height:1.75;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:#eef4f0;
+}
+
+.кнопка-возврата{
+    position:fixed;
+    top:14px;
+    left:14px;
+    z-index:30;
+    display:none;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(0,0,0,.84);
+    color:var(--тусклый);
+    padding:8px 10px;
+    font-size:.68rem;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:.2s ease;
+}
+body.архив-открыт .кнопка-возврата{display:block}
+.кнопка-возврата:hover{color:var(--белый);border-color:rgba(255,255,255,.28);transform:translateY(-1px)}
+
+.консоль{
+    position:fixed;
+    inset:0;
+    z-index:50;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.98);
+}
+.консоль.активна{display:flex}
+.консоль-окно{
+    width:min(760px, calc(100% - 30px));
+    padding:22px;
+    border:1px solid rgba(255,255,255,.12);
+    background:linear-gradient(180deg, rgba(4,8,5,.94), rgba(0,0,0,.98));
+    box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 90px rgba(0,0,0,.85);
+    position:relative;
+    overflow:hidden;
+}
+.консоль-окно::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:repeating-linear-gradient(0deg, rgba(150,255,190,.05) 0 2px, transparent 2px 4px);
+    opacity:.45;
+    pointer-events:none;
+}
+.консоль-окно::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(180deg, transparent 0%, rgba(150,255,190,.06) 46%, rgba(150,255,190,.18) 50%, rgba(150,255,190,.06) 54%, transparent 100%);
+    animation:ходКонсоли 3.2s linear infinite;
+    pointer-events:none;
+}
+@keyframes ходКонсоли{0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}
+.строки-консоли{position:relative;z-index:1;display:grid;gap:8px;min-height:170px}
+.строка-консоли{font-size:.86rem;line-height:1.74;color:#c0d0c6;min-height:1.6em}
+.строка-консоли::before{content:"> ";color:var(--зелёный)}
+
+.архив{
+    position:relative;
+    z-index:3;
+    display:none;
+    width:min(1540px, calc(100% - 30px));
+    margin:78px auto 80px;
+}
+.архив.активен{display:block}
+.архивная-пометка{
+    margin-bottom:18px;
+    padding:14px 16px;
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.015);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+}
+.архивная-пометка div{font-size:.82rem;line-height:1.75;letter-spacing:.16em;text-transform:uppercase;color:#eef4f0}
+.архивная-пометка .статус{color:var(--красный)}
+
+.поле-дела{position:relative}
+.кнопка-призмы{
+    position:absolute;
+    right:0;
+    top:0;
+    z-index:12;
+    width:44px;
+    height:148px;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(0,0,0,.88);
+    color:var(--белый);
+    writing-mode:vertical-rl;
+    text-orientation:mixed;
+    font-size:.72rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:.22s ease;
+}
+.кнопка-призмы:hover{border-color:rgba(255,255,255,.28);transform:translateX(-2px)}
+
 .тетрадь{
-    position:relative;min-height:980px;padding:26px 26px 30px 94px;
-    background:linear-gradient(180deg, rgba(17,13,9,.36), rgba(0,0,0,.18));
-    border:1px solid rgba(255,255,255,.05)
+    position:relative;
+    padding:26px 20px 26px 98px;
+    background:rgba(255,255,255,.02);
+    border:1px solid rgba(255,255,255,.06);
 }
 .корешок{
-    position:absolute;left:0;top:0;bottom:0;width:82px;
-    background:linear-gradient(90deg, #7e5b39 0%, #9a744c 45%, #6b4d31 100%);
-    border-right:3px solid rgba(22,15,8,.35);box-shadow:inset -10px 0 18px rgba(0,0,0,.18)
+    position:absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    width:84px;
+    background:linear-gradient(90deg, #7d5a38 0%, #9b7550 45%, #66492f 100%);
+    border-right:3px solid rgba(22,15,8,.38);
+    box-shadow:inset -10px 0 16px rgba(0,0,0,.18);
 }
-.корешок::before{content:"";position:absolute;left:16px;top:16px;right:16px;bottom:16px;border:1px solid rgba(255,255,255,.09)}
-.кольца{position:absolute;left:56px;top:18px;bottom:18px;width:26px;display:flex;flex-direction:column;justify-content:space-evenly;z-index:2}
-.кольца span{display:block;width:16px;height:16px;border-radius:50%;border:3px solid #595959;background:linear-gradient(145deg,#a0a0a0,#6e6e6e);box-shadow:inset 1px 1px 2px rgba(255,255,255,.25),1px 2px 4px rgba(0,0,0,.25)}
-.страницы{position:relative;display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:28px;align-items:start}
+.корешок::before{content:"";position:absolute;left:14px;right:14px;top:14px;bottom:14px;border:1px solid rgba(255,255,255,.09)}
+.кольца{
+    position:absolute;
+    left:56px;
+    top:18px;
+    bottom:18px;
+    width:26px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-evenly;
+    z-index:2;
+}
+.кольца span{display:block;width:16px;height:16px;border-radius:50%;border:3px solid #595959;background:linear-gradient(145deg, #a0a0a0, #6f6f6f);box-shadow:inset 1px 1px 2px rgba(255,255,255,.24),1px 2px 4px rgba(0,0,0,.25)}
+
+.страницы{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:34px;
+    align-items:start;
+}
 .страница{
-    position:relative;height:420px;padding:18px 20px 20px 24px;
+    position:relative;
+    min-height:640px;
+    padding:22px 22px 28px 26px;
     background:linear-gradient(180deg, var(--бумага1) 0%, var(--бумага2) 55%, var(--бумага3) 100%);
-    box-shadow:0 22px 46px rgba(0,0,0,.34), inset 0 0 64px rgba(84,58,29,.08);
-    border:1px solid rgba(255,255,255,.18);overflow:hidden
+    border:1px solid rgba(255,255,255,.18);
+    box-shadow:0 26px 54px rgba(0,0,0,.34), inset 0 0 70px rgba(88,60,29,.08);
+    overflow:hidden;
 }
 .страница:nth-child(1){transform:rotate(-1.4deg)}
-.страница:nth-child(2){transform:rotate(1.2deg)}
-.страница:nth-child(3){transform:rotate(.7deg)}
-.страница:nth-child(4){transform:rotate(-.9deg)}
-.страница::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E");mix-blend-mode:multiply;pointer-events:none}
-.страница::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(180deg, transparent 0 30px, rgba(81,126,194,.18) 30px 31px);pointer-events:none}
-.страница .пятно{position:absolute;border-radius:50%;filter:blur(1px);opacity:.16;pointer-events:none}
-.страница .пятно.a{width:120px;height:90px;right:8%;top:8%;background:rgba(95,60,28,.26)}
-.страница .пятно.b{width:70px;height:50px;left:8%;bottom:12%;background:rgba(110,78,42,.22)}
-.верхСтраницы{position:relative;z-index:1;border-bottom:1px dashed rgba(63,70,86,.2);padding-bottom:10px;margin-bottom:10px;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(52,55,63,.76)}
-.полеТекста{position:relative;z-index:1;height:348px;overflow:hidden}
-.полеТекста::before{content:"";position:absolute;left:22px;top:0;bottom:0;width:2px;background:rgba(231,84,84,.22);pointer-events:none}
-.абзац{position:relative;margin:0 0 16px 34px;font-size:1rem;line-height:1.92;color:var(--чернила)}
-.абзац.повреждённый{color:#2b2320}
-.символ{display:inline-block;white-space:pre;min-width:.02em;color:var(--чернила);transition:color .16s ease, text-shadow .16s ease, opacity .16s ease}
-.имяУчастника{pointer-events:none;cursor:default;transition:.2s ease;position:relative}
-.имяУчастника.активно{pointer-events:auto;cursor:pointer;color:#173526;text-shadow:0 0 6px rgba(84,170,120,.2);box-shadow:inset 0 -1px 0 rgba(70,130,90,.36)}
-
-.сканер{
-    position:absolute;top:0;right:0;width:320px;height:760px;z-index:15;
-    transform:translateX(120%);transition:transform .55s cubic-bezier(.22,.8,.2,1)
+.страница:nth-child(2){transform:rotate(1.1deg)}
+.страница:nth-child(3){transform:rotate(.8deg)}
+.страница:nth-child(4){transform:rotate(-1deg)}
+.страница::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E");
+    mix-blend-mode:multiply;
+    pointer-events:none;
 }
-.сканер.активен{transform:translateX(0)}
-.сканер.сбой .корпусСканера{border-color:rgba(255,120,120,.22);box-shadow:0 0 0 1px rgba(255,120,120,.06),0 0 60px rgba(255,80,80,.12)}
-.сканер.сбой .экранСканера{filter:hue-rotate(-35deg) saturate(1.22) contrast(1.05)}
-.корпусСканера{width:100%;height:100%;padding:16px;border:1px solid rgba(160,255,200,.22);background:linear-gradient(180deg, rgba(8,14,10,.97), rgba(2,4,3,.98));box-shadow:0 0 0 1px rgba(160,255,200,.05),0 0 50px rgba(80,255,160,.12);position:relative;overflow:hidden}
-.корпусСканера::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(160,255,200,.06) 0 2px, transparent 2px 4px);mix-blend-mode:screen;opacity:.46;pointer-events:none}
-.корпусСканера::after{content:"";position:absolute;inset:-30% -20%;background:linear-gradient(180deg, transparent 0%, rgba(120,255,170,.10) 48%, rgba(120,255,170,.22) 50%, rgba(120,255,170,.10) 52%, transparent 100%);animation:луч 2.2s linear infinite;pointer-events:none}
-@keyframes луч{0%{transform:translateY(-60%)}100%{transform:translateY(60%)}}
-.экранСканера{position:relative;height:100%;border:1px solid rgba(160,255,200,.2);background:radial-gradient(circle at center, rgba(70,130,90,.16), rgba(0,12,5,.94));padding:14px;overflow:hidden}
-.экранСканера .шум{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.10;mix-blend-mode:screen}
-.экранСканера .ряби{position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(150,255,200,.06) 0 1px, transparent 1px 3px);opacity:.5}
-.данныеСканера{position:relative;z-index:1;display:grid;gap:10px;font-size:.72rem;line-height:1.8;letter-spacing:.15em;text-transform:uppercase;color:#bbffcd}
-.полеСканера{position:relative;z-index:1;margin-top:14px;padding:12px;border:1px solid rgba(160,255,200,.18);background:rgba(0,0,0,.18);min-height:250px;color:#a0ffbe;font-size:.74rem;line-height:1.75;letter-spacing:.14em;text-transform:uppercase}
+.страница::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:repeating-linear-gradient(180deg, transparent 0 30px, rgba(81,126,194,.18) 30px 31px);
+    pointer-events:none;
+}
+.рваный-край{
+    position:absolute;
+    pointer-events:none;
+    background:rgba(87,65,40,.14);
+    filter:blur(.4px);
+}
+.рваный-край.верх{left:0;right:0;top:-4px;height:14px;clip-path:polygon(0 100%,4% 55%,8% 100%,12% 60%,16% 100%,20% 70%,24% 100%,30% 50%,34% 100%,38% 68%,42% 100%,48% 58%,52% 100%,57% 62%,62% 100%,68% 52%,74% 100%,80% 66%,86% 100%,92% 58%,100% 100%)}
+.рваный-край.низ{left:0;right:0;bottom:-5px;height:16px;clip-path:polygon(0 0,6% 40%,12% 0,18% 55%,24% 0,31% 48%,38% 0,46% 60%,54% 0,61% 44%,68% 0,76% 56%,84% 0,91% 46%,100% 0,100% 100%,0 100%)}
+.пятно{position:absolute;border-radius:50%;filter:blur(1px);opacity:.16;pointer-events:none}
+.страница .пятно1{width:130px;height:90px;right:8%;top:8%;background:rgba(98,61,28,.25)}
+.страница .пятно2{width:78px;height:54px;left:8%;bottom:13%;background:rgba(112,80,42,.2)}
+.поле-текста{
+    position:relative;
+    z-index:1;
+    margin-top:2px;
+}
+.поле-текста::before{content:"";position:absolute;left:22px;top:0;bottom:0;width:2px;background:rgba(232,84,84,.22);pointer-events:none}
+.абзац{
+    position:relative;
+    margin:0 0 18px 34px;
+    color:var(--чернила);
+    font-size:1rem;
+    line-height:1.95;
+}
+.абзац.повреждённый{color:#2b2320}
+.символ{
+    display:inline-block;
+    min-width:.02em;
+    white-space:pre;
+    color:var(--чернила);
+}
+.имя-участника{pointer-events:none;cursor:default;transition:.18s ease;position:relative}
+.имя-участника.активно{pointer-events:auto;cursor:pointer;color:#183828;box-shadow:inset 0 -1px 0 rgba(73,132,94,.34);text-shadow:0 0 6px rgba(83,170,120,.18)}
 
 .призма{
-    position:absolute;z-index:18;display:none;width:280px;height:190px;
-    border:1px solid rgba(160,255,200,.38);background:linear-gradient(180deg, rgba(80,255,170,.08), rgba(80,255,170,.04));
-    box-shadow:0 0 34px rgba(100,255,180,.12), inset 0 0 28px rgba(100,255,180,.08);overflow:hidden
+    position:absolute;
+    z-index:20;
+    display:none;
+    width:360px;
+    height:250px;
+    border:1px solid rgba(160,255,200,.42);
+    background:linear-gradient(180deg, rgba(70,255,170,.08), rgba(70,255,170,.04));
+    box-shadow:0 0 36px rgba(100,255,180,.12), inset 0 0 34px rgba(100,255,180,.08);
+    overflow:hidden;
 }
-.призма.видна{display:block}
-.призма.сбой{border-color:rgba(255,120,120,.42);box-shadow:0 0 40px rgba(255,80,80,.14), inset 0 0 28px rgba(255,80,80,.08)}
-.призма::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(170,255,210,.06) 0 2px, transparent 2px 4px);opacity:.6}
-.призма::after{content:"";position:absolute;left:0;right:0;height:2px;background:rgba(170,255,210,.5);box-shadow:0 0 16px rgba(170,255,210,.34);animation:полосаПризмы 1.7s linear infinite}
-@keyframes полосаПризмы{0%{top:8px}100%{top:calc(100% - 8px)}}
-.верхПризмы{position:absolute;left:0;right:0;top:0;height:26px;background:rgba(0,0,0,.18);border-bottom:1px solid rgba(160,255,200,.18);display:flex;align-items:center;justify-content:space-between;padding:0 8px;z-index:1;cursor:grab}
-.верхПризмы:active{cursor:grabbing}
-.верхПризмы span{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:#d6ffe5}
-.фиксатор{border:1px solid rgba(160,255,200,.2);background:rgba(0,0,0,.18);color:#d6ffe5;padding:2px 6px;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
-.фиксатор.активен{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08)}
-
-.выдвижка{
-    position:fixed;top:0;bottom:0;left:-420px;width:400px;z-index:220;
-    transition:left .55s cubic-bezier(.22,.8,.2,1)
+.призма.активна{display:block}
+.призма.сбой{animation:сбойПризмы .18s linear infinite;border-color:rgba(255,120,120,.44);box-shadow:0 0 40px rgba(255,80,80,.14), inset 0 0 34px rgba(255,80,80,.08)}
+@keyframes сбойПризмы{0%,100%{transform:translate(0,0)}25%{transform:translate(-1px,1px)}50%{transform:translate(2px,-1px)}75%{transform:translate(-2px,0)}}
+.призма::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(170,255,210,.07) 0 2px, transparent 2px 4px);opacity:.65;pointer-events:none}
+.призма::after{content:"";position:absolute;left:0;right:0;height:2px;background:rgba(170,255,210,.46);box-shadow:0 0 16px rgba(170,255,210,.34);animation:лучПризмы 1.8s linear infinite;pointer-events:none}
+@keyframes лучПризмы{0%{top:10px}100%{top:calc(100% - 10px)}}
+.верх-призмы{
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    height:28px;
+    z-index:2;
+    background:rgba(0,0,0,.18);
+    border-bottom:1px solid rgba(160,255,200,.18);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 8px;
+    cursor:grab;
 }
-.выдвижка.открыта{left:0}
-.листВыдвижки{width:100%;height:100%;padding:22px 20px 30px;background:linear-gradient(180deg, var(--бумага1) 0%, var(--бумага2) 55%, var(--бумага3) 100%);box-shadow:18px 0 60px rgba(0,0,0,.45), inset 0 0 54px rgba(92,72,45,.08);border-right:1px solid rgba(255,255,255,.16);position:relative;overflow:auto}
-.листВыдвижки::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E");mix-blend-mode:multiply;pointer-events:none}
-.верхВыдвижки{position:relative;z-index:1;display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:18px}
-.верхВыдвижки h3{font-size:.92rem;line-height:1.8;letter-spacing:.16em;text-transform:uppercase;color:#14100c}
-.верхВыдвижки small{display:block;margin-top:6px;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:#5d554d}
-.закрытьВыдвижку{min-width:40px;height:40px;border:1px solid rgba(0,0,0,.14);background:rgba(255,255,255,.32);cursor:pointer;transition:.2s ease}
-.закрытьВыдвижку:hover{transform:rotate(90deg)}
-.содержимоеВыдвижки{position:relative;z-index:1;display:grid;gap:10px}
-.полеПерсонажа{padding:10px 12px;border:1px solid rgba(0,0,0,.1);background:rgba(255,255,255,.22);font-size:.88rem;line-height:1.75;color:#16120e}
-.полеПерсонажа strong{display:block;margin-bottom:4px;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:#5d5449}
+.верх-призмы:active{cursor:grabbing}
+.верх-призмы span{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:#d7ffe4}
+.фиксатор{
+    border:1px solid rgba(160,255,200,.2);
+    background:rgba(0,0,0,.22);
+    color:#d7ffe4;
+    padding:2px 6px;
+    font-size:.58rem;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+    cursor:pointer;
+}
+.фиксатор.активен{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.28)}
+.внутренний-шум{
+    position:absolute;
+    inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity:.08;
+    mix-blend-mode:screen;
+    pointer-events:none;
+}
 
-.иридий77{display:none;z-index:250;padding:20px;background:rgba(0,0,0,.92)}
+.досье{
+    position:fixed;
+    top:70px;
+    right:-420px;
+    width:390px;
+    z-index:40;
+    transition:right .5s cubic-bezier(.22,.8,.2,1);
+}
+.досье.активно{right:18px}
+.лист-досье{
+    position:relative;
+    padding:20px 18px 26px;
+    background:linear-gradient(180deg, var(--бумага1) 0%, var(--бумага2) 55%, var(--бумага3) 100%);
+    border:1px solid rgba(255,255,255,.18);
+    box-shadow:0 20px 58px rgba(0,0,0,.44), inset 0 0 58px rgba(92,72,45,.08);
+    overflow:hidden;
+}
+.лист-досье::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E");mix-blend-mode:multiply;pointer-events:none}
+.верх-досье{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px;cursor:grab}
+.верх-досье:active{cursor:grabbing}
+.верх-досье h3{font-size:.92rem;letter-spacing:.16em;text-transform:uppercase;line-height:1.8;color:#15110d}
+.верх-досье small{display:block;margin-top:6px;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:#5f564c}
+.закрыть-досье{min-width:40px;height:40px;border:1px solid rgba(0,0,0,.14);background:rgba(255,255,255,.34);cursor:pointer;transition:.2s ease}
+.закрыть-досье:hover{transform:rotate(90deg)}
+.поля-досье{position:relative;z-index:1;display:grid;gap:10px}
+.поле-досье{padding:10px 12px;border:1px solid rgba(0,0,0,.1);background:rgba(255,255,255,.22);font-size:.88rem;line-height:1.72;color:#17130f}
+.поле-досье strong{display:block;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:#5d5449;margin-bottom:5px}
 
-@media (max-width:1220px){
-    .зонаТетради{padding-right:0}
-    .переключательПризмы{position:static;width:100%;height:40px;writing-mode:horizontal-tb;margin-bottom:12px}
-    .сканер{position:relative;width:100%;height:420px;transform:translateY(18px);opacity:0;pointer-events:none;transition:opacity .35s ease, transform .35s ease;margin-top:14px}
-    .сканер.активен{transform:translateY(0);opacity:1;pointer-events:auto}
+@media (max-width:1260px){
+    .поле-дела{padding-right:0}
+    .кнопка-призмы{position:static;writing-mode:horizontal-tb;width:100%;height:42px;margin-bottom:14px}
 }
 @media (max-width:980px){
     .страницы{grid-template-columns:1fr}
-    .страница{height:390px}
-    .тетрадь{min-height:auto}
 }
-@media (max-width:700px){
-    .полеФайлов{gap:42px}
-    .листФайла{width:112px;height:140px}
-    .имяФайла{font-size:.82rem;max-width:200px}
-    .окноЗагрузки{padding:18px}
-    .архивнаяПометка div{font-size:.72rem}
-    .страница{height:360px;padding:16px 16px 18px 18px}
-    .полеТекста{height:300px}
-    .абзац{font-size:.9rem;line-height:1.92;margin-left:28px}
-    .призма{width:220px;height:160px}
-    .выдвижка{width:min(100%, 390px)}
+@media (max-width:720px){
+    .поле-файлов{gap:48px}
+    .иконка-файла{width:114px;height:142px}
+    .имя-файла{max-width:210px;font-size:.82rem}
+    .страница{min-height:560px;padding:18px 18px 22px 20px}
+    .абзац{font-size:.92rem;margin-left:28px}
+    .призма{width:240px;height:180px}
+    .досье{width:min(100% - 18px, 390px)}
 }
 @media (max-width:520px){
-    .верхняяПолоса{padding:10px 12px}
-    .кнопкаВернуть,.меткаУзла{font-size:.6rem;padding:6px 7px}
-    .архив{width:min(100% - 10px, 1320px)}
-    .тетрадь{padding:18px 14px 20px 72px}
+    .кнопка-возврата{top:10px;left:10px;padding:7px 8px;font-size:.6rem}
+    .архив{width:min(100% - 10px, 1540px)}
+    .тетрадь{padding:20px 14px 20px 74px}
     .корешок{width:62px}.кольца{left:40px}
 }
 </style>
 </head>
 <body>
-<canvas id="фонСимволов"></canvas>
-<div class="виньетка"></div>
-<div class="сканЛиния"></div>
+<canvas id="матрица"></canvas>
 <div class="шторка" id="шторка"></div>
+<button class="кнопка-возврата" id="кФайлам" type="button">к двум файлам</button>
 
-<header class="верхняяПолоса">
-    <div class="верхЛево">
-        <button class="кнопкаВернуть" id="кФайлам" type="button">к двум файлам</button>
-        <a class="кнопкаВернуть" href="index.html">к узлу</a>
-        <div class="меткаУзла">не_унатх</div>
-    </div>
-    <div class="верхПраво">
-        <div class="часы" id="часы">00:00:00</div>
-    </div>
-</header>
-
-<div class="загрузка" id="загрузка">
-    <div class="полеШума" id="полеШума"></div>
-    <div class="окноЗагрузки">
-        <div class="шапкаЗагрузки"><span>старый архив</span><span>доступ нестабилен</span></div>
-        <div class="заголовокЗагрузки">подъём остатка «не_унатх»</div>
-        <div class="строкиЗагрузки" id="строкиЗагрузки"></div>
-        <div class="полосаЗагрузки"><div id="заполнениеЗагрузки"></div></div>
+<div class="консоль" id="консоль">
+    <div class="консоль-окно">
+        <div class="строки-консоли" id="строкиКонсоли"></div>
     </div>
 </div>
 
 <main>
-    <section class="сценаФайлов" id="сценаФайлов">
-        <div class="полеФайлов">
+    <section class="экран-файлов" id="экранФайлов">
+        <div class="поле-файлов">
             <button class="файл" id="открытьDecrypt" type="button">
-                <div class="листФайла"><div class="внутриЛиста"></div></div>
-                <div class="имяФайла">детективное частное агентство “DECRYPT”</div>
+                <div class="иконка-файла"></div>
+                <div class="имя-файла">детективное частное агентство “DECRYPT”</div>
             </button>
             <button class="файл битый" id="открытьIridium77" type="button">
-                <div class="листФайла"><div class="внутриЛиста"></div></div>
-                <div class="имяФайла">иридий77</div>
+                <div class="иконка-файла"></div>
+                <div class="имя-файла">иридий77</div>
             </button>
         </div>
     </section>
 
     <section class="архив" id="архив">
-        <div class="корпусАрхива">
-            <div class="загрузкаАрхива" id="загрузкаАрхива">
-                <div class="окноЗагрузки" style="max-width:760px">
-                    <div class="шапкаЗагрузки"><span>закрытая консоль</span><span>частично восстановлена</span></div>
-                    <div class="архивныеСтроки" id="архивныеСтроки"></div>
-                </div>
-            </div>
+        <div class="архивная-пометка">
+            <div>детективное частное агентство “DECRYPT”</div>
+            <div class="статус">статус: уничтожена</div>
+        </div>
 
-            <div class="архивнаяПометка">
-                <div>детективное частное агентство “DECRYPT”</div>
-                <div class="статус">статус: уничтожена</div>
-            </div>
-
-            <div class="зонаТетради" id="зонаТетради">
-                <button class="переключательПризмы" id="переключательПризмы" type="button">призма</button>
-
-                <div class="тетрадь">
-                    <div class="корешок"></div>
-                    <div class="кольца"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-                    <div class="страницы" id="страницы"></div>
-                    <div class="призма" id="призма">
-                        <div class="верхПризмы" id="верхПризмы">
-                            <span>призма</span>
-                            <button class="фиксатор" id="фиксатор" type="button">свободно</button>
-                        </div>
+        <div class="поле-дела" id="полеДела">
+            <button class="кнопка-призмы" id="кнопкаПризмы" type="button">призма</button>
+            <div class="тетрадь">
+                <div class="корешок"></div>
+                <div class="кольца"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                <div class="страницы" id="страницы"></div>
+                <div class="призма" id="призма">
+                    <div class="верх-призмы" id="верхПризмы">
+                        <span>призма</span>
+                        <button class="фиксатор" id="фиксаторПризмы" type="button">свободно</button>
                     </div>
+                    <div class="внутренний-шум"></div>
                 </div>
-
-                <aside class="сканер" id="сканер">
-                    <div class="корпусСканера">
-                        <div class="экранСканера">
-                            <div class="шум"></div>
-                            <div class="ряби"></div>
-                            <div class="данныеСканера">
-                                <div>архивная призма</div>
-                                <div>режим: чтение бумажного носителя</div>
-                                <div id="состояниеСканера">состояние: ожидание</div>
-                            </div>
-                            <div class="полеСканера" id="полеСканера">нет устойчивого чтения</div>
-                        </div>
-                    </div>
-                </aside>
             </div>
         </div>
     </section>
 </main>
 
-<aside class="выдвижка" id="выдвижка">
-    <div class="листВыдвижки">
-        <div class="верхВыдвижки">
+<div class="досье" id="досье">
+    <div class="лист-досье" id="листДосье">
+        <div class="верх-досье" id="верхДосье">
             <div>
-                <h3 id="имяВыдвижки">досье</h3>
+                <h3 id="имяДосье">досье</h3>
                 <small>извлечено из повреждённого архива</small>
             </div>
-            <button class="закрытьВыдвижку" id="закрытьВыдвижку" type="button">✕</button>
+            <button class="закрыть-досье" id="закрытьДосье" type="button">✕</button>
         </div>
-        <div class="содержимоеВыдвижки" id="содержимоеВыдвижки"></div>
+        <div class="поля-досье" id="поляДосье"></div>
     </div>
-</aside>
+</div>
 
 <div class="иридий77" id="иридий77">
-    <div class="окноЗагрузки" style="max-width:620px">
-        <div class="шапкаЗагрузки"><span>остаток</span><span>шум</span></div>
-        <div class="заголовокЗагрузки">ветка «иридий77» пока не даёт себя читать</div>
-        <div class="строкиЗагрузки"><div class="строкаЗагрузки">внутри только помехи и недоживший след</div></div>
-        <div style="display:flex;justify-content:flex-end;margin-top:18px"><button class="кнопкаВернуть" id="закрытьIridium77" type="button">закрыть</button></div>
+    <div class="консоль-окно" style="max-width:620px">
+        <div class="строки-консоли"><div class="строка-консоли">ветка «иридий77» пока не даёт себя читать</div></div>
+        <div style="display:flex;justify-content:flex-end;margin-top:18px"><button class="кнопка-возврата" id="закрытьIridium77" type="button" style="display:block;position:static">закрыть</button></div>
     </div>
 </div>
 
 <script>
 const азбука = '▓▒░█/#<>[]{}01ψΩΛЖЯÆИҰ∎◢◣◤◥';
-const запас = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЭЮЯ0123456789';
-const текстыСтраниц = [
+const буквы = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЭЮЯ0123456789';
+const страницыДанных = [
     [
         ['Детективное частное агентство “DECRYPT” так-же как и большинство нишевых организациях зародилось в секторе Спинвардская Периферия, в самой гуще развития мегаполиса на планете Y-27, первый основатель организации стал ', {member:'hiyoshi', text:'Хиоши Сузуки'}, ', прибывший на планету около 3х лет назад, на небольшой межтрансовом шаттле из солнечной системы. Начальный капитал организации составил 400.000$ наличными что были выделены Хиоши его родителями под залог, с ожиданием того что тот вернёт более 70% залога свыше, если не прогорит в сточной канаве планеты.'],
         ['Изначально агенство занималось конкретной поставленной задачей, принимая каждое предложение об детективной деятельности. В них часто входили уже клишированные запросы, слежка за второй половинкой которая подозревалась в измене, локальные потери вещей и небольших грабежей, по типу скрытия чей-то квартиры или съёмного жилья, снятие отпечатков, и поиски пропавших посылок утерянных местной почтовой службой.']
@@ -386,200 +511,212 @@ const текстыСтраниц = [
         ['Это могло продолжаться буквально не более ещё двух месяцев, пока бы у Хиоши не кончились деньги, с учётом того что его родительский долг съедал более 80% заработка. Но тут как гром с небес появился шанс для малого бизнеса. Либо же до Хиоши самого дошла эта мысль, либо же ему дал очередную идею ежедневный клиент. А именно искать выгоду в корпоративных играх, пытаться заработать на добыче компромата против врагом той или иной фирмы обратившийся к нему, зачистки лишних данных или следов оставленных в ходе очередного “несчастного случая”.']
     ],
     [
-        ['А учитывая что к этому времени город давно поделил сектриальный треугольник бизнесов, где самую вершину города занимали мега-корпорации, середину рынки получившие огласку в обществе, а дно подпольные рынки, нарко-базы, и стрип-клубы с провальными бизнесами. Работа была частно пыльной, и требующей поморать руки. Хиоши решил сразу же занять данный рынок, и перейти в политику нейтральных действий, усвоив одно простое правило “За каждым хищником следует свой охотник, и третий наблюдатель что будет пожинать кости обоих.” а название агентства как его основную направленность тот решил не менять в угоду некой конспирации от любопытных глаз.'],
-        ['Данные решения позволили Хиоши с его бизнесом довольно резко начать свое развитие в высь по этажам города. И буквально за пол года такой работы, тот уже смог высунуть голову из канализации в средний сектор, ощутив менее черствый воздух пропитанный наркотой и героином. Первое задание их оказалось до ужасти просто, они получили его от фирмы по продаже средств по уходу за красотой, на другую такую-же фирму. Требовалось лишь сделать фотографии босса фирмы, находящегося в приватном клубе не в том месте. И в отличии от низжевого рынка, на среднем рынке это могло реально повлиять на восприятие фирмы вплоть до обвала её акций.']
+        ['А учитывая что к этому времени город давно поделил сектриальный треугольник бизнесов, где самую вершину города занимали мега-корпорации, середину рынки получившие огласку в обществе, а дно подпольные рынки, нарко-базы, и стрип-клубы с провальными бизнесами. Работа была частно пыльной, и требующей поморать руки. Хиоши решил сразу же занять данный рынок, и перейти в политику нейтральных действий, усвоив одно простое правило “За каждым хищником следует свой охотник, и третий наблюдатель что будет пожинать кости обоих.” а название агентства как его основную направленность тот решил не менять в угоду некой конспирации от любопытных глаз правительство. Мол кому есть дело до очередного детектива-самоучки который рано или поздно найдет свою пулу в засанной подворотне.'],
+        ['Данные решения позволили Хиоши с его бизнесом довольно резко начать свое развитие в высь по этажам города. И буквально за пол года такой работы, тот уже смог высунуть голову из канализации в средний сектор, ощутив менее черствый воздух пропитанный наркотой и героином. Первое задание их оказалось до ужасти просто, они получили его от фирмы по продаже средств по уходу за красотой, на другую такую-же фирму. Требовалось лишь сделать фотографии босса фирмы, находящегося в приватном клубе со страпоном не в том месте. И в отличии от низжевого рынка, на среднем рынке это могло реально повлиять на восприятие фирмы вплоть до обвала её акций. Дело тот закрыл быстро и без проблем, что пробило ему сразу небольшие но значительные связи на среднем плато.']
     ],
     [
         ['К тому моменту тот уже начал предпринимать движение в найме дополнительных сотрудников, уверенности естественно в каждом новом не было, и Хиоши понимал что каждый из них может подставить его в любой момент, но это всяко лучше когда предатель прикрывает спину от врага, чем враг смотрящий сквозь дырку в твоем сердце. Первый состав команды был из трёх существ разных расс, аркана девушка, ярко-розового окраса - ', {member:'cadence', text:'Каденс Слоан'}, ', мужчина человеческой расы ', {member:'iridium', text:'Иридий'}, ' с серебряными волосами, и мужчина вульпканин ', {member:'daros', text:'Дарос Полей'}, '.'],
         ['И если вульпу с арканой Хиоши смог достать буквально с подворотен нижнего плато, человека ему подослал один из знакомых, чьи заказы он уже не раз выполнял со среднего плато. И найм новых сотрудников стал для организации буквально вторым дыханием, это позволило брать на пару заказов больше, а учитывая что с приходом ', {member:'iridium', text:'Иридия'}, ', у них ещё и появился автотранспорт который по явному согласию всех сторон стал принадлежать организации. С того момента их влияние начало расходится по среднему плато, начиная с ежедневных заданий по сборке компромата, заканчиваю уже прямым созданием самого этого компромата.'],
-        [{damaged:true, text:'Я<]#1}01 организация развилась и ◢◤◣}1/<1Æ получила свой первый и ÆЯ█00}<Æ заказ от █▓<И}Я/01Æ'}]
+        [{damaged:true, text:'Я<]#1}01 организация развилась и ◢◤◣}1/<1Æ получила свой первый и ÆЯ█00}<Æ заказ от'}]
     ]
 ];
-const данныеПерсон = {
+const досьеДанные = {
     hiyoshi:{
-        имя:'Хиоши Сузуки',
-        поля:[
-            ['ФИО','Хиоши Сузуки'],['пол','мужской'],['раса','человек'],['рост','178 см'],['вес','71 кг'],['статус','след оборван'],['родная планета','Земля / солнечная система'],['краткая характеристика','Основатель. Поднял агентство из бытового сыска в более грязный рынок, держась нейтральной линии и дробя любой заказ так, чтобы никто не видел всей картины.']
-        ]
+        name:'Хиоши Сузуки',
+        fields:[['ФИО','Хиоши Сузуки'],['пол','мужской'],['раса','человек'],['рост','178 см'],['вес','71 кг'],['статус','след оборван'],['родная планета','Земля / солнечная система'],['краткая характеристика','Основатель. Поднял агентство из бытового сыска в рынок корпоративной грязи, предпочитая дробить заказы так, чтобы никто не видел всей картины целиком.']]
     },
     cadence:{
-        имя:'Каденс Слоан',
-        поля:[
-            ['ФИО','Каденс Слоан'],['пол','женский'],['раса','аркана'],['рост','171 см'],['вес','57 кг'],['статус','последний след нестабилен'],['родная планета','не зафиксирована'],['краткая характеристика','Полевой элемент. Её сцены выглядят бытовыми, но именно через такие места в архиве чаще всего начинается чужой компромат.']
-        ]
+        name:'Каденс Слоан',
+        fields:[['ФИО','Каденс Слоан'],['пол','женский'],['раса','аркана'],['рост','171 см'],['вес','57 кг'],['статус','последний след нестабилен'],['родная планета','не зафиксирована'],['краткая характеристика','Полевой элемент. Сцены вокруг неё выглядят бытовыми, но именно через такие места в архиве чаще всего начинается чужой компромат.']]
     },
     iridium:{
-        имя:'Иридий',
-        поля:[
-            ['ФИО','Иридий'],['пол','мужской'],['раса','человек'],['рост','188 см'],['вес','79 кг'],['статус','следы разорваны'],['родная планета','Ме<span>▓</span>р<span>◢</span>к<span>█</span>у<span>Æ</span>р<span>Я</span>и<span>01</span>‑<span>█</span><span>◣</span>'],['краткая характеристика','Принёс агентству подвижность. Регулярно возникает рядом с узлами вывоза, передачи и слишком быстрым исчезновением хвостов.']
-        ]
+        name:'Иридий',
+        fields:[['ФИО','Иридий'],['пол','мужской'],['раса','человек'],['рост','188 см'],['вес','79 кг'],['статус','следы разорваны'],['родная планета','Ме<span>▓</span>р<span>◢</span>к<span>█</span>у<span>Æ</span>р<span>Я</span>и<span>01</span>-<span>█</span><span>◣</span>'],['краткая характеристика','Принёс агентству подвижность. Возникает рядом с узлами вывоза, передачи и слишком быстрым исчезновением хвостов.']]
     },
     daros:{
-        имя:'Дарос Полей',
-        поля:[
-            ['ФИО','Дарос Полей'],['пол','мужской'],['раса','вульпканин'],['рост','182 см'],['вес','68 кг'],['статус','данные неполные'],['родная планета','не подтверждена'],['краткая характеристика','Связан с частотами, запасными ключами, служебными проходами и нижним плато. От него осталось меньше лица, чем метода.']
-        ]
+        name:'Дарос Полей',
+        fields:[['ФИО','Дарос Полей'],['пол','мужской'],['раса','вульпканин'],['рост','182 см'],['вес','68 кг'],['статус','данные неполные'],['родная планета','не подтверждена'],['краткая характеристика','Связан с частотами, служебными проходами, запасными ключами и нижним плато. От него осталось меньше лица, чем метода.']]
     }
 };
 
-const загрузка = document.getElementById('загрузка');
-const строкиЗагрузки = document.getElementById('строкиЗагрузки');
-const заполнениеЗагрузки = document.getElementById('заполнениеЗагрузки');
-const полеШума = document.getElementById('полеШума');
-const сценаФайлов = document.getElementById('сценаФайлов');
+const экранФайлов = document.getElementById('экранФайлов');
 const архив = document.getElementById('архив');
-const шторка = document.getElementById('шторка');
-const загрузкаАрхива = document.getElementById('загрузкаАрхива');
-const архивныеСтроки = document.getElementById('архивныеСтроки');
+const консоль = document.getElementById('консоль');
+const строкиКонсоли = document.getElementById('строкиКонсоли');
 const страницы = document.getElementById('страницы');
-const зонаТетради = document.getElementById('зонаТетради');
-const сканер = document.getElementById('сканер');
+const полеДела = document.getElementById('полеДела');
+const кнопкаПризмы = document.getElementById('кнопкаПризмы');
 const призма = document.getElementById('призма');
-const полеСканера = document.getElementById('полеСканера');
-const состояниеСканера = document.getElementById('состояниеСканера');
-const выдвижка = document.getElementById('выдвижка');
-const имяВыдвижки = document.getElementById('имяВыдвижки');
-const содержимоеВыдвижки = document.getElementById('содержимоеВыдвижки');
-const фиксатор = document.getElementById('фиксатор');
+const фиксаторПризмы = document.getElementById('фиксаторПризмы');
+const досье = document.getElementById('досье');
+const имяДосье = document.getElementById('имяДосье');
+const поляДосье = document.getElementById('поляДосье');
+const шторка = document.getElementById('шторка');
 
 let глифы = [];
 let участники = {};
-let призмаАктивна = false;
-let призмаЗакреплена = false;
-let областьТекста = null;
-let призмаX = 120;
-let призмаY = 120;
-let надОбластью = false;
+let призмаПоказана = false;
+let призмаЗафиксирована = false;
 let тащимПризму = false;
-let смещениеX = 0;
-let смещениеY = 0;
+let смещениеПризмыX = 0;
+let смещениеПризмыY = 0;
+let позицияПризмыX = 120;
+let позицияПризмыY = 100;
+let размерПризмыW = 360;
+let размерПризмыH = 250;
+let прямоугольникСтраниц = null;
+let тащимДосье = false;
+let смещениеДосьеX = 0;
+let смещениеДосьеY = 0;
+const ipPromise = получитьIPv4();
 
-function обновитьЧасы(){
-    const d = new Date();
-    document.getElementById('часы').textContent = [d.getHours(), d.getMinutes(), d.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');
+function обновитьМатрицуРазмер(){
+    const canvas = document.getElementById('матрица');
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
 }
-обновитьЧасы();
-setInterval(обновитьЧасы, 1000);
-
 function случайныйСимвол(){return азбука[Math.floor(Math.random()*азбука.length)]}
-function случайнаяБуква(){return запас[Math.floor(Math.random()*запас.length)]}
-function искажение(символ){
-    if(/[0-9]/.test(символ)) return String(Math.floor(Math.random()*10));
-    if(/[A-Za-zА-Яа-яЁё]/.test(символ)) return случайнаяБуква();
-    if(/[\.,:;!?\-—()«»"'`]/.test(символ)) return случайныйСимвол();
+function случайнаяБуква(){return буквы[Math.floor(Math.random()*буквы.length)]}
+function испорченныйСимвол(real){
+    if(/[0-9]/.test(real)) return String(Math.floor(Math.random()*10));
+    if(/[A-Za-zА-Яа-яЁё]/.test(real)) return случайнаяБуква();
+    if(/[\.,:;!?\-—()«»"'`]/.test(real)) return случайныйСимвол();
     return случайныйСимвол();
 }
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
 
-function получитьJSON(url, timeout=2200){
-    return new Promise((resolve, reject) => {
-        const ctrl = new AbortController();
-        const tm = setTimeout(() => ctrl.abort(), timeout);
-        fetch(url, {signal: ctrl.signal, cache:'no-store'}).then(r => {
-            clearTimeout(tm);
-            if(!r.ok) throw new Error('bad');
-            return r.json();
-        }).then(resolve).catch(err => {
-            clearTimeout(tm);
-            reject(err);
-        });
-    });
+async function получитьJSON(url, timeout=2200){
+    const ctrl = new AbortController();
+    const tm = setTimeout(()=>ctrl.abort(), timeout);
+    try{
+        const r = await fetch(url,{signal:ctrl.signal,cache:'no-store'});
+        clearTimeout(tm);
+        if(!r.ok) throw new Error('bad');
+        return await r.json();
+    }catch(e){
+        clearTimeout(tm);
+        throw e;
+    }
 }
-
 async function получитьIPv4(){
-    const источники = [
+    const задачи = [
         ()=>получитьJSON('https://api.ipify.org?format=json').then(d=>d.ip),
         ()=>получитьJSON('https://api.ip.sb/jsonip').then(d=>d.ip),
         ()=>получитьJSON('https://ipwho.is/').then(d=>d.ip)
-    ];
-    const задачи = источники.map(fn => fn().then(ip => /^\d+\.\d+\.\d+\.\d+$/.test(ip||'') ? ip : Promise.reject()));
-    try{
-        return await Promise.any(задачи);
-    }catch(e){
-        return '0.0.0.0';
-    }
+    ].map(fn => fn().then(ip => /^\d+\.\d+\.\d+\.\d+$/.test(ip||'') ? ip : Promise.reject()));
+    try{return await Promise.any(задачи);}catch(e){return '0.0.0.0';}
 }
 
-function шумовыеСтроки(){
-    let сч = 0;
-    const таймер = setInterval(() => {
+function рисоватьМатрицу(){
+    const canvas = document.getElementById('матрица');
+    const ctx = canvas.getContext('2d');
+    const потоки = [];
+    function пересобрать(){
+        обновитьМатрицуРазмер();
+        потоки.length = 0;
+        const count = Math.max(24, Math.floor(canvas.width/54));
+        for(let i=0;i<count;i++){
+            потоки.push({
+                x: Math.random()*canvas.width,
+                y: Math.random()*canvas.height,
+                speed: 0.10 + Math.random()*0.24,
+                size: 14 + Math.random()*12,
+                chars: 1 + Math.floor(Math.random()*3),
+                color: ['rgba(150,255,190,.17)','rgba(120,170,255,.14)','rgba(255,120,120,.12)','rgba(200,150,255,.11)','rgba(255,255,255,.11)'][Math.floor(Math.random()*5)]
+            });
+        }
+    }
+    function draw(){
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        потоки.forEach(p=>{
+            p.y += p.speed;
+            if(p.y > canvas.height + 40){
+                p.y = -40 - Math.random()*80;
+                p.x = Math.random()*canvas.width;
+            }
+            ctx.fillStyle = p.color;
+            ctx.font = p.size+'px monospace';
+            let text = '';
+            for(let i=0;i<p.chars;i++) text += (Math.random()>.55 ? случайныйСимвол() : случайнаяБуква());
+            ctx.fillText(text, p.x, p.y);
+        });
+        requestAnimationFrame(draw);
+    }
+    пересобрать();
+    draw();
+    addEventListener('resize', пересобрать);
+}
+
+function создатьШумовыеСтроки(){
+    const поле = document.createElement('div');
+    поле.className = 'полеШума';
+    консоль.appendChild(поле);
+    let count = 0;
+    const t = setInterval(()=>{
         const row = document.createElement('div');
         row.className = 'шумСтрока';
         row.style.top = (Math.random()*100)+'%';
-        row.style.animationDuration = (3.6 + Math.random()*2.6)+'s';
-        row.textContent = Array.from({length: 20 + Math.floor(Math.random()*24)}, случайныйСимвол).join('');
-        полеШума.appendChild(row);
-        setTimeout(()=>row.remove(), 6500);
-        сч++;
-        if(сч > 60) clearInterval(таймер);
-    }, 110);
+        row.style.animationDuration = (3.6 + Math.random()*2.4)+'s';
+        row.textContent = Array.from({length:20+Math.floor(Math.random()*20)}, случайныйСимвол).join('');
+        поле.appendChild(row);
+        setTimeout(()=>row.remove(),6500);
+        count++;
+        if(count>34) clearInterval(t);
+    }, 120);
 }
 
-async function печатать(строки, контейнер, полоса){
-    for(let i=0;i<строки.length;i++){
-        const line = document.createElement('div');
-        line.className = контейнер === архивныеСтроки ? '' : 'строкаЗагрузки';
-        контейнер.appendChild(line);
-        const text = строки[i];
-        for(let x=0;x<=text.length;x++){
-            line.textContent = text.slice(0,x);
-            await new Promise(r=>setTimeout(r, 11));
+async function печататьКонсоль(lines){
+    строкиКонсоли.innerHTML = '';
+    for(const text of lines){
+        const row = document.createElement('div');
+        row.className = 'строка-консоли';
+        строкиКонсоли.appendChild(row);
+        for(let i=0;i<=text.length;i++){
+            row.textContent = text.slice(0,i);
+            await sleep(12);
         }
-        if(полоса) полоса.style.width = ((i+1)/строки.length*100)+'%';
-        await new Promise(r=>setTimeout(r, 90));
+        await sleep(120);
     }
-}
-
-async function первичнаяЗагрузка(){
-    шумовыеСтроки();
-    const ip = await получитьIPv4();
-    await печатать([
-        'обнаружен адрес узла: ' + ip,
-        'подъём остатка «не_унатх»',
-        'собраны две ветви для чтения',
-        'пустота удержана'
-    ], строкиЗагрузки, заполнениеЗагрузки);
-    await new Promise(r=>setTimeout(r, 320));
-    загрузка.classList.add('скрыта');
 }
 
 async function открытьDecrypt(){
     шторка.classList.add('активна');
-    сценаФайлов.classList.add('скрыта');
-    setTimeout(async () => {
-        document.body.classList.add('архивОткрыт');
-        сценаФайлов.style.display = 'none';
-        архив.classList.add('активен');
-        архивныеСтроки.innerHTML = '';
-        await печатать([
-            'доступ к уцелевшей части подтверждён',
-            'детективное частное агентство “DECRYPT”',
-            'статус................уничтожена',
-            'бумажный носитель пережил зачистку частично',
-            'разрешено только неполное сканирование'
-        ], архивныеСтроки, null);
-        await new Promise(r=>setTimeout(r, 480));
-        загрузкаАрхива.classList.add('скрыта');
-        setTimeout(()=>шторка.classList.remove('активна'), 120);
-        построитьСтраницы();
-    }, 340);
+    await sleep(180);
+    экранФайлов.style.display = 'none';
+    document.body.classList.add('архив-открыт');
+    консоль.classList.add('активна');
+    создатьШумовыеСтроки();
+    const ip = await ipPromise;
+    await печататьКонсоль([
+        'точка входа: ' + ip,
+        'доступ к уцелевшей части подтверждён',
+        'детективное частное агентство “DECRYPT”',
+        'статус: УНИЧТОЖЕНА',
+        'бумажный носитель частично сохранён'
+    ]);
+    await sleep(500);
+    архив.classList.add('активен');
+    построитьСтраницы();
+    консоль.classList.remove('активна');
+    setTimeout(()=>{
+        const noiseField = консоль.querySelector('.полеШума');
+        if(noiseField) noiseField.remove();
+    }, 100);
+    шторка.classList.remove('активна');
+    window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function назадКФайлам(){
-    закрытьВыдвижку();
-    призмаАктивна = false;
-    призмаЗакреплена = false;
-    сканер.classList.remove('активен','сбой');
-    призма.classList.remove('видна','сбой');
-    загрузкаАрхива.classList.remove('скрыта');
-    шторка.classList.add('активна');
+    закрытьДосье();
+    скрытьПризму();
     архив.classList.remove('активен');
-    setTimeout(() => {
-        document.body.classList.remove('архивОткрыт','пойман');
-        сценаФайлов.style.display = 'flex';
-        requestAnimationFrame(()=>сценаФайлов.classList.remove('скрыта'));
-        setTimeout(()=>шторка.classList.remove('активна'), 120);
-        window.scrollTo({top:0, behavior:'smooth'});
-    }, 260);
+    document.body.classList.remove('архив-открыт');
+    шторка.classList.add('активна');
+    setTimeout(()=>{
+        экранФайлов.style.display = 'flex';
+        шторка.classList.remove('активна');
+    }, 220);
 }
 
 document.getElementById('открытьDecrypt').addEventListener('click', открытьDecrypt);
@@ -588,72 +725,65 @@ document.getElementById('открытьIridium77').addEventListener('click', ()=
 document.getElementById('закрытьIridium77').addEventListener('click', ()=>document.getElementById('иридий77').style.display='none');
 document.getElementById('иридий77').addEventListener('click', e=>{ if(e.target.id==='иридий77') e.currentTarget.style.display='none'; });
 
-function создатьГлиф(символ, meta={}){
+function создатьГлиф(char, meta={}){
     const span = document.createElement('span');
     span.className = 'символ';
-    span.dataset.real = символ;
-    span.dataset.base = meta.damaged ? символ : искажение(символ);
-    span.dataset.current = span.dataset.base;
+    span.dataset.real = char;
+    span.dataset.base = meta.damaged ? char : испорченныйСимвол(char);
     span.textContent = span.dataset.base;
     if(meta.damaged) span.dataset.damaged = '1';
     if(meta.member) span.dataset.member = meta.member;
     return span;
 }
-
-function добавитьФрагмент(родитель, часть){
-    if(typeof часть === 'string'){
-        for(const ch of часть){
-            if(ch === ' ') родитель.appendChild(document.createTextNode(' '));
-            else родитель.appendChild(создатьГлиф(ch));
+function добавитьФрагмент(parent, part){
+    if(typeof part === 'string'){
+        for(const ch of part){
+            if(ch === ' ') parent.appendChild(document.createTextNode(' '));
+            else parent.appendChild(создатьГлиф(ch));
         }
         return;
     }
-    if(часть.member){
+    if(part.member){
         const wrap = document.createElement('span');
-        wrap.className = 'имяУчастника';
-        wrap.dataset.member = часть.member;
-        if(!участники[часть.member]) участники[часть.member] = {el: wrap, total:0, visible:0};
-        for(const ch of часть.text){
+        wrap.className = 'имя-участника';
+        wrap.dataset.member = part.member;
+        if(!участники[part.member]) участники[part.member] = {el: wrap, total:0, visible:0};
+        for(const ch of part.text){
             if(ch === ' ') wrap.appendChild(document.createTextNode(' '));
             else{
-                const glyph = создатьГлиф(ch, {member: часть.member});
+                const glyph = создатьГлиф(ch,{member:part.member});
                 wrap.appendChild(glyph);
-                участники[часть.member].total++;
+                участники[part.member].total++;
             }
         }
-        wrap.addEventListener('click', ()=>{ if(wrap.classList.contains('активно')) открытьВыдвижку(часть.member); });
-        родитель.appendChild(wrap);
+        wrap.addEventListener('click', ()=>{ if(wrap.classList.contains('активно')) открытьДосье(part.member); });
+        parent.appendChild(wrap);
         return;
     }
-    if(часть.damaged){
-        for(const ch of часть.text){
-            if(ch === ' ') родитель.appendChild(document.createTextNode(' '));
-            else родитель.appendChild(создатьГлиф(ch, {damaged:true}));
+    if(part.damaged){
+        for(const ch of part.text){
+            if(ch === ' ') parent.appendChild(document.createTextNode(' '));
+            else parent.appendChild(создатьГлиф(ch,{damaged:true}));
         }
     }
 }
 
 function построитьСтраницы(){
     страницы.innerHTML = '';
-    глифы = [];
     участники = {};
-    текстыСтраниц.forEach((pageData, index) => {
+    глифы = [];
+    страницыДанных.forEach((pageData, idx)=>{
         const page = document.createElement('div');
         page.className = 'страница';
-        page.innerHTML = '<div class="пятно a"></div><div class="пятно b"></div>';
-        const head = document.createElement('div');
-        head.className = 'верхСтраницы';
-        head.textContent = 'лист ' + String(index+1).padStart(2,'0') + ' / оцифровка нестабильна';
+        page.innerHTML = '<div class="рваный-край верх"></div><div class="рваный-край низ"></div><div class="пятно пятно1"></div><div class="пятно пятно2"></div>';
         const field = document.createElement('div');
-        field.className = 'полеТекста';
+        field.className = 'поле-текста';
         pageData.forEach(par => {
             const p = document.createElement('p');
-            const damaged = par.some(part => typeof part !== 'string' && part.damaged);
-            p.className = 'абзац' + (damaged ? ' повреждённый' : '');
+            p.className = 'абзац' + (par.some(part => typeof part !== 'string' && part.damaged) ? ' повреждённый' : '');
             par.forEach(part => добавитьФрагмент(p, part));
             field.appendChild(p);
         });
-        page.appendChild(head);
         page.appendChild(field);
         страницы.appendChild(page);
     });
@@ -661,198 +791,174 @@ function построитьСтраницы(){
 }
 
 function измеритьГлифы(){
-    const areaRect = страницы.getBoundingClientRect();
-    областьТекста = {w: areaRect.width, h: areaRect.height};
+    const rect = страницы.getBoundingClientRect();
+    прямоугольникСтраниц = {left:rect.left, top:rect.top, width:rect.width, height:rect.height};
     глифы = Array.from(страницы.querySelectorAll('.символ')).map(el => {
-        const rect = el.getBoundingClientRect();
+        const r = el.getBoundingClientRect();
         return {
             el,
-            x: rect.left - areaRect.left + rect.width/2,
-            y: rect.top - areaRect.top + rect.height/2,
             real: el.dataset.real,
             base: el.dataset.base,
             damaged: el.dataset.damaged === '1',
-            reveal: 0,
-            member: el.dataset.member || null
+            member: el.dataset.member || null,
+            x: r.left - rect.left + r.width/2,
+            y: r.top - rect.top + r.height/2,
+            progress: 0
         };
     });
-}
-
-function открытьВыдвижку(key){
-    const data = данныеПерсон[key];
-    if(!data) return;
-    имяВыдвижки.textContent = data.имя;
-    содержимоеВыдвижки.innerHTML = '';
-    data.поля.forEach(([label,value]) => {
-        const row = document.createElement('div');
-        row.className = 'полеПерсонажа';
-        row.innerHTML = `<strong>${label}</strong><div>${value}</div>`;
-        содержимоеВыдвижки.appendChild(row);
-    });
-    выдвижка.classList.add('открыта');
-}
-function закрытьВыдвижку(){выдвижка.classList.remove('открыта')}
-document.getElementById('закрытьВыдвижку').addEventListener('click', закрытьВыдвижку);
-
-function поставитьПризму(x, y){
-    if(!областьТекста) return;
-    const w = призма.offsetWidth || 280;
-    const h = призма.offsetHeight || 190;
-    призмаX = Math.max(0, Math.min(областьТекста.w - w, x));
-    призмаY = Math.max(0, Math.min(областьТекста.h - h, y));
-    призма.style.left = призмаX + 'px';
-    призма.style.top = призмаY + 'px';
-}
-
-function переключитьПризму(){
-    призмаАктивна = !призмаАктивна;
-    сканер.classList.toggle('активен', призмаАктивна);
-    призма.classList.toggle('видна', призмаАктивна);
-    if(призмаАктивна){
-        const rect = страницы.getBoundingClientRect();
-        поставитьПризму(rect.width/2 - (призма.offsetWidth||280)/2, rect.height/2 - (призма.offsetHeight||190)/2);
-    }else{
-        призмаЗакреплена = false;
-        фиксатор.classList.remove('активен');
-        фиксатор.textContent = 'свободно';
-        призма.classList.remove('сбой');
-        сканер.classList.remove('сбой');
-        состояниеСканера.textContent = 'состояние: ожидание';
-        полеСканера.textContent = 'нет устойчивого чтения';
-        document.querySelectorAll('.имяУчастника').forEach(el=>el.classList.remove('активно'));
+    if(призмаПоказана){
+        размерПризмыW = Math.min(420, Math.max(280, rect.width * .28));
+        размерПризмыH = Math.min(300, Math.max(200, rect.height * .18));
+        призма.style.width = размерПризмыW + 'px';
+        призма.style.height = размерПризмыH + 'px';
+        поставитьПризму(позицияПризмыX, позицияПризмыY);
     }
 }
-document.getElementById('переключательПризмы').addEventListener('click', переключитьПризму);
 
-фиксатор.addEventListener('click', e => {
+function показатьПризму(){
+    if(!прямоугольникСтраниц) измеритьГлифы();
+    призмаПоказана = true;
+    размерПризмыW = Math.min(420, Math.max(280, прямоугольникСтраниц.width * .28));
+    размерПризмыH = Math.min(300, Math.max(200, прямоугольникСтраниц.height * .18));
+    призма.style.width = размерПризмыW + 'px';
+    призма.style.height = размерПризмыH + 'px';
+    поставитьПризму(прямоугольникСтраниц.width * .34, прямоугольникСтраниц.height * .18);
+    призма.classList.add('активна');
+}
+function скрытьПризму(){
+    призмаПоказана = false;
+    призмаЗафиксирована = false;
+    призма.classList.remove('активна','сбой');
+    фиксаторПризмы.classList.remove('активен');
+    фиксаторПризмы.textContent = 'свободно';
+    Object.values(участники).forEach(v=>v.el.classList.remove('активно'));
+    глифы.forEach(g=>{g.progress=0; g.el.textContent=g.base;});
+}
+function поставитьПризму(x,y){
+    if(!прямоугольникСтраниц) return;
+    позицияПризмыX = Math.max(0, Math.min(прямоугольникСтраниц.width - размерПризмыW, x));
+    позицияПризмыY = Math.max(0, Math.min(прямоугольникСтраниц.height - размерПризмыH, y));
+    призма.style.left = позицияПризмыX + 'px';
+    призма.style.top = позицияПризмыY + 'px';
+}
+кнопкаПризмы.addEventListener('click', ()=>{призмаПоказана ? скрытьПризму() : показатьПризму();});
+фиксаторПризмы.addEventListener('click', e=>{
     e.stopPropagation();
-    призмаЗакреплена = !призмаЗакреплена;
-    фиксатор.classList.toggle('активен', призмаЗакреплена);
-    фиксатор.textContent = призмаЗакреплена ? 'закреп.' : 'свободно';
-});
-
-страницы.addEventListener('mousemove', e => {
-    if(!призмаАктивна || призмаЗакреплена || тащимПризму) return;
-    const rect = страницы.getBoundingClientRect();
-    поставитьПризму(e.clientX - rect.left - (призма.offsetWidth||280)/2, e.clientY - rect.top - (призма.offsetHeight||190)/2);
+    призмаЗафиксирована = !призмаЗафиксирована;
+    фиксаторПризмы.classList.toggle('активен', призмаЗафиксирована);
+    фиксаторПризмы.textContent = призмаЗафиксирована ? 'закреп.' : 'свободно';
 });
 
 const верхПризмы = document.getElementById('верхПризмы');
-верхПризмы.addEventListener('mousedown', e => {
+верхПризмы.addEventListener('mousedown', e=>{
+    if(призмаЗафиксирована) return;
     тащимПризму = true;
-    const rect = призма.getBoundingClientRect();
-    смещениеX = e.clientX - rect.left;
-    смещениеY = e.clientY - rect.top;
+    const r = призма.getBoundingClientRect();
+    смещениеПризмыX = e.clientX - r.left;
+    смещениеПризмыY = e.clientY - r.top;
     e.preventDefault();
 });
-document.addEventListener('mousemove', e => {
-    if(!тащимПризму) return;
-    const rect = страницы.getBoundingClientRect();
-    поставитьПризму(e.clientX - rect.left - смещениеX, e.clientY - rect.top - смещениеY);
+document.addEventListener('mousemove', e=>{
+    if(!тащимПризму || !призмаПоказана || !прямоугольникСтраниц) return;
+    поставитьПризму(e.clientX - прямоугольникСтраниц.left - смещениеПризмыX, e.clientY - прямоугольникСтраниц.top - смещениеПризмыY);
 });
 document.addEventListener('mouseup', ()=>тащимПризму=false);
 
+function пересечение(a,b){
+    return !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom);
+}
+function проверитьКрай(){
+    const приз = {left:позицияПризмыX, top:позицияПризмыY, right:позицияПризмыX+размерПризмыW, bottom:позицияПризмыY+размерПризмыH};
+    let край = false;
+    document.querySelectorAll('.страница').forEach(page=>{
+        const r0 = page.getBoundingClientRect();
+        const base = страницы.getBoundingClientRect();
+        const r = {left:r0.left-base.left, top:r0.top-base.top, right:r0.right-base.left, bottom:r0.bottom-base.top};
+        if(пересечение(приз,r)){
+            if(Math.abs(приз.left-r.left)<22 || Math.abs(приз.right-r.right)<22 || Math.abs(приз.top-r.top)<22 || Math.abs(приз.bottom-r.bottom)<22) край = true;
+        }
+    });
+    return край;
+}
+
 function обновитьЧтение(){
-    if(!призмаАктивна || !областьТекста) return;
-    const pw = призма.offsetWidth || 280;
-    const ph = призма.offsetHeight || 190;
-    const центрX = призмаX + pw/2;
-    const центрY = призмаY + ph/2;
-    const крайX = Math.min(призмаX, областьТекста.w - (призмаX + pw));
-    const крайY = Math.min(призмаY, областьТекста.h - (призмаY + ph));
-    let сбой = крайX < 24 || крайY < 24;
+    if(!призмаПоказана) return;
+    const центрX = позицияПризмыX + размерПризмыW/2;
+    const центрY = позицияПризмыY + размерПризмыH/2;
     let кусок = '';
-    Object.values(участники).forEach(v => v.visible = 0);
+    let сбой = проверитьКрай();
+    Object.values(участники).forEach(v=>v.visible=0);
 
     for(const g of глифы){
-        const dx = (g.x - центрX) / (pw/2);
-        const dy = (g.y - центрY) / (ph/2);
-        const inside = (dx*dx + dy*dy) <= 1;
-        if(inside){
-            g.reveal = Math.min(4, g.reveal + 1);
-            if(g.member && участники[g.member]) участники[g.member].visible++;
-            if(g.damaged) сбой = true;
-        }else{
-            g.reveal = Math.max(0, g.reveal - 1);
-        }
-
-        if(g.reveal >= 4){
-            if(g.damaged && Math.random() < (сбой ? .65 : .35)) g.el.textContent = искажение(g.real);
-            else g.el.textContent = g.real;
-        }else if(g.reveal > 0){
-            g.el.textContent = искажение(g.real);
-        }else{
+        const inRect = g.x >= позицияПризмыX && g.x <= позицияПризмыX + размерПризмыW && g.y >= позицияПризмыY && g.y <= позицияПризмыY + размерПризмыH;
+        if(inRect){
+            if(g.damaged){
+                g.el.textContent = Math.random()>.5 ? случайныйСимвол() : испорченныйСимвол(g.real);
+                сбой = true;
+            } else {
+                g.progress = Math.min(1, g.progress + 0.055);
+                if(g.progress > 0.78) g.el.textContent = g.real;
+                else g.el.textContent = Math.random()>.35 ? испорченныйСимвол(g.real) : g.real;
+                if(g.member && участники[g.member]) участники[g.member].visible += g.progress;
+            }
+            if(кусок.length < 180) кусок += g.el.textContent;
+        } else {
+            g.progress = 0;
             g.el.textContent = g.base;
         }
-
-        if(inside && кусок.length < 160) кусок += g.el.textContent;
     }
 
-    Object.keys(участники).forEach(key => {
+    Object.keys(участники).forEach(key=>{
         const d = участники[key];
-        const виден = d.total ? (d.visible / d.total) > .56 : false;
-        d.el.classList.toggle('активно', виден);
+        const активен = d.total ? (d.visible / d.total) > 0.62 : false;
+        d.el.classList.toggle('активно', активен);
     });
 
-    сканер.classList.toggle('сбой', сбой);
     призма.classList.toggle('сбой', сбой);
     if(сбой) document.body.classList.add('пойман');
-    setTimeout(()=>document.body.classList.remove('пойман'), 120);
-    состояниеСканера.textContent = 'состояние: ' + (сбой ? 'сбой чтения' : 'чтение идёт');
-    полеСканера.textContent = кусок.trim() ? кусок.trim().slice(0, 180) : 'нет устойчивого чтения';
+    else document.body.classList.remove('пойман');
 }
 setInterval(обновитьЧтение, 60);
 
-window.addEventListener('resize', ()=>{
-    if(архив.classList.contains('активен')) requestAnimationFrame(измеритьГлифы);
-});
-
-function фон(){
-    const canvas = document.getElementById('фонСимволов');
-    const ctx = canvas.getContext('2d');
-    let w=0,h=0;
-    const капли = [];
-    function resize(){
-        w = canvas.width = innerWidth;
-        h = canvas.height = innerHeight;
-        капли.length = 0;
-        const count = Math.max(28, Math.floor(w / 48));
-        for(let i=0;i<count;i++){
-            капли.push({
-                x: Math.random()*w,
-                y: Math.random()*h,
-                speed: .12 + Math.random()*.32,
-                size: 14 + Math.random()*10,
-                life: 8 + Math.random()*8,
-                color: ['rgba(150,255,190,.18)','rgba(110,180,255,.14)','rgba(255,110,110,.12)','rgba(255,255,255,.12)','rgba(190,120,255,.11)'][Math.floor(Math.random()*5)],
-                text: Array.from({length: 1 + Math.floor(Math.random()*3)}, () => Math.random()>.5 ? случайныйСимвол() : случайнаяБуква()).join('')
-            });
-        }
-    }
-    function draw(){
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0,0,w,h);
-        капли.forEach(k => {
-            k.y += k.speed;
-            if(Math.random() > .995) k.text = Array.from({length: 1 + Math.floor(Math.random()*3)}, () => Math.random()>.5 ? случайныйСимвол() : случайнаяБуква()).join('');
-            if(k.y > h + 40){
-                k.y = -20 - Math.random()*100;
-                k.x = Math.random()*w;
-            }
-            ctx.fillStyle = k.color;
-            ctx.font = k.size + 'px monospace';
-            ctx.fillText(k.text, k.x, k.y);
-        });
-        requestAnimationFrame(draw);
-    }
-    resize();
-    draw();
-    addEventListener('resize', resize);
+function открытьДосье(key){
+    const data = досьеДанные[key];
+    if(!data) return;
+    имяДосье.textContent = data.name;
+    поляДосье.innerHTML = '';
+    data.fields.forEach(([k,v])=>{
+        const row = document.createElement('div');
+        row.className = 'поле-досье';
+        row.innerHTML = `<strong>${k}</strong><div>${v}</div>`;
+        поляДосье.appendChild(row);
+    });
+    досье.style.left = 'auto';
+    досье.style.right = '18px';
+    досье.style.top = '70px';
+    досье.classList.add('активно');
 }
+function закрытьДосье(){досье.classList.remove('активно');досье.style.left='auto';досье.style.right='-420px';досье.style.top='70px';}
+document.getElementById('закрытьДосье').addEventListener('click', закрытьДосье);
 
-фон();
-первичнаяЗагрузка();
+const верхДосье = document.getElementById('верхДосье');
+верхДосье.addEventListener('mousedown', e=>{
+    тащимДосье = true;
+    const r = досье.getBoundingClientRect();
+    смещениеДосьеX = e.clientX - r.left;
+    смещениеДосьеY = e.clientY - r.top;
+    e.preventDefault();
+});
+document.addEventListener('mousemove', e=>{
+    if(!тащимДосье) return;
+    досье.style.right = 'auto';
+    досье.style.left = Math.max(8, Math.min(innerWidth - досье.offsetWidth - 8, e.clientX - смещениеДосьеX)) + 'px';
+    досье.style.top = Math.max(8, Math.min(innerHeight - досье.offsetHeight - 8, e.clientY - смещениеДосьеY)) + 'px';
+});
+document.addEventListener('mouseup', ()=>тащимДосье=false);
+
+window.addEventListener('resize', ()=>{if(архив.classList.contains('активен')) requestAnimationFrame(измеритьГлифы);});
+рисоватьМатрицу();
+обновитьМатрицуРазмер();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0986bb75d4cf107',t:'MTc4MTA5NDk3Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-</body>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a09881e4df12f107',t:'MTc4MTA5NTg4NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
