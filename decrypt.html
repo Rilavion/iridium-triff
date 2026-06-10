@@ -6,274 +6,316 @@
 <title>НЕ_УНАТХ</title>
 <style>
 :root{
-    --фон:#000;
-    --текст:#d8e2db;
-    --тусклый:#7f8b84;
-    --линия:rgba(255,255,255,.08);
-    --плёнка:rgba(255,255,255,.03);
-    --мята:#9ef8b5;
-    --лед:#9ad9ff;
-    --тревога:#ff6d6d;
-    --ржавчина:#ffb469;
-    --розовый:#ff7ce3;
+    --чёрный:#000;
+    --текст:#d8e1da;
+    --тусклый:#77827c;
+    --линия:rgba(255,255,255,.09);
+    --плёнка:rgba(255,255,255,.025);
+    --зелёный:#93ffb8;
+    --лёд:#b7dfff;
+    --тревога:#ff6b6b;
+    --розовый:#ff7ddd;
+    --ржавчина:#ffb871;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
     min-height:100vh;
-    overflow-x:hidden;
     background:#000;
     color:var(--текст);
+    overflow-x:hidden;
     font-family:Consolas, Menlo, Monaco, "Courier New", monospace;
     position:relative;
 }
 body::before,
 body::after{content:"";position:fixed;inset:0;pointer-events:none}
-body::before{
-    z-index:-4;
-    background:
-        radial-gradient(circle at 18% 17%, rgba(80,255,175,.06), transparent 22%),
-        radial-gradient(circle at 83% 18%, rgba(110,170,255,.06), transparent 22%),
-        radial-gradient(circle at 62% 84%, rgba(255,255,255,.03), transparent 24%),
-        #000;
-}
+body::before{background:#000;z-index:-4}
 body::after{
     z-index:180;
-    opacity:.15;
+    opacity:.16;
     background:
         repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0 1px, transparent 1px 3px),
-        linear-gradient(180deg, rgba(255,255,255,.025), transparent 15%, transparent 85%, rgba(255,255,255,.025));
+        linear-gradient(180deg, rgba(255,255,255,.02), transparent 14%, transparent 86%, rgba(255,255,255,.02));
 }
-body.пойман::before{animation:всплеск .34s linear 2}
-@keyframes всплеск{0%{filter:brightness(1)}50%{filter:brightness(3)}100%{filter:brightness(1)}}
-#фон,#символы,.шум,.скан,.виньетка,.шторка{position:fixed;inset:0;pointer-events:none}
-#фон{z-index:-3}
-#символы{z-index:-2;opacity:.45}
-.шум{
-    z-index:-1;
-    opacity:.12;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-}
-.скан{
-    z-index:181;
-    opacity:.19;
-    background:linear-gradient(180deg, transparent 0%, rgba(150,255,200,.05) 40%, rgba(150,255,200,.15) 50%, rgba(150,255,200,.05) 60%, transparent 100%);
-    animation:скан 8s linear infinite;
-}
+#матричныйФон,#шумовойФон,.скан-линия,.виньетка,.шторка{position:fixed;inset:0;pointer-events:none}
+#матричныйФон{z-index:-3}
+#шумовойФон{z-index:-2;opacity:.08;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")}
+.скан-линия{z-index:181;opacity:.14;background:linear-gradient(180deg, transparent 0%, rgba(160,255,205,.04) 38%, rgba(160,255,205,.14) 50%, rgba(160,255,205,.04) 62%, transparent 100%);animation:скан 9s linear infinite}
 @keyframes скан{0%{transform:translateY(-110%)}100%{transform:translateY(110%)}}
-.виньетка{z-index:182;background:radial-gradient(ellipse 72% 58% at 50% 45%, transparent 0%, rgba(0,0,0,.24) 65%, rgba(0,0,0,.78) 100%)}
-.шторка{z-index:420;background:#000;opacity:0;transition:opacity .5s ease}
+.виньетка{z-index:182;background:radial-gradient(ellipse 72% 58% at 50% 45%, transparent 0%, rgba(0,0,0,.34) 66%, rgba(0,0,0,.84) 100%)}
+.шторка{z-index:420;background:#000;opacity:0;transition:opacity .45s ease}
 .шторка.активна{opacity:1;pointer-events:auto}
+body.пойман .виньетка{animation:рывок .24s linear 2}
+@keyframes рывок{0%{filter:brightness(1)}50%{filter:brightness(2.4)}100%{filter:brightness(1)}}
+
 .верхняя-полоса{
     position:fixed;top:0;left:0;right:0;z-index:120;
-    display:flex;align-items:center;justify-content:space-between;gap:14px;
-    padding:12px 16px;border-bottom:1px solid var(--линия);
-    background:rgba(0,0,0,.78);backdrop-filter:blur(8px);
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:11px 14px;border-bottom:1px solid var(--линия);
+    background:rgba(0,0,0,.82);backdrop-filter:blur(8px);
     opacity:0;pointer-events:none;transform:translateY(-10px);
-    transition:opacity .45s ease, transform .45s ease;
+    transition:opacity .4s ease, transform .4s ease;
 }
 body.архив-открыт .верхняя-полоса{opacity:1;pointer-events:auto;transform:translateY(0)}
 .верх-лево,.верх-право{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.возврат,.узел{
-    padding:8px 10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.02);
-    color:var(--тусклый);font-size:.7rem;letter-spacing:.17em;text-transform:uppercase;
+.возврат,.метка{
+    border:1px solid rgba(255,255,255,.1);
+    background:rgba(255,255,255,.02);
+    color:var(--тусклый);
+    padding:8px 10px;
+    font-size:.68rem;
+    letter-spacing:.17em;
+    text-transform:uppercase;
 }
-.возврат{cursor:pointer;text-decoration:none;transition:.22s ease}
-.возврат:hover{color:var(--текст);border-color:rgba(255,255,255,.3);transform:translateY(-1px)}
-.часы{color:var(--тусклый);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase}
-main{position:relative;z-index:2;padding-top:0;transition:padding-top .45s ease}
-body.архив-открыт main{padding-top:58px}
+.возврат{cursor:pointer;transition:.2s ease}
+.возврат:hover{color:var(--текст);border-color:rgba(255,255,255,.28);transform:translateY(-1px)}
+.часы{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--тусклый)}
+main{position:relative;z-index:2;padding-top:0;transition:padding-top .4s ease}
+body.архив-открыт main{padding-top:56px}
 
 .загрузка,
-.защита,
-.иридий77{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:360;background:rgba(0,0,0,.96)}
-.загрузка{flex-direction:column;gap:18px;transition:opacity .85s ease, visibility .85s ease}
+.загрузка-архива,
+.выдвижка,
+.досье{position:fixed;inset:0}
+.загрузка,
+.загрузка-архива{display:flex;align-items:center;justify-content:center;z-index:360;background:rgba(0,0,0,.96)}
+.загрузка{flex-direction:column;gap:18px;transition:opacity .8s ease, visibility .8s ease}
 .загрузка.скрыта{opacity:0;visibility:hidden;pointer-events:none}
-.поле-символов{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-.строка-шума{position:absolute;left:0;right:0;font-size:.86rem;color:rgba(130,255,190,.18);white-space:nowrap;letter-spacing:.26em;text-transform:uppercase;animation:дрейф linear forwards}
-@keyframes дрейф{0%{transform:translateY(40px);opacity:0}8%{opacity:1}100%{transform:translateY(-120px);opacity:0}}
-.ядро-загрузки{
-    width:min(720px,calc(100% - 30px));padding:22px;border:1px solid rgba(255,255,255,.1);
-    background:linear-gradient(180deg, rgba(6,9,8,.88), rgba(2,3,3,.94));
-    box-shadow:0 0 0 1px rgba(255,255,255,.03),0 0 60px rgba(0,0,0,.8);position:relative;overflow:hidden
+.поле-шума{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.полоса-шума{position:absolute;left:0;right:0;font-size:.86rem;white-space:nowrap;color:rgba(145,255,190,.18);letter-spacing:.22em;text-transform:uppercase;animation:дрейф linear forwards}
+@keyframes дрейф{0%{transform:translateY(40px);opacity:0}10%{opacity:1}100%{transform:translateY(-120px);opacity:0}}
+.окно-загрузки{
+    width:min(720px,calc(100% - 28px));
+    border:1px solid rgba(255,255,255,.11);
+    background:linear-gradient(180deg, rgba(5,6,6,.92), rgba(1,1,1,.96));
+    box-shadow:0 0 0 1px rgba(255,255,255,.02),0 0 70px rgba(0,0,0,.82);
+    padding:22px;position:relative;overflow:hidden
 }
-.ядро-загрузки::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,.05) 50%, transparent 100%);transform:translateX(-100%);animation:пробег 4.8s linear infinite}
+.окно-загрузки::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,.05) 50%, transparent 100%);transform:translateX(-100%);animation:пробег 4.8s linear infinite}
 @keyframes пробег{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-.заг-шапка{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--тусклый)}
-.заг-заголовок{font-size:1rem;line-height:1.8;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:16px}
-.заг-строки{display:grid;gap:8px;min-height:140px}
-.заг-строка{font-size:.86rem;line-height:1.7;color:#b8c3bc;min-height:1.6em}
-.заг-строка::before{content:"> ";color:var(--мята)}
+.верх-загрузки{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--тусклый)}
+.заголовок-загрузки{font-size:.96rem;line-height:1.8;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:16px}
+.строки-загрузки{display:grid;gap:8px;min-height:130px}
+.строка-загрузки{font-size:.86rem;line-height:1.7;color:#bdc6c0;min-height:1.6em}
+.строка-загрузки::before{content:"> ";color:var(--зелёный)}
 .полоса{margin-top:16px;height:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);overflow:hidden}
-.полоса-заполнение{height:100%;width:0;background:linear-gradient(90deg, rgba(255,255,255,.08), rgba(156,250,180,.9), rgba(255,255,255,.08));transition:width .3s ease}
+.полоса-заполнение{height:100%;width:0;background:linear-gradient(90deg, rgba(255,255,255,.08), rgba(150,255,190,.9), rgba(255,255,255,.08));transition:width .28s ease}
 
 .сцена-файлов{
-    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;
-    transition:opacity .6s ease, transform .6s ease
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
+    transition:opacity .55s ease, transform .55s ease;
 }
-.сцена-файлов.скрыта{opacity:0;pointer-events:none;transform:scale(.99)}
-.пространство-файлов{width:min(920px,100%);display:flex;align-items:center;justify-content:center;gap:90px;flex-wrap:wrap}
-.файл-узел{
-    background:transparent;border:none;color:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:16px;
-    transition:transform .25s ease, filter .25s ease;position:relative
+.сцена-файлов.скрыта{opacity:0;pointer-events:none;transform:scale(.985)}
+.файлы-в-пустоте{display:flex;align-items:center;justify-content:center;gap:90px;flex-wrap:wrap}
+.файл{
+    border:none;background:transparent;color:inherit;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:16px;
+    transition:transform .24s ease, filter .24s ease;position:relative
 }
-.файл-узел:hover{transform:translateY(-5px);filter:brightness(1.08)}
-.файл-узел::after{content:"";position:absolute;top:16px;left:50%;width:120px;height:160px;transform:translateX(-50%);background:radial-gradient(circle at center, rgba(255,255,255,.06), transparent 70%);filter:blur(14px);opacity:.55}
-.лист{
-    width:124px;height:154px;position:relative;z-index:1;background:linear-gradient(180deg, rgba(240,246,242,.08), rgba(240,246,242,.03));
-    border:1px solid rgba(255,255,255,.12);box-shadow:0 0 0 1px rgba(255,255,255,.03), 0 0 36px rgba(0,0,0,.4)
+.файл:hover{transform:translateY(-5px);filter:brightness(1.08)}
+.файл::after{content:"";position:absolute;top:15px;left:50%;width:118px;height:150px;transform:translateX(-50%);background:radial-gradient(circle at center, rgba(255,255,255,.06), transparent 70%);filter:blur(16px);opacity:.55}
+.лист-файла{
+    width:126px;height:154px;position:relative;z-index:1;
+    background:linear-gradient(180deg, rgba(245,250,246,.08), rgba(245,250,246,.03));
+    border:1px solid rgba(255,255,255,.13);
+    box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 34px rgba(0,0,0,.42)
 }
-.лист::before{content:"";position:absolute;right:-1px;top:-1px;border-top:24px solid rgba(255,255,255,.1);border-left:24px solid transparent}
-.лист::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(255,255,255,.035), transparent 30%, transparent 70%, rgba(255,255,255,.02))}
-.лист-внутри{position:absolute;inset:12px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.08);overflow:hidden;background:rgba(255,255,255,.015)}
-.лист-внутри img{width:100%;height:100%;object-fit:contain;display:block;filter:contrast(1.04) brightness(1.03)}
-.знак{font-size:2rem;color:var(--тревога);text-shadow:-2px 0 rgba(0,255,255,.4),2px 0 rgba(255,0,0,.4)}
-.имя-файла{position:relative;z-index:1;max-width:260px;text-align:center;font-size:.9rem;line-height:1.8;letter-spacing:.14em;text-transform:uppercase;color:#eef4f0}
-.код-файла{position:relative;z-index:1;font-size:.68rem;color:var(--тусклый);letter-spacing:.18em;text-transform:uppercase}
-.битый{animation:дрожь 2.4s infinite steps(2)}
-@keyframes дрожь{0%,100%{transform:translateY(0)}12%{transform:translate(-1px,1px)}18%{transform:translate(2px,-1px)}25%{transform:translate(0)}54%{transform:translate(1px,0)}60%{transform:translate(-2px,0)}68%{transform:translate(0)}}
+.лист-файла::before{content:"";position:absolute;right:-1px;top:-1px;border-top:24px solid rgba(255,255,255,.1);border-left:24px solid transparent}
+.лист-файла::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(255,255,255,.03), transparent 30%, transparent 70%, rgba(255,255,255,.02))}
+.внутри-листа{position:absolute;inset:12px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.014);overflow:hidden}
+.внутри-листа img{width:100%;height:100%;object-fit:contain;display:block;filter:contrast(1.04) brightness(1.02)}
+.знак-файла{font-size:2rem;color:var(--тревога);text-shadow:-2px 0 rgba(0,255,255,.4),2px 0 rgba(255,0,0,.4)}
+.имя-файла{position:relative;z-index:1;max-width:260px;text-align:center;font-size:.92rem;line-height:1.75;letter-spacing:.14em;text-transform:uppercase;color:#eef4f0}
+.битый{animation:дёрганье 2.6s infinite steps(2)}
+@keyframes дёрганье{0%,100%{transform:translateY(0)}14%{transform:translate(-1px,1px)}18%{transform:translate(2px,-1px)}22%{transform:translate(0)}56%{transform:translate(1px,0)}62%{transform:translate(-2px,0)}70%{transform:translate(0)}}
 
-.архив{width:min(1120px,calc(100% - 20px));margin:0 auto 120px;display:none;opacity:0;transform:translateY(18px);transition:opacity .7s ease, transform .7s ease}
+.архив{
+    width:min(1160px, calc(100% - 20px));
+    margin:0 auto 90px;
+    display:none;
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity .6s ease, transform .6s ease;
+}
 .архив.активен{display:block;opacity:1;transform:translateY(0)}
-.сетка-фрагментов{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;align-items:start}
-.кусок,
-.портрет,
-.лист-досье,
-.послесвет{position:relative;overflow:hidden;border:1px solid var(--линия);background:linear-gradient(180deg, rgba(8,10,10,.78), rgba(3,4,4,.92));box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 60px rgba(0,0,0,.4)}
-.кусок::before,
-.портрет::before,
-.лист-досье::before,
-.послесвет::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(255,255,255,.025), transparent 20%, transparent 80%, rgba(255,255,255,.02));pointer-events:none}
-.логотипный{grid-column:span 3;min-height:240px;padding:18px;display:flex;flex-direction:column;justify-content:space-between}
-.логотипный img{width:100px;height:100px;object-fit:contain;display:block;filter:brightness(1.03) contrast(1.04)}
-.проступь{font-size:.74rem;line-height:1.8;color:#9aa59f;letter-spacing:.12em;text-transform:uppercase;opacity:.72}
-.текстовый{padding:18px 18px 20px}
-.текстовый p{font-size:.95rem;line-height:1.95;color:#cdd6d1;text-align:justify;margin-bottom:16px}
-.текстовый p:last-child{margin-bottom:0}
-.а{grid-column:span 5}
-.б{grid-column:span 4}
-.в{grid-column:span 6}
-.г{grid-column:span 5}
-.д{grid-column:span 7}
-.е{grid-column:span 5}
-.ж{grid-column:span 6}
-.и{grid-column:span 12}
-.портрет{padding:10px}
-.портрет img{width:100%;display:block;object-fit:cover;border:1px solid rgba(255,255,255,.08);background:#020202;filter:contrast(1.08) saturate(.88)}
-.портрет.вертикальный img{aspect-ratio:3/4}
-.портрет figcaption{margin-top:10px;font-size:.72rem;line-height:1.75;letter-spacing:.15em;text-transform:uppercase;color:#a6b0ab}
-.фигуры{grid-column:span 12;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.лист-досье{padding:12px;cursor:pointer;transition:.25s ease}
-.лист-досье:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.18)}
-.лист-досье .фото{position:relative;border:1px solid rgba(255,255,255,.08);background:#030303;margin-bottom:12px;aspect-ratio:3/4;overflow:hidden}
-.лист-досье .фото img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.08) saturate(.9)}
-.лист-досье .печать{position:absolute;left:8px;bottom:8px;padding:4px 6px;background:rgba(0,0,0,.78);border:1px solid rgba(255,255,255,.14);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:#e2e8e4}
-.обрыв-имени{font-size:.88rem;line-height:1.65;letter-spacing:.11em;text-transform:uppercase;color:#fff;margin-bottom:8px}
-.следы{display:grid;gap:7px;font-size:.76rem;line-height:1.75;color:#bbc5bf}
-.следы div{border-top:1px solid rgba(255,255,255,.06);padding-top:7px}
-.следы .шумовой{color:#98a39d}
-.глитч-блок{padding:18px}
-.глитч-блок p{font-size:.95rem;line-height:1.95;color:#d2dad5;text-align:justify}
-.зачеркнутый{display:inline-block;vertical-align:middle;height:1em;width:var(--длина,8ch);background:repeating-linear-gradient(90deg,#060606 0 6px,#111 6px 9px);box-shadow:0 0 0 1px rgba(255,255,255,.07), inset 0 0 16px rgba(0,0,0,.65);transform:skewX(-7deg);position:relative}
-.зачеркнутый::before{content:"";position:absolute;left:-6px;right:-6px;top:42%;height:2px;background:#000;box-shadow:0 -5px 0 #000,0 5px 0 #000}
-.шум-слово{display:inline-block;min-width:8ch;color:var(--тревога);text-shadow:-1px 0 rgba(0,255,255,.6),1px 0 rgba(255,0,0,.6)}
-.шум-слово.бледный{color:#fff;text-shadow:-1px 0 rgba(0,255,255,.45),1px 0 rgba(255,0,0,.45)}
-.послесвет{display:none;grid-column:span 12;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.015))}
-.послесвет.активен{display:block;animation:подъём .55s ease forwards}
-@keyframes подъём{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.послесвет p{font-size:.88rem;line-height:1.85;color:#c8d0cb}
-
-.модальное{position:fixed;inset:0;z-index:320;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;padding:20px}
-.модальное.активно{display:flex}
-.запись{width:min(860px,100%);max-height:90vh;overflow:auto;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg, rgba(8,8,8,.98), rgba(2,2,2,.98));box-shadow:0 0 0 1px rgba(255,255,255,.02),0 0 90px rgba(0,0,0,.84)}
-.запись::-webkit-scrollbar{width:10px}.запись::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14)}
-.шапка-записи{position:sticky;top:0;display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:18px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.95);z-index:5}
-.шапка-записи h3{font-size:1rem;line-height:1.55;letter-spacing:.16em;text-transform:uppercase}
-.шапка-записи small{display:block;margin-top:6px;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--тусклый)}
-.закрыть{min-width:42px;height:42px;border:1px solid rgba(255,255,255,.16);background:#070707;color:#fff;cursor:pointer;transition:.2s ease}
-.закрыть:hover{transform:rotate(90deg);border-color:rgba(255,255,255,.42)}
-.тело-записи{display:grid;grid-template-columns:300px 1fr}
-.левая-сторона{padding:18px;border-right:1px solid rgba(255,255,255,.08)}
-.левая-сторона .фото{border:1px solid rgba(255,255,255,.08);overflow:hidden;background:#030303}
-.левая-сторона .фото img{width:100%;display:block;aspect-ratio:3/4;object-fit:cover}
-.метки{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.метки span{padding:6px 8px;border:1px solid rgba(255,255,255,.1);font-size:.68rem;letter-spacing:.13em;text-transform:uppercase}
-.правая-сторона{padding:18px;display:grid;gap:12px}
-.осколок{padding:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);font-size:.92rem;line-height:1.9;color:#ccd5d0}
-.осколок.тихий{color:#b8c3bc}
-.осколок.ломкий{border-style:dashed}
-.осколок.ломкий .шум-слово{font-size:1em}
-.тема-хиоши .шапка-записи h3{color:var(--лед)}
-.тема-каденс .шапка-записи h3{color:var(--розовый)}
-.тема-иридий .шапка-записи h3{color:#f2f6fb}
-.тема-дарос .шапка-записи h3{color:var(--ржавчина)}
-.тема-хиоши .левая-сторона .фото img{filter:saturate(.82) contrast(1.08) hue-rotate(190deg)}
-.тема-каденс .левая-сторона .фото img{filter:saturate(1.14) contrast(1.08)}
-.тема-иридий .левая-сторона .фото img{filter:grayscale(.18) contrast(1.15)}
-.тема-дарос .левая-сторона .фото img{filter:saturate(.75) contrast(1.1)}
-
-.защита{display:none;z-index:380;background:rgba(0,0,0,.12);backdrop-filter:blur(0px);opacity:0;transition:opacity .8s ease, backdrop-filter 1.1s ease}
-.защита.активна{display:flex}
-.защита.видна{opacity:1;backdrop-filter:blur(4px)}
-.защитный-каркас{width:min(760px,100%);position:relative;transform:scale(.96);filter:blur(8px);opacity:.2;transition:transform .85s ease, filter 1s ease, opacity 1s ease}
-.защита.резкость .защитный-каркас{transform:scale(1);filter:blur(0);opacity:1}
-.защитный-фон{position:absolute;inset:-30px;background:radial-gradient(circle at center, rgba(255,255,255,.18), transparent 44%);filter:blur(18px);opacity:.45;animation:дыхание 3s ease-in-out infinite}
-@keyframes дыхание{0%,100%{transform:scale(1);opacity:.35}50%{transform:scale(1.04);opacity:.62}}
-.защитная-карточка{
-    position:relative;z-index:1;padding:26px;border:1px solid rgba(255,255,255,.18);
-    background:linear-gradient(180deg, rgba(244,247,247,.96), rgba(232,236,238,.98));color:#060606;
-    box-shadow:0 0 0 1px rgba(255,255,255,.24), 0 0 120px rgba(255,255,255,.2);overflow:hidden
+.корпус-архива{
+    position:relative;
+    padding:18px 18px 22px;
+    border:1px solid rgba(255,255,255,.08);
+    background:linear-gradient(180deg, rgba(5,6,6,.82), rgba(1,1,1,.94));
+    box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 90px rgba(0,0,0,.72);
 }
-.защитная-карточка::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(0,0,0,.03) 0 2px, transparent 2px 4px);mix-blend-mode:multiply;pointer-events:none}
-.защитная-строка{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-.защитная-строка small{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:#62686b}
-.защитные-слова{display:grid;gap:10px;min-height:170px}
-.защитные-слова div{font-size:clamp(.9rem,2.8vw,1.35rem);line-height:1.6;letter-spacing:.16em;text-transform:uppercase;color:#090909;opacity:0;transform:translateY(8px);transition:opacity .45s ease, transform .45s ease}
-.защитные-слова div.видно{opacity:1;transform:translateY(0)}
-.разгон{margin-top:18px;height:14px;border:1px solid rgba(0,0,0,.18);background:rgba(0,0,0,.05);overflow:hidden}
-.разгон span{display:block;height:100%;width:100%;background:linear-gradient(90deg, rgba(0,0,0,.12), rgba(255,255,255,.96), rgba(0,0,0,.12));animation:белое 1.6s linear infinite}
-@keyframes белое{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-.иридий77{display:none;z-index:340;padding:20px;background:rgba(0,0,0,.9)}
-.иридий77.активен{display:flex}
-.иридий77-карточка{width:min(600px,100%);padding:24px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg, rgba(8,8,8,.95), rgba(3,3,3,.98));text-align:center;box-shadow:0 0 90px rgba(255,0,0,.08)}
-.иридий77-карточка h3{font-size:1.2rem;line-height:1.6;letter-spacing:.18em;text-transform:uppercase;color:#fff;margin-bottom:10px}
-.иридий77-карточка p{font-size:.92rem;line-height:1.9;color:#cbd4cf;margin-bottom:16px}
+.старый-запуск{
+    position:absolute;inset:0;z-index:8;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.94);
+    transition:opacity .8s ease, visibility .8s ease;
+}
+.старый-запуск.скрыт{opacity:0;visibility:hidden;pointer-events:none}
+.старое-окно{
+    width:min(780px, calc(100% - 32px));
+    padding:22px;border:1px solid rgba(255,255,255,.11);
+    background:linear-gradient(180deg, rgba(5,6,6,.92), rgba(1,1,1,.97));
+    box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 70px rgba(0,0,0,.82)
+}
+.старые-строки{display:grid;gap:8px;min-height:210px}
+.старые-строки div{font-size:.88rem;line-height:1.75;color:#c2cbc6;min-height:1.6em}
+.старые-строки div::before{content:"> ";color:var(--зелёный)}
 
-@media (max-width:1000px){
-    .логотипный{grid-column:span 12;min-height:auto}
-    .а,.б,.в,.г,.д,.е,.ж{grid-column:span 12}
-    .фигуры{grid-template-columns:repeat(2,minmax(0,1fr))}
-    .тело-записи{grid-template-columns:1fr}
-    .левая-сторона{border-right:none;border-bottom:1px solid rgba(255,255,255,.08)}
+.архивная-пометка{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    margin-bottom:18px;padding:14px 16px;border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.015)
+}
+.архивная-пометка div{font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;color:#eef4f0;line-height:1.7}
+.архивная-пометка .статус{color:var(--тревога)}
+
+.рабочая-зона{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 0;gap:0;align-items:start}
+.панель-блокнота{position:relative;min-height:600px;padding-right:54px}
+.тетрадь{
+    position:relative;
+    max-width:900px;
+    margin:0 auto;
+    background:linear-gradient(180deg, #ece3d1 0%, #e4d8c1 50%, #dbcdb0 100%);
+    border:1px solid rgba(255,255,255,.16);
+    box-shadow:0 20px 70px rgba(0,0,0,.5), inset 0 0 60px rgba(92,72,45,.08);
+    overflow:hidden;
+    min-height:620px;
+}
+.тетрадь::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E");mix-blend-mode:multiply;pointer-events:none}
+.переплёт{position:absolute;left:0;top:0;bottom:0;width:68px;background:linear-gradient(90deg, #c4b28f 0%, #dac7a1 35%, #b9a57f 100%);border-right:3px solid rgba(62,49,32,.25);box-shadow:inset -8px 0 14px rgba(0,0,0,.12)}
+.кольца{position:absolute;left:42px;top:16px;bottom:16px;width:24px;display:flex;flex-direction:column;justify-content:space-evenly;z-index:3}
+.кольца span{display:block;width:16px;height:16px;border-radius:50%;border:3px solid #646464;background:linear-gradient(145deg,#a0a0a0,#6f6f6f);box-shadow:inset 1px 1px 2px rgba(255,255,255,.25), 1px 2px 5px rgba(0,0,0,.25)}
+.лист-область{position:relative;margin-left:74px;padding:18px 26px 22px 28px}
+.лист-верх{border-bottom:1px dashed rgba(63,71,87,.22);padding-bottom:12px;margin-bottom:10px;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(45,53,66,.72)}
+.окно-листа{position:relative;height:560px;overflow:auto;padding-right:12px}
+.окно-листа::-webkit-scrollbar{width:10px}
+.окно-листа::-webkit-scrollbar-thumb{background:rgba(60,60,60,.22)}
+.текст-листа{position:relative;padding:6px 0 30px;background:repeating-linear-gradient(180deg, transparent 0 31px, rgba(95,136,198,.20) 31px 32px)}
+.текст-листа::before{content:"";position:absolute;left:28px;top:0;bottom:0;width:2px;background:rgba(235,88,88,.24)}
+.абзац{position:relative;font-size:1.04rem;line-height:2.0;color:#222;margin:0 0 18px 42px;text-align:left;white-space:normal}
+.абзац.битый{color:#2b2525}
+.символ{display:inline-block;white-space:pre;min-width:.02em;color:#231f1b;transition:color .18s ease, text-shadow .18s ease, opacity .18s ease}
+.участник{cursor:default;pointer-events:none;transition:.2s ease;position:relative}
+.участник.обнаружен{color:#183b2b;text-shadow:0 0 6px rgba(80,180,120,.25);box-shadow:inset 0 -1px 0 rgba(70,130,90,.38);pointer-events:auto;cursor:pointer}
+
+.кнопка-сканера{
+    position:absolute;right:0;top:130px;z-index:6;
+    width:42px;height:140px;border:1px solid rgba(255,255,255,.12);
+    background:linear-gradient(180deg, rgba(10,12,12,.98), rgba(2,2,2,.98));color:#dce8e1;
+    writing-mode:vertical-rl;text-orientation:mixed;letter-spacing:.18em;text-transform:uppercase;
+    font-size:.72rem;cursor:pointer;transition:.25s ease
+}
+.кнопка-сканера:hover{border-color:rgba(255,255,255,.28);transform:translateX(-2px)}
+.сканер{
+    position:fixed;top:76px;right:-340px;z-index:20;width:320px;height:640px;
+    transition:right .55s cubic-bezier(.22,.8,.2,1), transform .28s ease;
+}
+.сканер.активен{right:18px}
+.сканер.нестабилен{transform:translate(2px,-1px)}
+.корпус-сканера{
+    width:100%;height:100%;border:1px solid rgba(150,255,190,.22);
+    background:linear-gradient(180deg, rgba(9,16,12,.96), rgba(2,4,3,.98));
+    box-shadow:0 0 0 1px rgba(150,255,190,.05), 0 0 42px rgba(80,255,150,.12);
+    padding:16px;position:relative;overflow:hidden
+}
+.корпус-сканера::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(150,255,190,.06) 0 2px, transparent 2px 4px);mix-blend-mode:screen;opacity:.45;pointer-events:none}
+.корпус-сканера::after{content:"";position:absolute;inset:-30% -20%;background:linear-gradient(180deg, transparent 0%, rgba(120,255,170,.12) 48%, rgba(120,255,170,.22) 50%, rgba(120,255,170,.12) 52%, transparent 100%);animation:сканернаяЛиния 2.3s linear infinite;pointer-events:none}
+@keyframes сканернаяЛиния{0%{transform:translateY(-60%)}100%{transform:translateY(60%)}}
+.экран-сканера{position:relative;height:100%;border:1px solid rgba(150,255,190,.22);background:radial-gradient(circle at center, rgba(80,160,100,.12), rgba(0,15,6,.92));padding:14px;overflow:hidden}
+.экран-сканера .шум{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.10;mix-blend-mode:screen;pointer-events:none}
+.экран-сканера .рябь{position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(140,255,180,.06) 0 1px, transparent 1px 3px);opacity:.5;pointer-events:none}
+.экран-сканера .данные{position:relative;z-index:1;display:grid;gap:10px;font-size:.72rem;line-height:1.8;letter-spacing:.15em;text-transform:uppercase;color:#bbffcd}
+.экран-сканера .поле{margin-top:12px;border:1px solid rgba(150,255,190,.18);background:rgba(0,0,0,.16);padding:12px;min-height:220px;color:#9effba;font-size:.74rem;line-height:1.8;letter-spacing:.14em;text-transform:uppercase}
+.сканер.нестабилен .корпус-сканера{border-color:rgba(255,120,120,.22);box-shadow:0 0 0 1px rgba(255,120,120,.05), 0 0 52px rgba(255,90,90,.12)}
+.сканер.нестабилен .экран-сканера{filter:hue-rotate(-35deg) saturate(1.2)}
+.сканер.нестабилен .корпус-сканера::after{animation-duration:.85s;opacity:.75}
+
+.область-сканирования{
+    position:absolute;z-index:7;display:none;pointer-events:none;
+    width:250px;height:180px;border:1px solid rgba(150,255,190,.38);
+    background:linear-gradient(180deg, rgba(70,255,160,.08), rgba(70,255,160,.04));
+    box-shadow:0 0 30px rgba(100,255,170,.12), inset 0 0 24px rgba(100,255,170,.07);
+    overflow:hidden;mix-blend-mode:screen
+}
+.область-сканирования.видна{display:block}
+.область-сканирования::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(170,255,210,.06) 0 2px, transparent 2px 4px);opacity:.6}
+.область-сканирования::after{content:"";position:absolute;left:0;right:0;height:2px;top:50%;background:rgba(170,255,210,.46);box-shadow:0 0 14px rgba(170,255,210,.34);animation:линия 1.8s linear infinite}
+@keyframes линия{0%{transform:translateY(-72px)}100%{transform:translateY(72px)}}
+.область-сканирования.нестабильна{border-color:rgba(255,120,120,.42);box-shadow:0 0 36px rgba(255,90,90,.12), inset 0 0 24px rgba(255,90,90,.08)}
+
+.выдвижка{
+    position:fixed;inset:0;
+    z-index:24;left:-420px;right:auto;display:flex;justify-content:flex-start;pointer-events:none;
+    transition:left .58s cubic-bezier(.22,.8,.2,1)
+}
+.выдвижка.открыта{left:0;pointer-events:auto}
+.лист-выдвижки{
+    width:min(390px, calc(100% - 22px));height:100%;
+    background:linear-gradient(180deg, #e9ddc8 0%, #dfd0b4 100%);
+    box-shadow:18px 0 60px rgba(0,0,0,.45), inset 0 0 48px rgba(92,72,45,.08);
+    border-right:1px solid rgba(255,255,255,.18);position:relative;overflow:auto;padding:22px 20px 30px
+}
+.лист-выдвижки::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E");mix-blend-mode:multiply;pointer-events:none}
+.лист-выдвижки .верх{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}
+.лист-выдвижки h3{font-size:.92rem;letter-spacing:.16em;text-transform:uppercase;line-height:1.8;color:#16130f}
+.лист-выдвижки small{display:block;margin-top:6px;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:#5c564f}
+.закрыть-лист{min-width:40px;height:40px;border:1px solid rgba(0,0,0,.14);background:rgba(255,255,255,.32);cursor:pointer;transition:.2s ease}
+.закрыть-лист:hover{transform:rotate(90deg)}
+.содержимое-листа{position:relative;z-index:1;display:grid;gap:10px}
+.строка-поля{padding:10px 12px;border:1px solid rgba(0,0,0,.1);background:rgba(255,255,255,.2);font-size:.88rem;line-height:1.75;color:#17130f}
+.строка-поля strong{display:block;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:#5d5449;margin-bottom:5px}
+.повреждение{display:inline-block;letter-spacing:.08em;color:#17130f;text-shadow:0 0 0 #17130f}
+.повреждение span{display:inline-block;min-width:.4em}
+.иридий77{position:fixed;inset:0;z-index:340;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.92)}
+
+@media (max-width:1050px){
+    .сканер{width:290px;height:580px}
+}
+@media (max-width:900px){
+    .панель-блокнота{padding-right:0}
+    .кнопка-сканера{position:static;width:100%;height:40px;writing-mode:horizontal-tb;margin-bottom:12px}
+    .сканер.активен{right:10px}
 }
 @media (max-width:700px){
-    .пространство-файлов{gap:38px}
-    .фигуры{grid-template-columns:1fr}
-    .заг-заголовок{font-size:.92rem}
-    .текстовый p,.глитч-блок p{font-size:.92rem}
+    .файлы-в-пустоте{gap:42px}
+    .старое-окно,.окно-загрузки{padding:18px}
+    .архивная-пометка div{font-size:.72rem}
+    .тетрадь{min-height:540px}
+    .окно-листа{height:500px}
+    .абзац{font-size:.96rem;line-height:1.95;margin-left:34px}
+    .область-сканирования{width:210px;height:150px}
+    .лист-выдвижки{width:min(100%, calc(100% - 16px))}
 }
 @media (max-width:520px){
     .верхняя-полоса{padding:10px 12px}
-    .возврат,.узел{font-size:.62rem;padding:7px 8px}
-    .лист{width:110px;height:140px}
-    .имя-файла{font-size:.8rem}
-    .ядро-загрузки{padding:18px}
+    .возврат,.метка{font-size:.6rem;padding:6px 7px}
+    .лист-файла{width:108px;height:138px}
+    .имя-файла{font-size:.8rem;max-width:190px}
+    .архив{width:min(100% - 10px, 1160px)}
+    .лист-область{margin-left:62px;padding:14px 16px 18px 16px}
+    .переплёт{width:58px}.кольца{left:35px}
+    .абзац{font-size:.9rem;margin-left:28px}
+    .сканер{width:260px;height:520px}
 }
 </style>
 </head>
 <body>
-<canvas id="фон"></canvas>
-<canvas id="символы"></canvas>
-<div class="шум"></div>
-<div class="скан"></div>
+<canvas id="матричныйФон"></canvas>
+<div id="шумовойФон"></div>
+<div class="скан-линия"></div>
 <div class="виньетка"></div>
 <div class="шторка" id="шторка"></div>
 
 <header class="верхняя-полоса">
     <div class="верх-лево">
-        <button class="возврат" id="назадКФайлам" type="button">к двум файлам</button>
+        <button class="возврат" id="кФайлам" type="button">к двум файлам</button>
         <a class="возврат" href="index.html">к узлу</a>
-        <div class="узел">не_унатх</div>
+        <div class="метка">не_унатх</div>
     </div>
     <div class="верх-право">
         <div class="часы" id="часы">00:00:00</div>
@@ -281,214 +323,204 @@ body.архив-открыт main{padding-top:58px}
 </header>
 
 <div class="загрузка" id="загрузка">
-    <div class="поле-символов" id="полеСимволов"></div>
-    <div class="ядро-загрузки">
-        <div class="заг-шапка">
-            <span>скрытый носитель</span>
-            <span>восстановление ветки</span>
+    <div class="поле-шума" id="полеШума"></div>
+    <div class="окно-загрузки">
+        <div class="верх-загрузки">
+            <span>подъём остатка</span>
+            <span>частично восстановлено</span>
         </div>
-        <div class="заг-заголовок">подъём файла НЕ_УНАТХ и его расщеплённых остатков</div>
-        <div class="заг-строки" id="строкиЗагрузки"></div>
+        <div class="заголовок-загрузки">вскрытие файла «не_унатх» и его уцелевших ветвей</div>
+        <div class="строки-загрузки" id="строкиЗагрузки"></div>
         <div class="полоса"><div class="полоса-заполнение" id="заполнениеЗагрузки"></div></div>
     </div>
 </div>
 
 <main>
     <section class="сцена-файлов" id="сценаФайлов">
-        <div class="пространство-файлов">
-            <button class="файл-узел" id="открытьDecrypt" type="button">
-                <div class="лист">
-                    <div class="лист-внутри"><img src="assets/decrypt/logo.png" alt="Логотип DECRYPT"></div>
+        <div class="файлы-в-пустоте">
+            <button class="файл" id="открытьDecrypt" type="button">
+                <div class="лист-файла">
+                    <div class="внутри-листа"><img src="assets/decrypt/logo.png" alt="DECRYPT"></div>
                 </div>
-                <div class="имя-файла">детективное частное агентство “decrypt”</div>
-                <div class="код-файла">узел 01 / читается</div>
+                <div class="имя-файла">детективное частное агентство “DECRYPT”</div>
             </button>
-            <button class="файл-узел битый" id="открытьIridium77" type="button">
-                <div class="лист">
-                    <div class="лист-внутри"><div class="знак">⚠</div></div>
+            <button class="файл битый" id="открытьIridium77" type="button">
+                <div class="лист-файла">
+                    <div class="внутри-листа"><div class="знак-файла">⚠</div></div>
                 </div>
                 <div class="имя-файла">иридий77</div>
-                <div class="код-файла">узел 02 / шум</div>
             </button>
         </div>
     </section>
 
     <section class="архив" id="архив">
-        <div class="сетка-фрагментов">
-            <div class="кусок логотипный">
-                <img src="assets/decrypt/logo.png" alt="Логотип DECRYPT">
-                <div class="проступь">Хиоши Сузуки • 400.000$ • семейный залог • Y-27 • компромат • слежка • зачистка</div>
+        <div class="корпус-архива">
+            <div class="старый-запуск" id="старыйЗапуск">
+                <div class="старое-окно">
+                    <div class="старые-строки" id="старыеСтроки"></div>
+                </div>
             </div>
 
-            <article class="кусок текстовый а">
-                <p>Детективное частное агентство “DECRYPT” так-же как и большинство нишевых организациях зародилось в секторе Спинвардская Периферия, в самой гуще развития мегаполиса на планете Y-27, первый основатель организации стал Хиоши Сузуки, прибывший на планету около 3х лет назад, на небольшой межтрансовом шаттле из солнечной системы. Начальный капитал организации составил 400.000$ наличными что были выделены Хиоши его родителями под залог, с ожиданием того что тот вернёт более 70% залога свыше, если не прогорит в сточной канаве планеты.</p>
-            </article>
+            <div class="архивная-пометка">
+                <div>детективное частное агентство “DECRYPT”</div>
+                <div class="статус">статус: уничтожена</div>
+            </div>
 
-            <figure class="портрет вертикальный б">
-                <img src="assets/decrypt/hiyoshi-elevator.png" alt="Хиоши Сузуки в лифте">
-                <figcaption>лифт / узел наблюдения / тот ещё не успел подняться выше города, но уже умел смотреть на него снизу вверх</figcaption>
-            </figure>
-
-            <article class="кусок текстовый в">
-                <p>Изначально агенство занималось конкретной поставленной задачей, принимая каждое предложение об детективной деятельности. В них часто входили уже клишированные запросы, слежка за второй половинкой которая подозревалась в измене, локальные потери вещей и небольших грабежей, по типу скрытия чей-то квартиры или съёмного жилья, снятие отпечатков, и поиски пропавших посылок утерянных местной почтовой службой.</p>
-                <p>Этот нишевый бизнес буквально держался лишь на бытовых запросах ежедневно пытаясь выйти хоть на пару сотен долларов из долгов. За около чем более годовой работы таким темпом бизнес был приведён в ужасное состояние, помещение которое снимал Хиоши буквально трещало по швам пока арендодатель в очередной раз завышал цены аргументируя это очень просто “Город растёт - а мы теперь в центре его. Нет денег. Вали на окраину.”</p>
-            </article>
-
-            <article class="кусок текстовый г">
-                <p>Это могло продолжаться буквально не более ещё двух месяцев, пока бы у Хиоши не кончились деньги, с учётом того что его родительский долг съедал более 80% заработка. Но тут как гром с небес появился шанс для малого бизнеса. Либо же до Хиоши самого дошла эта мысль, либо же ему дал очередную идею ежедневный клиент. А именно искать выгоду в корпоративных играх, пытаться заработать на добыче компромата против врагом той или иной фирмы обратившийся к нему, зачистки лишних данных или следов оставленных в ходе очередного “несчастного случая”.</p>
-            </article>
-
-            <figure class="портрет д">
-                <img src="assets/decrypt/society-triangle.png" alt="Слои общества Y-27">
-                <figcaption>город давно поделил сектриальный треугольник бизнесов: наверху мега-корпорации, ниже рынки, внизу подполье, нарко-базы и провальные заведения</figcaption>
-            </figure>
-
-            <article class="кусок текстовый е">
-                <p>А учитывая что к этому времени город давно поделил сектриальный треугольник бизнесов, где самую вершину города занимали мега-корпорации, середину рынки получившие огласку в обществе, а дно подпольные рынки, нарко-базы, и стрип-клубы с провальными бизнесами. Работа была частно пыльной, и требующей поморать руки. Хиоши решил сразу же занять данный рынок, и перейти в политику нейтральных действий, усвоив одно простое правило “За каждым хищником следует свой охотник, и третий наблюдатель что будет пожинать кости обоих.”</p>
-                <p>А название агентства как его основную направленность тот решил не менять в угоду некой конспирации от любопытных глаз правительство. Мол кому есть дело до очередного детектива-самоучки который рано или поздно найдет свою пулу в засанной подворотне.</p>
-            </article>
-
-            <article class="кусок текстовый ж">
-                <p>Данные решения позволили Хиоши с его бизнесом довольно резко начать свое развитие в высь по этажам города. И буквально за пол года такой работы, тот уже смог высунуть голову из канализации в средний сектор, ощутив менее черствый воздух пропитанный наркотой и героином. Первое задание их оказалось до ужасти просто, они получили его от фирмы по продаже средств по уходу за красотой, на другую такую-же фирму. Требовалось лишь сделать фотографии босса фирмы, находящегося в приватном клубе со страпоном не в том месте. И в отличии от низжевого рынка, на среднем рынке это могло реально повлиять на восприятие фирмы вплоть до обвала её акций.</p>
-                <p>Дело тот закрыл быстро и без проблем, что пробило ему сразу небольшие но значительные связи на среднем плато.</p>
-            </article>
-
-            <article class="кусок текстовый и">
-                <p>К тому моменту тот уже начал предпринимать движение в найме дополнительных сотрудников, уверенности естественно в каждом новом не было, и Хиоши понимал что каждый из них может подставить его в любой момент, но это всяко лучше когда предатель прикрывает спину от врага, чем враг смотрящий сквозь дырку в твоем сердце. Первый состав команды был из трёх существ разных расс, аркана девушка, ярко-розового окраса - Каденс Слоан, мужчина человеческой расы Иридий с серебряными волосами, и мужчина вульпканин Дарос Полей.</p>
-                <p>И если вульпу с арканой Хиоши смог достать буквально с подворотен нижнего плато, человека ему подослал один из знакомых, чьи заказы он уже не раз выполнял со среднего плато. И найм новых сотрудников стал для организации буквально вторым дыханием, это позволило брать на пару заказов больше, а учитывая что с приходом Иридия, у них ещё и появился автотранспорт который по явному согласию всех сторон стал принадлежать организации. С того момента их влияние начало расходится по среднему плато, начиная с ежедневных заданий по сборке компромата, заканчиваю уже прямым созданием самого этого компромата.</p>
-            </article>
-
-            <section class="фигуры">
-                <article class="лист-досье" data-запись="hiyoshi">
-                    <div class="фото"><img src="assets/decrypt/hiyoshi-elevator.png" alt="Хиоши Сузуки"><div class="печать">узел 01</div></div>
-                    <div class="обрыв-имени">хио<span class="шум-слово бледный" data-len="3"></span> сузуки</div>
-                    <div class="следы">
-                        <div>поднимался вместе с агентством, но почти всегда оставался чуть в стороне от самой грязи</div>
-                        <div class="шумовой">всплывает там, где деньги начинают говорить тише, а следы — исчезать быстрее</div>
+            <div class="рабочая-зона">
+                <div class="панель-блокнота">
+                    <button class="кнопка-сканера" id="переключитьСканер" type="button">призма</button>
+                    <div class="тетрадь" id="тетрадь">
+                        <div class="переплёт"></div>
+                        <div class="кольца">
+                            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                        </div>
+                        <div class="лист-область">
+                            <div class="лист-верх">архивная оцифровка / остаток бумажного носителя / чтение нестабильно</div>
+                            <div class="окно-листа" id="окноЛиста">
+                                <div class="область-сканирования" id="областьСканирования"></div>
+                                <div class="текст-листа" id="текстЛиста"></div>
+                            </div>
+                        </div>
                     </div>
-                </article>
-                <article class="лист-досье" data-запись="cadence">
-                    <div class="фото"><img src="assets/decrypt/arcana-cigarettes.jpeg" alt="Каденс Слоан"><div class="печать">узел 02</div></div>
-                    <div class="обрыв-имени">каденс сло<span class="шум-слово" data-len="2"></span></div>
-                    <div class="следы">
-                        <div>слишком обычный магазинный кадр для тех, кто умеет прятать вход в дело внутри привычки</div>
-                        <div class="шумовой">дым, касса, клубы, разговоры, чужие взгляды, в которых на секунду пропадает защита</div>
-                    </div>
-                </article>
-                <article class="лист-досье" data-запись="iridium">
-                    <div class="фото"><img src="assets/decrypt/iridium-elevator.png" alt="Иридий"><div class="печать">узел 03</div></div>
-                    <div class="обрыв-имени">ири<span class="шум-слово бледный" data-len="4"></span></div>
-                    <div class="следы">
-                        <div>виден до и после, но почти никогда в тот самый момент, когда всё действительно ломается</div>
-                        <div class="шумовой">лифт, парковка, вывоз, короткие передачи, слишком быстрое исчезновение хвостов</div>
-                    </div>
-                </article>
-                <article class="лист-досье" data-запись="daros">
-                    <div class="фото"><img src="assets/decrypt/daros-placeholder.svg" alt="Дарос Полей"><div class="печать">узел 04</div></div>
-                    <div class="обрыв-имени">дарос пол<span class="шум-слово" data-len="3"></span></div>
-                    <div class="следы">
-                        <div>лицо собрано из обрывков хуже, чем его маршруты, зато доступ после него меняется слишком чисто</div>
-                        <div class="шумовой">частоты, запасные ключи, техкоридоры, нижнее плато, служебные входы</div>
-                    </div>
-                </article>
-            </section>
-
-            <article class="кусок глитч-блок и" id="глитчТриггер">
-                <p>[Тут сильный нарастающий глитч эффект будто много информации уничтожено] начиная с <span class="шум-слово" data-len="8"></span> организация развилась и <span class="шум-слово бледный" data-len="9"></span> получила свой первый и <span class="шум-слово" data-len="8"></span>, заказ от <span class="зачеркнутый" style="--длина:11ch"></span></p>
-            </article>
-
-            <div class="послесвет" id="послесвет">
-                <p>здесь дальше уже не текст, а выжженный остаток. чтение продолжается, но архив больше не отвечает связно.</p>
+                </div>
+                <div></div>
             </div>
         </div>
     </section>
 </main>
 
-<div class="модальное" id="модальноеОкно">
-    <div class="запись" id="запись"></div>
-</div>
-
-<div class="защита" id="защита">
-    <div class="защитный-каркас">
-        <div class="защитный-фон"></div>
-        <div class="защитная-карточка">
-            <div class="защитная-строка">
-                <small>постороннее чтение</small>
-                <button class="закрыть" id="закрытьЗащиту" type="button">✕</button>
+<aside class="сканер" id="сканер">
+    <div class="корпус-сканера">
+        <div class="экран-сканера">
+            <div class="шум"></div>
+            <div class="рябь"></div>
+            <div class="данные">
+                <div>архивная призма</div>
+                <div>режим: анализ бумаги</div>
+                <div id="состояниеСканера">состояние: ожидание</div>
             </div>
-            <div class="защитные-слова" id="защитныеСлова"></div>
-            <div class="разгон"><span></span></div>
+            <div class="поле" id="полеСканера">пока нет устойчивого чтения</div>
         </div>
     </div>
-</div>
+</aside>
+
+<aside class="выдвижка" id="выдвижка">
+    <div class="лист-выдвижки">
+        <div class="верх">
+            <div>
+                <h3 id="имяВыдвижки">досье</h3>
+                <small>извлечено из повреждённого архива</small>
+            </div>
+            <button class="закрыть-лист" id="закрытьВыдвижку" type="button">✕</button>
+        </div>
+        <div class="содержимое-листа" id="содержимоеВыдвижки"></div>
+    </div>
+</aside>
 
 <div class="иридий77" id="иридий77">
-    <div class="иридий77-карточка">
-        <h3>иридий77</h3>
-        <p>ветка существует, но ещё не даёт себя читать. внутри пока только шум и недособранный остаток.</p>
-        <button class="закрыть" id="закрытьИридий77" type="button">✕</button>
+    <div class="окно-загрузки" style="max-width:620px">
+        <div class="верх-загрузки"><span>остаток не собран</span><span>шум</span></div>
+        <div class="заголовок-загрузки">ветка «иридий77» пока не даёт себя читать</div>
+        <div class="строки-загрузки"><div class="строка-загрузки">внутри только помехи, обрывы и недоживший след</div></div>
+        <div style="margin-top:18px;display:flex;justify-content:flex-end"><button class="возврат" id="закрытьIridium77" type="button">закрыть</button></div>
     </div>
 </div>
 
 <script>
 const азбука = '▓▒░█/#<>[]{}01ψΩΛЖЯÆИҰ∎◢◣◤◥';
-const строкиЗащиты = [
-    'АКТИВИРОВАН ЗАЩИТНЫЙ МЕХАНИЗМ NANOTRASEN',
-    '...чтение замечено...',
-    '...дальше пусто...',
-    '...белое пл<span class="шум-слово" data-len="4"></span>...'
+const запас = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЭЮЯ0123456789';
+const стартовыеСтроки = [];
+const страницы = [
+    [
+        'Детективное частное агентство “DECRYPT” так-же как и большинство нишевых организациях зародилось в секторе Спинвардская Периферия, в самой гуще развития мегаполиса на планете Y-27, первый основатель организации стал ',
+        {member:'hiyoshi', text:'Хиоши Сузуки'},
+        ', прибывший на планету около 3х лет назад, на небольшой межтрансовом шаттле из солнечной системы. Начальный капитал организации составил 400.000$ наличными что были выделены Хиоши его родителями под залог, с ожиданием того что тот вернёт более 70% залога свыше, если не прогорит в сточной канаве планеты.'
+    ],
+    [
+        'Изначально агенство занималось конкретной поставленной задачей, принимая каждое предложение об детективной деятельности. В них часто входили уже клишированные запросы, слежка за второй половинкой которая подозревалась в измене, локальные потери вещей и небольших грабежей, по типу скрытия чей-то квартиры или съёмного жилья, снятие отпечатков, и поиски пропавших посылок утерянных местной почтовой службой.'
+    ],
+    [
+        'Этот нишевый бизнес буквально держался лишь на бытовых запросах ежедневно пытаясь выйти хоть на пару сотен долларов из долгов. За около чем более годовой работы таким темпом бизнес был приведён в ужасное состояние, помещение которое снимал Хиоши буквально трещало по швам пока арендодатель в очередной раз завышал цены аргументируя это очень просто “Город растёт - а мы теперь в центре его. Нет денег. Вали на окраину.”'
+    ],
+    [
+        'Это могло продолжаться буквально не более ещё двух месяцев, пока бы у Хиоши не кончились деньги, с учётом того что его родительский долг съедал более 80% заработка. Но тут как гром с небес появился шанс для малого бизнеса. Либо же до Хиоши самого дошла эта мысль, либо же ему дал очередную идею ежедневный клиент. А именно искать выгоду в корпоративных играх, пытаться заработать на добыче компромата против врагом той или иной фирмы обратившийся к нему, зачистки лишних данных или следов оставленных в ходе очередного “несчастного случая”.'
+    ],
+    [
+        'А учитывая что к этому времени город давно поделил сектриальный треугольник бизнесов, где самую вершину города занимали мега-корпорации, середину рынки получившие огласку в обществе, а дно подпольные рынки, нарко-базы, и стрип-клубы с провальными бизнесами. Работа была частно пыльной, и требующей поморать руки. Хиоши решил сразу же занять данный рынок, и перейти в политику нейтральных действий, усвоив одно простое правило “За каждым хищником следует свой охотник, и третий наблюдатель что будет пожинать кости обоих.” а название агентства как его основную направленность тот решил не менять в угоду некой конспирации от любопытных глаз.'
+    ],
+    [
+        'Данные решения позволили Хиоши с его бизнесом довольно резко начать свое развитие в высь по этажам города. И буквально за пол года такой работы, тот уже смог высунуть голову из канализации в средний сектор, ощутив менее черствый воздух пропитанный наркотой и героином. Первое задание их оказалось до ужасти просто, они получили его от фирмы по продаже средств по уходу за красотой, на другую такую-же фирму. Требовалось лишь сделать фотографии босса фирмы, находящегося в приватном клубе не в том месте. И в отличии от низжевого рынка, на среднем рынке это могло реально повлиять на восприятие фирмы вплоть до обвала её акций.'
+    ],
+    [
+        'К тому моменту тот уже начал предпринимать движение в найме дополнительных сотрудников, уверенности естественно в каждом новом не было, и Хиоши понимал что каждый из них может подставить его в любой момент, но это всяко лучше когда предатель прикрывает спину от врага, чем враг смотрящий сквозь дырку в твоем сердце. Первый состав команды был из трёх существ разных расс, аркана девушка, ярко-розового окраса - ',
+        {member:'cadence', text:'Каденс Слоан'},
+        ', мужчина человеческой расы ',
+        {member:'iridium', text:'Иридий'},
+        ' с серебряными волосами, и мужчина вульпканин ',
+        {member:'daros', text:'Дарос Полей'},
+        '.'
+    ],
+    [
+        'И если вульпу с арканой Хиоши смог достать буквально с подворотен нижнего плато, человека ему подослал один из знакомых, чьи заказы он уже не раз выполнял со среднего плато. И найм новых сотрудников стал для организации буквально вторым дыханием, это позволило брать на пару заказов больше, а учитывая что с приходом ',
+        {member:'iridium', text:'Иридия'},
+        ', у них ещё и появился автотранспорт который по явному согласию всех сторон стал принадлежать организации. С того момента их влияние начало расходится по среднему плато, начиная с ежедневных заданий по сборке компромата, заканчиваю уже прямым созданием самого этого компромата.'
+    ],
+    [
+        {damaged:true, text:'Я<]#1}01 организация развилась и ◢◤◣}1/<1Æ получила свой первый и ÆЯ█00}<Æ заказ от █▓<И}Я/01Æ'}
+    ]
 ];
-const досье = {
+
+const данныеПерсон = {
     hiyoshi:{
-        тема:'тема-хиоши',
-        заголовок:'выписка из криминальных записей',
-        подзаголовок:'узел, где слишком часто сходятся цена, молчание и чужая грязь',
-        фото:'assets/decrypt/hiyoshi-elevator.png',
-        метки:['посредник','нейтральность','зачистка'],
-        обрывки:[
-            'Хиоши Сузуки не выглядит как тот, кто должен был поднять такую схему, но почти в каждом сохранившемся следе он стоит ближе к началу цепи, чем к её финалу.',
-            'Его имя всплывает там, где заказ уже разбит на части, а каждый исполнитель знает только свой кусок и не видит всей раны целиком.',
-            'Слишком много косвенных совпадений вокруг передачи компромата между фирмами. Слишком мало прямых следов, чтобы взять его целиком.',
-            'Повторяющаяся отметка: если он уже попал в кадр, значит настоящая грязная работа была отдана другим заметно раньше.'
+        имя:'Хиоши Сузуки',
+        поля:[
+            ['ФИО','Хиоши Сузуки'],
+            ['пол','мужской'],
+            ['раса','человек'],
+            ['рост','178 см'],
+            ['вес','71 кг'],
+            ['статус','исчез из открытых следов'],
+            ['родная планета','Земля / солнечная система'],
+            ['краткая характеристика','Основатель. Поднимал агентство из бытового сыска в корпоративную грязь, предпочитая нейтральность, разбиение заказов на части и чужие руки вместо прямого присутствия.']
         ]
     },
     cadence:{
-        тема:'тема-каденс',
-        заголовок:'выписка из криминальных записей',
-        подзаголовок:'слишком бытовой след для того, что потом случается с людьми и репутациями',
-        фото:'assets/decrypt/arcana-cigarettes.jpeg',
-        метки:['дым','магазины','чужое внимание'],
-        обрывки:[
-            'Каденс Слоан проще всего перепутать с обычным шумом города. Возможно, именно поэтому она и работает там, где люди позволяют себе расслабиться хотя бы на минуту.',
-            'Камеры магазинов, приватные клубы, кассы, сигареты, короткие разговоры — после неё эти сцены слишком часто начинают звучать как подготовка к компромату.',
-            'Никакой грубой силы. Только вход через привычку, доверие, любопытство и те секунды, когда человек уверен, что вокруг ничего не происходит.',
-            'В архиве не раз встречается одинаковая тень: сначала она выглядит случайной, а потом оказывается дверью в чужое падение.'
+        имя:'Каденс Слоан',
+        поля:[
+            ['ФИО','Каденс Слоан'],
+            ['пол','женский'],
+            ['раса','аркана'],
+            ['рост','171 см'],
+            ['вес','57 кг'],
+            ['статус','последний след нестабилен'],
+            ['родная планета','не зафиксирована'],
+            ['краткая характеристика','Полевой элемент. Лучше всего работает там, где доверие, привычка и обычная городская суета прячут начало компромата.']
         ]
     },
     iridium:{
-        тема:'тема-иридий',
-        заголовок:'выписка из криминальных записей',
-        подзаголовок:'след остаётся у лифтов, в переходах и возле того, что должно было исчезнуть быстрее',
-        фото:'assets/decrypt/iridium-elevator.png',
-        метки:['вывоз','короткие узлы','давление'],
-        обрывки:[
-            'Иридий почти никогда не выглядит главным событием. Он появляется рядом с местом, где что-то должно быть передано, уведено, вывезено или перестать существовать в прежнем виде.',
-            'Его приход совпадает с тем моментом, когда у агентства появляется транспорт и вместе с ним — настоящее второе дыхание.',
-            'Повторяющийся рисунок наблюдения: кадр до, кадр после, короткий разрыв, а внутри него — чужие хвосты уже уходят в темноту.',
-            'Если верить тому, что дожило до архива, именно вокруг него лучше всего видно, как “DECRYPT” перестало быть медленным сыском и стало подвижной сетью.'
+        имя:'Иридий',
+        поля:[
+            ['ФИО','Иридий'],
+            ['пол','мужской'],
+            ['раса','человек'],
+            ['рост','188 см'],
+            ['вес','79 кг'],
+            ['статус','следы разорваны'],
+            ['родная планета','Ме<span>▓</span>р<span>◢</span>к<span>█</span>у<span>Æ</span>р<span>Я</span>и<span>01</span>‑<span>█</span><span>◣</span>'],
+            ['краткая характеристика','Принёс агентству подвижность. Появляется рядом с узлами передачи, вывозом и теми местами, где следы должны исчезать быстрее обычного.']
         ]
     },
     daros:{
-        тема:'тема-дарос',
-        заголовок:'выписка из криминальных записей',
-        подзаголовок:'там, где его не видно, обычно уже открыт не тот вход и молчит не та частота',
-        фото:'assets/decrypt/daros-placeholder.svg',
-        метки:['частоты','замки','нижнее плато'],
-        обрывки:[
-            'Дарос Полей удерживается в архиве хуже остальных. Даже это уже похоже на почерк: лицо распадается, а полезный след остаётся в изменённом доступе и служебных пустотах.',
-            'Вокруг него слишком много разговоров о запасных ключах, дешёвых передатчиках, техкоридорах и подземных маршрутах, о которых официальные службы предпочитают не помнить.',
-            'Его не обязательно видеть, чтобы понять, что он работал: иногда достаточно того, что нужная дверь уже оказалась не дверью, а проходом.',
-            'Нижнее плато держит таких, как он, почти без имён. В архиве от него сохранилось меньше лица, чем метода.'
+        имя:'Дарос Полей',
+        поля:[
+            ['ФИО','Дарос Полей'],
+            ['пол','мужской'],
+            ['раса','вульпканин'],
+            ['рост','182 см'],
+            ['вес','68 кг'],
+            ['статус','данные неполные'],
+            ['родная планета','не подтверждена'],
+            ['краткая характеристика','Связан с частотами, запасными ключами, служебными входами и подземными маршрутами. В архиве от него сохранилось меньше лица, чем метода.']
         ]
     }
 };
@@ -496,78 +528,74 @@ const досье = {
 const загрузка = document.getElementById('загрузка');
 const строкиЗагрузки = document.getElementById('строкиЗагрузки');
 const заполнениеЗагрузки = document.getElementById('заполнениеЗагрузки');
-const полеСимволов = document.getElementById('полеСимволов');
+const полеШума = document.getElementById('полеШума');
 const сценаФайлов = document.getElementById('сценаФайлов');
 const архив = document.getElementById('архив');
 const шторка = document.getElementById('шторка');
-const модальноеОкно = document.getElementById('модальноеОкно');
-const запись = document.getElementById('запись');
-const защита = document.getElementById('защита');
-const защитныеСлова = document.getElementById('защитныеСлова');
-const послесвет = document.getElementById('послесвет');
-let защитаСработала = false;
+const старыйЗапуск = document.getElementById('старыйЗапуск');
+const старыеСтроки = document.getElementById('старыеСтроки');
+const текстЛиста = document.getElementById('текстЛиста');
+const окноЛиста = document.getElementById('окноЛиста');
+const областьСканирования = document.getElementById('областьСканирования');
+const сканер = document.getElementById('сканер');
+const полеСканера = document.getElementById('полеСканера');
+const состояниеСканера = document.getElementById('состояниеСканера');
+const выдвижка = document.getElementById('выдвижка');
+const имяВыдвижки = document.getElementById('имяВыдвижки');
+const содержимоеВыдвижки = document.getElementById('содержимоеВыдвижки');
+
+let сканерАктивен = false;
+let надЛистом = false;
+let координатаX = 0;
+let координатаY = 0;
+let указательX = 0;
+let указательY = 0;
+let нестабильно = false;
+let глифы = [];
+let участники = {};
+const ширинаСкана = 125;
+const высотаСкана = 90;
+
+function случайныйСимвол(){
+    return азбука[Math.floor(Math.random()*азбука.length)];
+}
+function случайнаяБуква(){
+    return запас[Math.floor(Math.random()*запас.length)];
+}
+function заменаДля(символ){
+    if(/[0-9]/.test(символ)) return String(Math.floor(Math.random()*10));
+    if(/[A-Za-zА-Яа-яЁё]/.test(символ)) return случайнаяБуква();
+    if(/[\.,:;!?\-—()«»"'`]/.test(символ)) return случайныйСимвол();
+    return случайныйСимвол();
+}
 
 function обновитьЧасы(){
     const d = new Date();
-    document.getElementById('часы').textContent = [d.getHours(), d.getMinutes(), d.getSeconds()].map(v => String(v).padStart(2,'0')).join(':');
+    document.getElementById('часы').textContent = [d.getHours(), d.getMinutes(), d.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');
 }
 обновитьЧасы();
 setInterval(обновитьЧасы, 1000);
-
-function случайнаяСтрока(длина=26){
-    let out='';
-    for(let i=0;i<длина;i++) out += азбука[Math.floor(Math.random()*азбука.length)];
-    return out;
-}
-
-function запускШума(){
-    let count = 0;
-    const timer = setInterval(() => {
-        const row = document.createElement('div');
-        row.className = 'строка-шума';
-        row.style.top = (Math.random()*100)+'%';
-        row.style.animationDuration = (3 + Math.random()*2.8)+'s';
-        row.style.letterSpacing = (.12 + Math.random()*.22)+'em';
-        row.textContent = случайнаяСтрока(26 + Math.floor(Math.random()*34));
-        полеСимволов.appendChild(row);
-        setTimeout(() => row.remove(), 5600);
-        count++;
-        if(count > 85) clearInterval(timer);
-    }, 75);
-}
 
 function получитьJSON(url, timeout=5000){
     return new Promise((resolve, reject) => {
         const ctrl = new AbortController();
         const tm = setTimeout(() => ctrl.abort(), timeout);
-        fetch(url, {signal: ctrl.signal, cache:'no-store'})
-            .then(r => {
-                clearTimeout(tm);
-                if(!r.ok) throw new Error('BAD');
-                return r.json();
-            })
-            .then(resolve)
-            .catch(err => {
-                clearTimeout(tm);
-                reject(err);
-            });
+        fetch(url, {signal: ctrl.signal, cache:'no-store'}).then(r => {
+            clearTimeout(tm);
+            if(!r.ok) throw new Error('bad');
+            return r.json();
+        }).then(resolve).catch(err => {
+            clearTimeout(tm);
+            reject(err);
+        });
     });
 }
 
 async function получитьIP(){
     const источники = [
-        async () => {
-            const d = await получитьJSON('https://api.ipify.org?format=json', 5000);
-            return d && d.ip;
-        },
-        async () => {
-            const d = await получитьJSON('https://ipapi.co/json/', 5000);
-            return d && d.ip;
-        },
-        async () => {
-            const d = await получитьJSON('https://ipwho.is/', 5000);
-            return d && d.ip;
-        }
+        async()=>{ const d = await получитьJSON('https://api.ipify.org?format=json', 5000); return d && d.ip; },
+        async()=>{ const d = await получитьJSON('https://ipapi.co/json/', 5000); return d && d.ip; },
+        async()=>{ const d = await получитьJSON('https://ipwho.is/', 5000); return d && d.ip; }
     ];
     for(const источник of источники){
         try{
@@ -578,231 +606,346 @@ async function получитьIP(){
     return 'адрес не получен';
 }
 
-async function печататьСтроки(lines){
-    for(let i=0;i<lines.length;i++){
+function создатьШумовыеПолосы(){
+    let счётчик = 0;
+    const таймер = setInterval(() => {
         const row = document.createElement('div');
-        row.className = 'заг-строка';
-        строкиЗагрузки.appendChild(row);
-        const line = lines[i];
-        for(let x=0;x<=line.length;x++){
-            row.textContent = line.slice(0,x);
-            await new Promise(r => setTimeout(r, 18));
+        row.className = 'полоса-шума';
+        row.style.top = (Math.random()*100)+'%';
+        row.style.animationDuration = (3 + Math.random()*2.4)+'s';
+        row.textContent = Array.from({length: 24 + Math.floor(Math.random()*28)}, случайныйСимвол).join('');
+        полеШума.appendChild(row);
+        setTimeout(()=>row.remove(), 5400);
+        счётчик++;
+        if(счётчик > 80) clearInterval(таймер);
+    }, 80);
+}
+
+async function напечататьСтроки(lines, container, progress){
+    for(let i=0;i<lines.length;i++){
+        const div = document.createElement('div');
+        div.className = container === старыеСтроки ? '' : 'строка-загрузки';
+        container.appendChild(div);
+        const text = lines[i];
+        for(let x=0;x<=text.length;x++){
+            div.textContent = text.slice(0,x);
+            await new Promise(r=>setTimeout(r, 17));
         }
-        заполнениеЗагрузки.style.width = ((i+1)/lines.length*100)+'%';
-        await new Promise(r => setTimeout(r, 130));
+        if(progress) progress.style.width = ((i+1)/lines.length*100)+'%';
+        await new Promise(r=>setTimeout(r, 130));
     }
 }
 
-async function стартЗагрузки(){
-    запускШума();
+async function первичнаяЗагрузка(){
+    создатьШумовыеПолосы();
     const ip = await получитьIP();
-    const строки = [
+    стартовыеСтроки.length = 0;
+    стартовыеСтроки.push(
         'обнаружен адрес узла: ' + ip,
-        'подъём расщеплённого файла',
-        'найдены два остатка для чтения',
-        'восстановление пустоты завершено'
-    ];
-    await печататьСтроки(строки);
-    await new Promise(r => setTimeout(r, 700));
+        'подъём фрагмента «не_унатх»',
+        'собраны два остатка для чтения',
+        'пустота стабилизирована'
+    );
+    await напечататьСтроки(стартовыеСтроки, строкиЗагрузки, заполнениеЗагрузки);
+    await new Promise(r=>setTimeout(r, 650));
     загрузка.classList.add('скрыта');
 }
-стартЗагрузки();
 
-function открытьАрхив(){
+function открытьВетку(){
     шторка.classList.add('активна');
     сценаФайлов.classList.add('скрыта');
-    setTimeout(() => {
+    setTimeout(async () => {
         сценаФайлов.style.display = 'none';
         document.body.classList.add('архив-открыт');
         архив.classList.add('активен');
+        старыеСтроки.innerHTML = '';
+        старыйЗапуск.classList.remove('скрыт');
+        const строки = [
+            'доступ к уцелевшему архиву подтверждён',
+            'детективное частное агентство “DECRYPT”',
+            'статус.................уничтожена',
+            'бумажный носитель частично пережил зачистку',
+            'разрешено только неполное сканирование'
+        ];
+        await напечататьСтроки(строки, старыеСтроки, null);
+        await new Promise(r=>setTimeout(r, 800));
+        старыйЗапуск.classList.add('скрыт');
+        setTimeout(()=>шторка.classList.remove('активна'), 160);
         window.scrollTo({top:0, behavior:'smooth'});
-        setTimeout(() => шторка.classList.remove('активна'), 180);
     }, 520);
 }
 
-function кФайлам(){
+function назадКФайлам(){
+    закрытьВыдвижку();
+    сканерАктивен = false;
+    сканер.classList.remove('активен','нестабилен');
+    областьСканирования.classList.remove('видна','нестабильна');
     шторка.classList.add('активна');
     архив.classList.remove('активен');
     setTimeout(() => {
-        document.body.classList.remove('архив-открыт');
+        document.body.classList.remove('архив-открыт','пойман');
         сценаФайлов.style.display = 'flex';
         requestAnimationFrame(() => сценаФайлов.classList.remove('скрыта'));
-        setTimeout(() => шторка.classList.remove('активна'), 180);
+        setTimeout(()=>шторка.classList.remove('активна'), 160);
         window.scrollTo({top:0, behavior:'smooth'});
-    }, 420);
+    }, 360);
 }
 
-document.getElementById('открытьDecrypt').addEventListener('click', открытьАрхив);
-document.getElementById('назадКФайлам').addEventListener('click', кФайлам);
-
-document.getElementById('открытьIridium77').addEventListener('click', () => {
-    document.getElementById('иридий77').classList.add('активен');
-    document.body.style.overflow = 'hidden';
+document.getElementById('открытьDecrypt').addEventListener('click', открытьВетку);
+document.getElementById('кФайлам').addEventListener('click', назадКФайлам);
+document.getElementById('открытьIridium77').addEventListener('click', ()=>{
+    document.getElementById('иридий77').style.display='flex';
 });
-document.getElementById('закрытьИридий77').addEventListener('click', () => {
-    document.getElementById('иридий77').classList.remove('активен');
-    document.body.style.overflow = '';
+document.getElementById('закрытьIridium77').addEventListener('click', ()=>{
+    document.getElementById('иридий77').style.display='none';
 });
-document.getElementById('иридий77').addEventListener('click', e => {
-    if(e.target.id === 'иридий77'){
-        e.currentTarget.classList.remove('активен');
-        document.body.style.overflow = '';
-    }
+document.getElementById('иридий77').addEventListener('click', e=>{
+    if(e.target.id==='иридий77') e.currentTarget.style.display='none';
 });
 
-function собратьЗапись(key){
-    const rec = досье[key];
-    if(!rec) return;
-    запись.className = 'запись ' + rec.тема;
-    запись.innerHTML = `
-        <div class="шапка-записи">
-            <div>
-                <h3>${rec.заголовок}</h3>
-                <small>${rec.подзаголовок}</small>
-            </div>
-            <button class="закрыть" type="button">✕</button>
-        </div>
-        <div class="тело-записи">
-            <div class="левая-сторона">
-                <div class="фото"><img src="${rec.фото}" alt="${rec.подзаголовок}"></div>
-                <div class="метки">${rec.метки.map(m => `<span>${m}</span>`).join('')}</div>
-            </div>
-            <div class="правая-сторона">
-                ${rec.обрывки.map((t,i)=>`<div class="осколок ${i===rec.обрывки.length-1?'ломкий':'тихий'}">${t}</div>`).join('')}
-            </div>
-        </div>`;
-    модальноеОкно.classList.add('активно');
-    document.body.style.overflow = 'hidden';
-    запись.querySelector('.закрыть').addEventListener('click', закрытьЗапись);
+function создатьГлиф(char, opts={}){
+    const span = document.createElement('span');
+    span.className = 'символ';
+    span.dataset.real = char;
+    span.dataset.current = заменаДля(char);
+    span.textContent = span.dataset.current;
+    if(opts.damaged) span.dataset.damaged = '1';
+    return span;
 }
-function закрытьЗапись(){
-    модальноеОкно.classList.remove('активно');
-    document.body.style.overflow = защита.classList.contains('видна') ? 'hidden' : '';
-}
-document.querySelectorAll('.лист-досье').forEach(card => card.addEventListener('click', () => собратьЗапись(card.dataset.запись)));
-модальноеОкно.addEventListener('click', e => { if(e.target === модальноеОкно) закрытьЗапись(); });
 
-function обновлятьШумовыеСлова(){
-    document.querySelectorAll('.шум-слово').forEach(el => {
-        const len = Number(el.dataset.len || 8);
-        let out='';
-        for(let i=0;i<len;i++) out += азбука[Math.floor(Math.random()*азбука.length)];
-        el.textContent = out;
-    });
-}
-обновлятьШумовыеСлова();
-setInterval(обновлятьШумовыеСлова, 110);
-
-function показатьЗащиту(){
-    if(защитаСработала) return;
-    защитаСработала = true;
-    document.body.classList.add('пойман');
-    document.body.style.overflow = 'hidden';
-    защита.classList.add('активна');
-    setTimeout(() => защита.classList.add('видна'), 60);
-    setTimeout(() => защита.classList.add('резкость'), 850);
-    защитныеСлова.innerHTML = '';
-    строкиЗащиты.forEach((line, i) => {
-        const div = document.createElement('div');
-        div.innerHTML = line;
-        защитныеСлова.appendChild(div);
-        setTimeout(() => div.classList.add('видно'), 900 + i*420);
-    });
-    послесвет.classList.add('активен');
-}
-const наблюдатель = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-        if(entry.isIntersecting) показатьЗащиту();
-    });
-}, {threshold:.58});
-наблюдатель.observe(document.getElementById('глитчТриггер'));
-
-document.getElementById('закрытьЗащиту').addEventListener('click', () => {
-    защита.classList.remove('видна','резкость','активна');
-    document.body.classList.remove('пойман');
-    document.body.style.overflow = '';
-});
-защита.addEventListener('click', e => {
-    if(e.target === защита){
-        защита.classList.remove('видна','резкость','активна');
-        document.body.classList.remove('пойман');
-        document.body.style.overflow = '';
-    }
-});
-
-document.addEventListener('keydown', e => {
-    if(e.key === 'Escape'){
-        if(модальноеОкно.classList.contains('активно')) закрытьЗапись();
-        if(защита.classList.contains('активна')){
-            защита.classList.remove('видна','резкость','активна');
-            document.body.classList.remove('пойман');
-            document.body.style.overflow = '';
+function добавитьФрагмент(родитель, chunk, meta={}){
+    if(typeof chunk === 'string'){
+        for(const ch of chunk){
+            if(ch === ' '){ родитель.appendChild(document.createTextNode(' ')); }
+            else родитель.appendChild(создатьГлиф(ch, meta));
         }
-        const irr = document.getElementById('иридий77');
-        if(irr.classList.contains('активен')){
-            irr.classList.remove('активен');
-            document.body.style.overflow = '';
+        return;
+    }
+    if(chunk.member){
+        const btn = document.createElement('span');
+        btn.className = 'участник';
+        btn.dataset.member = chunk.member;
+        if(!участники[chunk.member]) участники[chunk.member] = {el: btn, total:0, visible:0};
+        for(const ch of chunk.text){
+            if(ch === ' '){ btn.appendChild(document.createTextNode(' ')); }
+            else{
+                const glyph = создатьГлиф(ch, meta);
+                glyph.dataset.member = chunk.member;
+                btn.appendChild(glyph);
+                участники[chunk.member].total++;
+            }
+        }
+        btn.addEventListener('click', ()=>{
+            if(btn.classList.contains('обнаружен')) открытьВыдвижку(chunk.member);
+        });
+        родитель.appendChild(btn);
+        return;
+    }
+    if(chunk.damaged){
+        for(const ch of chunk.text){
+            if(ch === ' '){ родитель.appendChild(document.createTextNode(' ')); }
+            else родитель.appendChild(создатьГлиф(ch, {damaged:true}));
         }
     }
+}
+
+function построитьТекст(){
+    текстЛиста.innerHTML = '';
+    глифы = [];
+    участники = {};
+    страницы.forEach((parts, idx) => {
+        const p = document.createElement('p');
+        p.className = 'абзац' + (parts.some(part=>typeof part !== 'string' && part.damaged) ? ' битый' : '');
+        parts.forEach(part => добавитьФрагмент(p, part));
+        текстЛиста.appendChild(p);
+    });
+    измеритьГлифы();
+}
+
+function измеритьГлифы(){
+    глифы = Array.from(текстЛиста.querySelectorAll('.символ')).map(el => ({
+        el,
+        real: el.dataset.real,
+        x: el.offsetLeft + el.offsetWidth / 2,
+        y: el.offsetTop + el.offsetHeight / 2,
+        reveal: 0,
+        visible: false,
+        damaged: el.dataset.damaged === '1',
+        member: el.dataset.member || null
+    }));
+}
+
+function открытьВыдвижку(key){
+    const data = данныеПерсон[key];
+    if(!data) return;
+    имяВыдвижки.textContent = data.имя;
+    содержимоеВыдвижки.innerHTML = '';
+    data.поля.forEach(([label,value]) => {
+        const row = document.createElement('div');
+        row.className = 'строка-поля';
+        row.innerHTML = `<strong>${label}</strong><div>${value}</div>`;
+        содержимоеВыдвижки.appendChild(row);
+    });
+    выдвижка.classList.add('открыта');
+}
+function закрытьВыдвижку(){
+    выдвижка.classList.remove('открыта');
+}
+document.getElementById('закрытьВыдвижку').addEventListener('click', закрытьВыдвижку);
+
+function обновитьСкан(){
+    if(!сканерАктивен || !надЛистом){
+        состояниеСканера.textContent = 'состояние: ожидание';
+        полеСканера.textContent = 'пока нет устойчивого чтения';
+        сканер.classList.remove('нестабилен');
+        областьСканирования.classList.remove('видна','нестабильна');
+        Object.values(участники).forEach(v=>v.visible=0);
+        глифы.forEach(g => {
+            g.visible = false;
+            g.reveal = Math.max(0, g.reveal - 1);
+            if(g.reveal >= 3) g.el.textContent = g.real;
+            else g.el.textContent = заменаДля(g.real);
+        });
+        document.querySelectorAll('.участник').forEach(el=>el.classList.remove('обнаружен'));
+        return;
+    }
+
+    нестабильно = false;
+    const границаX = Math.min(указательX, окноЛиста.clientWidth - указательX);
+    const границаY = Math.min(указательY, окноЛиста.clientHeight - указательY);
+    if(границаX < 38 || границаY < 34) нестабильно = true;
+
+    областьСканирования.classList.add('видна');
+    областьСканирования.style.left = Math.max(0, Math.min(окноЛиста.clientWidth - 250, указательX - 125)) + 'px';
+    областьСканирования.style.top = Math.max(0, Math.min(окноЛиста.clientHeight - 180, указательY - 90)) + 'px';
+
+    Object.values(участники).forEach(v=>v.visible=0);
+    let повреждённоеПопало = false;
+    let читаемыйКусок = '';
+
+    for(const g of глифы){
+        const dx = (g.x - координатаX) / ширинаСкана;
+        const dy = (g.y - координатаY) / высотаСкана;
+        const inside = (dx*dx + dy*dy) <= 1;
+        g.visible = inside;
+        if(inside){
+            g.reveal = Math.min(3, g.reveal + 1);
+            if(g.member && участники[g.member]) участники[g.member].visible++;
+            if(g.damaged) повреждённоеПопало = true;
+        } else {
+            g.reveal = Math.max(0, g.reveal - 1);
+        }
+
+        if(g.reveal >= 3){
+            if(g.damaged && (Math.random() < (повреждённоеПопало ? .55 : .28))){
+                g.el.textContent = заменаДля(g.real);
+            } else {
+                g.el.textContent = g.real;
+            }
+        } else {
+            g.el.textContent = заменаДля(g.real);
+        }
+
+        if(inside && читаемыйКусок.length < 120){
+            читаемыйКусок += g.el.textContent;
+        }
+    }
+
+    if(повреждённоеПопало) нестабильно = true;
+    if(нестабильно){
+        document.body.classList.add('пойман');
+        setTimeout(()=>document.body.classList.remove('пойман'), 220);
+    }
+
+    сканер.classList.toggle('нестабилен', нестабильно);
+    областьСканирования.classList.toggle('нестабильна', нестабильно);
+    состояниеСканера.textContent = 'состояние: ' + (нестабильно ? 'сбой чтения' : 'чтение идёт');
+    полеСканера.textContent = читаемыйКусок.trim() ? читаемыйКусок.trim().slice(0,160) : 'читаемый слой ещё не удержан';
+
+    Object.keys(участники).forEach(key => {
+        const info = участники[key];
+        const enough = info.total ? (info.visible / info.total) > 0.56 : false;
+        info.el.classList.toggle('обнаружен', enough);
+    });
+}
+setInterval(обновитьСкан, 58);
+
+окноЛиста.addEventListener('mousemove', e => {
+    if(!сканерАктивен) return;
+    const rect = окноЛиста.getBoundingClientRect();
+    указательX = e.clientX - rect.left;
+    указательY = e.clientY - rect.top;
+    координатаX = указательX + окноЛиста.scrollLeft;
+    координатаY = указательY + окноЛиста.scrollTop;
+    надЛистом = true;
 });
+окноЛиста.addEventListener('mouseenter', e => {
+    if(!сканерАктивен) return;
+    const rect = окноЛиста.getBoundingClientRect();
+    указательX = e.clientX - rect.left;
+    указательY = e.clientY - rect.top;
+    координатаX = указательX + окноЛиста.scrollLeft;
+    координатаY = указательY + окноЛиста.scrollTop;
+    надЛистом = true;
+});
+окноЛиста.addEventListener('mouseleave', () => {
+    надЛистом = false;
+    областьСканирования.classList.remove('видна','нестабильна');
+});
+окноЛиста.addEventListener('scroll', () => {
+    if(надЛистом){
+        координатаY = указательY + окноЛиста.scrollTop;
+    }
+});
+window.addEventListener('resize', измеритьГлифы);
+
+function переключитьСканер(){
+    сканерАктивен = !сканерАктивен;
+    сканер.classList.toggle('активен', сканерАктивен);
+    if(!сканерАктивен){
+        надЛистом = false;
+        областьСканирования.classList.remove('видна','нестабильна');
+        document.querySelectorAll('.участник').forEach(el=>el.classList.remove('обнаружен'));
+    }
+}
+document.getElementById('переключитьСканер').addEventListener('click', переключитьСканер);
 
 function фон(){
-    const bg = document.getElementById('фон');
-    const glyph = document.getElementById('символы');
-    const bgc = bg.getContext('2d');
-    const gc = glyph.getContext('2d');
-    let w=0,h=0;
-    const туман = [], звезды = [], символы = [];
-    const rnd = (a,b) => a + Math.random()*(b-a);
-    function resize(){ w = bg.width = glyph.width = innerWidth; h = bg.height = glyph.height = innerHeight; }
-    function build(){
-        туман.length = 0; звезды.length = 0; символы.length = 0;
-        for(let i=0;i<18;i++) туман.push({x:rnd(0,w), y:rnd(0,h), r:rnd(130,300), dx:rnd(-.08,.08), dy:rnd(-.06,.06), type:Math.random()>.5?'мята':'лед', a:rnd(.03,.08)});
-        for(let i=0;i<110;i++) звезды.push({x:rnd(0,w), y:rnd(0,h), r:rnd(.4,1.6), a:rnd(.12,.7), s:rnd(.003,.02)});
-        for(let i=0;i<36;i++) символы.push({x:rnd(0,w), y:rnd(0,h), vy:rnd(.12,.45), char:азбука[Math.floor(Math.random()*азбука.length)], size:rnd(12,26), a:rnd(.05,.16)});
+    const canvas = document.getElementById('матричныйФон');
+    const ctx = canvas.getContext('2d');
+    let w=0,h=0, cols=0, drops=[];
+    const size = 18;
+    function resize(){
+        w = canvas.width = innerWidth;
+        h = canvas.height = innerHeight;
+        cols = Math.floor(w / size);
+        drops = Array.from({length: cols}, () => Math.floor(Math.random()*h/size));
     }
     function draw(){
-        bgc.clearRect(0,0,w,h);
-        bgc.fillStyle = '#000';
-        bgc.fillRect(0,0,w,h);
-        туман.forEach(f => {
-            f.x += f.dx; f.y += f.dy;
-            if(f.x < -f.r) f.x = w + f.r; if(f.x > w + f.r) f.x = -f.r;
-            if(f.y < -f.r) f.y = h + f.r; if(f.y > h + f.r) f.y = -f.r;
-            const g = bgc.createRadialGradient(f.x,f.y,0,f.x,f.y,f.r);
-            if(f.type === 'мята'){
-                g.addColorStop(0, `rgba(70,255,170,${f.a})`);
-                g.addColorStop(.55, `rgba(28,120,80,${f.a*.42})`);
-            }else{
-                g.addColorStop(0, `rgba(120,180,255,${f.a})`);
-                g.addColorStop(.55, `rgba(35,80,140,${f.a*.42})`);
-            }
-            g.addColorStop(1, 'rgba(0,0,0,0)');
-            bgc.fillStyle = g;
-            bgc.beginPath();
-            bgc.arc(f.x,f.y,f.r,0,Math.PI*2);
-            bgc.fill();
-        });
-        звезды.forEach(s => {
-            s.a += Math.sin(Date.now()*0.001*s.s)*0.002;
-            bgc.fillStyle = `rgba(255,255,255,${Math.max(.08, Math.min(.8, s.a))})`;
-            bgc.beginPath(); bgc.arc(s.x,s.y,s.r,0,Math.PI*2); bgc.fill();
-        });
-        gc.clearRect(0,0,w,h);
-        символы.forEach(g => {
-            g.y += g.vy;
-            if(g.y > h + 30){ g.y = -20; g.x = rnd(0,w); g.char = азбука[Math.floor(Math.random()*азбука.length)]; }
-            if(Math.random() > .96) g.char = азбука[Math.floor(Math.random()*азбука.length)];
-            gc.fillStyle = `rgba(190,255,220,${g.a})`;
-            gc.font = `${g.size}px monospace`;
-            gc.fillText(g.char, g.x, g.y);
-        });
+        ctx.fillStyle = 'rgba(0,0,0,.18)';
+        ctx.fillRect(0,0,w,h);
+        ctx.font = size + 'px monospace';
+        for(let i=0;i<drops.length;i++){
+            const char = Math.random() > .82 ? запас[Math.floor(Math.random()*запас.length)] : азбука[Math.floor(Math.random()*азбука.length)];
+            const x = i * size;
+            const y = drops[i] * size;
+            const alpha = .14 + Math.random() * .18;
+            ctx.fillStyle = Math.random() > .85 ? `rgba(255,110,110,${alpha*.8})` : `rgba(140,255,190,${alpha})`;
+            ctx.fillText(char, x, y);
+            if(y > h && Math.random() > .975) drops[i] = 0;
+            drops[i] += .58 + Math.random() * .68;
+        }
         requestAnimationFrame(draw);
     }
-    resize(); build(); draw();
-    addEventListener('resize', () => { resize(); build(); });
+    resize();
+    draw();
+    addEventListener('resize', resize);
 }
+
+построитьТекст();
 фон();
+первичнаяЗагрузка();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a09587ca0a06662b',t:'MTc4MTA2NDY2OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0984df07aa1f3a7',t:'MTc4MTA5Mzc1Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
 </html>
