@@ -3,81 +3,80 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>НЕ_УНАТХ</title>
+<title>НЕ_УНАТХ / DECRYPT</title>
 <style>
 :root{
     --чёрный:#000000;
-    --белый:#e7ece9;
-    --тусклый:#79827d;
+    --текст:#e6ede8;
+    --тусклый:#7c857f;
     --зелёный:#9dffbf;
-    --красный:#ff7070;
-    --лёд:#c7e1ff;
-    --бумага:#d9d4ca;
-    --бумага2:#c7c0b2;
-    --чернила:#1f1b17;
+    --красный:#ff7272;
+    --голубой:#c7e1ff;
+    --розовый:#f0a6ff;
+    --серый-лист:#d8d5cf;
+    --серый-лист-2:#c5c2bb;
+    --серый-лист-3:#b1aea8;
+    --чернила:#1e1a17;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
     min-height:100vh;
     background:#000;
-    color:var(--белый);
-    overflow-x:hidden;
+    color:var(--текст);
     font-family:Consolas, Menlo, Monaco, "Courier New", monospace;
+    overflow-x:hidden;
     position:relative;
 }
 #матрица{position:fixed;inset:0;z-index:0;pointer-events:none;background:#000}
-.скан-линия{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.1;background:linear-gradient(180deg, transparent 0%, rgba(160,255,210,.04) 40%, rgba(160,255,210,.12) 50%, rgba(160,255,210,.04) 60%, transparent 100%);animation:скан 9s linear infinite}
+.скан-линия{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.10;background:linear-gradient(180deg, transparent 0%, rgba(160,255,210,.04) 40%, rgba(160,255,210,.12) 50%, rgba(160,255,210,.04) 60%, transparent 100%);animation:скан 9s linear infinite}
 @keyframes скан{0%{transform:translateY(-110%)}100%{transform:translateY(110%)}}
-.виньетка{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse 80% 64% at 50% 45%, transparent 0%, rgba(0,0,0,.28) 70%, rgba(0,0,0,.88) 100%)}
-.шторка{position:fixed;inset:0;z-index:120;background:#000;opacity:0;pointer-events:none;transition:opacity .38s ease}
+.виньетка{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse 84% 70% at 50% 48%, transparent 0%, rgba(0,0,0,.28) 72%, rgba(0,0,0,.9) 100%)}
+.шторка{position:fixed;inset:0;z-index:120;background:#000;opacity:0;pointer-events:none;transition:opacity .36s ease}
 .шторка.активна{opacity:1;pointer-events:auto}
+body.пойман{animation:рывок .22s linear 2}
+@keyframes рывок{0%{filter:brightness(1)}50%{filter:brightness(2.1)}100%{filter:brightness(1)}}
 
 .кнопка-возврата{
-    position:fixed;top:14px;left:14px;z-index:80;display:none;
-    border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.86);color:var(--тусклый);
+    position:fixed;top:14px;left:14px;z-index:90;display:none;
+    border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.88);color:var(--тусклый);
     padding:8px 10px;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:.2s ease
 }
 body.архив-открыт .кнопка-возврата{display:block}
-.кнопка-возврата:hover{color:var(--белый);border-color:rgba(255,255,255,.3);transform:translateY(-1px)}
+.кнопка-возврата:hover{color:var(--текст);border-color:rgba(255,255,255,.28);transform:translateY(-1px)}
 
-.экран-файлов{
-    position:relative;z-index:10;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;
-}
+.экран-файлов{position:relative;z-index:10;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px}
 .поле-файлов{display:flex;align-items:center;justify-content:center;gap:110px;flex-wrap:wrap}
 .файл{
     appearance:none;border:none;background:transparent;color:inherit;cursor:pointer;
     display:flex;flex-direction:column;align-items:center;gap:16px;position:relative;
-    transition:filter .22s ease, transform .22s ease;animation:плавание 8s ease-in-out infinite
+    animation:плавание 8s ease-in-out infinite;transition:transform .22s ease, filter .22s ease
 }
-.файл:nth-child(2){animation-duration:9.6s;animation-delay:-1.8s}
-.файл:hover{filter:brightness(1.08);transform:translateY(-2px)}
+.файл:nth-child(2){animation-duration:9.3s;animation-delay:-1.8s}
+.файл:hover{transform:translateY(-2px);filter:brightness(1.08)}
 @keyframes плавание{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 .иконка-файла{
-    position:relative;width:138px;height:170px;border:1px solid rgba(255,255,255,.13);
+    position:relative;width:138px;height:170px;border:1px solid rgba(255,255,255,.14);
     background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-    box-shadow:0 0 0 1px rgba(255,255,255,.02),0 0 48px rgba(0,0,0,.5);overflow:hidden
+    box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 48px rgba(0,0,0,.5);overflow:hidden
 }
 .иконка-файла::before{content:"";position:absolute;right:-1px;top:-1px;border-top:24px solid rgba(255,255,255,.11);border-left:24px solid transparent}
-.иконка-файла::after{content:"";position:absolute;inset:14px;border:1px solid rgba(255,255,255,.07);background:linear-gradient(180deg, rgba(255,255,255,.025), transparent 30%, transparent 70%, rgba(255,255,255,.02)), repeating-linear-gradient(180deg, transparent 0 22px, rgba(255,255,255,.08) 22px 23px)}
-.файл::after{content:"";position:absolute;top:14px;left:50%;transform:translateX(-50%);width:140px;height:176px;background:radial-gradient(circle at center, rgba(255,255,255,.05), transparent 72%);filter:blur(18px);opacity:.46}
+.иконка-файла::after{content:"";position:absolute;inset:14px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg, rgba(255,255,255,.025), transparent 30%, transparent 70%, rgba(255,255,255,.02)),repeating-linear-gradient(180deg, transparent 0 22px, rgba(255,255,255,.08) 22px 23px)}
+.файл::after{content:"";position:absolute;top:14px;left:50%;transform:translateX(-50%);width:142px;height:176px;background:radial-gradient(circle at center, rgba(255,255,255,.05), transparent 72%);filter:blur(18px);opacity:.44}
 .файл:not(.битый) .иконка-файла,.файл:not(.битый) .имя-файла{animation:дрожь 6.6s steps(2) infinite}
 .файл.битый .иконка-файла,.файл.битый .имя-файла{animation:сбой 3.2s steps(2) infinite}
 @keyframes дрожь{0%,100%{transform:none}8%{transform:translate(1px,0)}10%{transform:none}52%{transform:translate(-1px,1px)}54%{transform:none}}
 @keyframes сбой{0%,100%{transform:none}12%{transform:translate(-2px,1px)}16%{transform:translate(2px,-1px)}20%{transform:none}63%{transform:translate(1px,0)}67%{transform:translate(-2px,0)}71%{transform:none}}
 .имя-файла{max-width:280px;text-align:center;font-size:.92rem;line-height:1.75;letter-spacing:.14em;text-transform:uppercase;color:#eef4f0}
 
-.консоль{
-    position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.985)
-}
+.консоль{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.985)}
 .консоль.активна{display:flex}
 .поле-шума{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .шум-строка{position:absolute;left:0;right:0;white-space:nowrap;color:rgba(150,255,190,.18);font-size:.86rem;letter-spacing:.21em;text-transform:uppercase;animation:дрейф linear forwards}
 @keyframes дрейф{0%{transform:translateY(40px);opacity:0}10%{opacity:1}100%{transform:translateY(-120px);opacity:0}}
 .окно-консоли{
     width:min(760px, calc(100% - 30px));padding:22px;border:1px solid rgba(255,255,255,.11);
-    background:linear-gradient(180deg, rgba(4,8,5,.95), rgba(0,0,0,.99));
-    box-shadow:0 0 0 1px rgba(255,255,255,.02),0 0 90px rgba(0,0,0,.85);position:relative;overflow:hidden
+    background:linear-gradient(180deg, rgba(4,8,5,.95), rgba(0,0,0,.99));box-shadow:0 0 0 1px rgba(255,255,255,.02),0 0 90px rgba(0,0,0,.85);position:relative;overflow:hidden
 }
 .окно-консоли::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(150,255,190,.05) 0 2px, transparent 2px 4px);opacity:.45;pointer-events:none}
 .окно-консоли::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, transparent 0%, rgba(150,255,190,.06) 46%, rgba(150,255,190,.18) 50%, rgba(150,255,190,.06) 54%, transparent 100%);animation:ходКонсоли 3.4s linear infinite;pointer-events:none}
@@ -86,7 +85,7 @@ body.архив-открыт .кнопка-возврата{display:block}
 .строка-консоли{font-size:.86rem;line-height:1.76;color:#c1d0c7;min-height:1.6em}
 .строка-консоли::before{content:"> ";color:var(--зелёный)}
 
-.архив{position:relative;z-index:20;display:none;width:min(1160px, calc(100% - 24px));margin:76px auto 90px}
+.архив{position:relative;z-index:20;display:none;width:min(1200px, calc(100% - 24px));margin:76px auto 90px}
 .архив.активен{display:block}
 .архивная-пометка{
     margin-bottom:18px;padding:14px 16px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.015);
@@ -96,30 +95,21 @@ body.архив-открыт .кнопка-возврата{display:block}
 .архивная-пометка .статус{color:var(--красный)}
 
 .поле-дела{position:relative;padding-right:344px}
-.кнопка-призмы{
-    position:absolute;right:0;top:0;z-index:15;width:44px;height:152px;border:1px solid rgba(255,255,255,.12);
-    background:rgba(0,0,0,.88);color:var(--белый);writing-mode:vertical-rl;text-orientation:mixed;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:.22s ease
-}
+.кнопка-призмы{position:absolute;right:0;top:0;z-index:15;width:44px;height:152px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.88);color:var(--белый);writing-mode:vertical-rl;text-orientation:mixed;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:.22s ease}
 .кнопка-призмы:hover{border-color:rgba(255,255,255,.28);transform:translateX(-2px)}
-
 .тетрадь{position:relative;padding:28px 18px 30px 94px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)}
-.корешок{position:absolute;left:0;top:0;bottom:0;width:80px;background:linear-gradient(90deg,#616161 0%,#7d7d7d 45%,#4a4a4a 100%);border-right:3px solid rgba(18,18,18,.4);box-shadow:inset -10px 0 18px rgba(0,0,0,.22)}
+.корешок{position:absolute;left:0;top:0;bottom:0;width:80px;background:linear-gradient(90deg,#5d5d5d 0%,#7b7b7b 45%,#464646 100%);border-right:3px solid rgba(18,18,18,.4);box-shadow:inset -10px 0 18px rgba(0,0,0,.22)}
 .корешок::before{content:"";position:absolute;left:14px;right:14px;top:14px;bottom:14px;border:1px solid rgba(255,255,255,.08)}
 .кольца{position:absolute;left:52px;top:18px;bottom:18px;width:24px;display:flex;flex-direction:column;justify-content:space-evenly;z-index:2}
 .кольца span{display:block;width:16px;height:16px;border-radius:50%;border:3px solid #505050;background:linear-gradient(145deg,#9d9d9d,#6e6e6e);box-shadow:inset 1px 1px 2px rgba(255,255,255,.2),1px 2px 4px rgba(0,0,0,.25)}
+.рельсы{position:absolute;top:28px;bottom:30px;left:50%;transform:translateX(-50%);width:min(860px, calc(100% - 40px));pointer-events:none;z-index:18}
+.рельсы::before,.рельсы::after{content:"";position:absolute;top:0;bottom:0;width:1px;background:rgba(160,255,200,.09)}
+.рельсы::before{left:20px}.рельсы::after{right:20px}
 .страницы{position:relative;display:flex;flex-direction:column;gap:30px;align-items:center}
 .страница{
-    position:relative;
-    width:min(860px, 100%);
-    min-height:1180px;
-    padding:28px 28px 34px 34px;
-    background:
-        radial-gradient(circle at 12% 14%, rgba(255,255,255,.17), transparent 22%),
-        radial-gradient(circle at 82% 18%, rgba(70,70,70,.10), transparent 22%),
-        linear-gradient(180deg, #ebe7df 0%, #dad4ca 56%, #c5beb2 100%);
-    border:1px solid rgba(255,255,255,.14);
-    box-shadow:0 28px 56px rgba(0,0,0,.36), inset 0 0 80px rgba(40,40,40,.08);
-    overflow:hidden;
+    position:relative;width:min(860px, 100%);min-height:1180px;padding:28px 28px 34px 34px;
+    background:radial-gradient(circle at 12% 14%, rgba(255,255,255,.17), transparent 22%), radial-gradient(circle at 82% 18%, rgba(70,70,70,.10), transparent 22%), linear-gradient(180deg, #ebe7df 0%, #dad4ca 56%, #c5beb2 100%);
+    border:1px solid rgba(255,255,255,.14);box-shadow:0 28px 56px rgba(0,0,0,.36), inset 0 0 80px rgba(40,40,40,.08);overflow:hidden
 }
 .страница:nth-child(odd){transform:rotate(-.7deg)}
 .страница:nth-child(even){transform:rotate(.7deg)}
@@ -144,13 +134,8 @@ body.архив-открыт .кнопка-возврата{display:block}
 .имя-участника{pointer-events:none;cursor:default;transition:.18s ease;position:relative}
 .имя-участника.активно{pointer-events:auto;cursor:pointer;color:#0f2d1f;box-shadow:inset 0 -1px 0 rgba(60,112,80,.34);text-shadow:0 0 6px rgba(80,160,110,.18)}
 
-.рельсы{position:absolute;top:28px;bottom:28px;left:50%;transform:translateX(-50%);width:min(860px,100%);pointer-events:none;z-index:18}
-.рельсы::before,.рельсы::after{content:"";position:absolute;top:0;bottom:0;width:1px;background:rgba(160,255,200,.08)}
-.рельсы::before{left:22px}
-.рельсы::after{right:22px}
-.призма{position:absolute;z-index:20;display:none;width:min(860px,100%);height:260px;border:1px solid rgba(160,255,200,.42);background:linear-gradient(180deg, rgba(70,255,170,.08), rgba(70,255,170,.04));box-shadow:0 0 44px rgba(100,255,180,.14), inset 0 0 40px rgba(100,255,180,.08);overflow:hidden;pointer-events:none}
-.призма.активна{display:block}
-.призма *{pointer-events:auto}
+.призма{position:absolute;z-index:20;display:none;width:min(860px, calc(100% - 40px));height:260px;border:1px solid rgba(160,255,200,.42);background:linear-gradient(180deg, rgba(70,255,170,.08), rgba(70,255,170,.04));box-shadow:0 0 44px rgba(100,255,180,.14), inset 0 0 40px rgba(100,255,180,.08);overflow:hidden;pointer-events:none}
+.призма.активна{display:block}.призма *{pointer-events:auto}
 .призма.сбой{animation:сбойПризмы .18s linear infinite;border-color:rgba(255,120,120,.44);box-shadow:0 0 50px rgba(255,80,80,.15), inset 0 0 40px rgba(255,80,80,.08)}
 @keyframes сбойПризмы{0%,100%{transform:translateY(0)}25%{transform:translateY(1px)}50%{transform:translateY(-1px)}75%{transform:translateY(2px)}}
 .призма::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(170,255,210,.07) 0 2px, transparent 2px 4px);opacity:.68;pointer-events:none}
@@ -162,10 +147,7 @@ body.архив-открыт .кнопка-возврата{display:block}
 .фиксатор.активен{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.28)}
 .внутренний-шум{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.08;mix-blend-mode:screen;pointer-events:none}
 
-.сканер{
-    position:absolute;top:0;right:0;width:320px;height:780px;z-index:25;transform:translateX(120%);
-    transition:transform .55s cubic-bezier(.22,.8,.2,1)
-}
+.сканер{position:absolute;top:0;right:0;width:320px;height:780px;z-index:25;transform:translateX(120%);transition:transform .55s cubic-bezier(.22,.8,.2,1)}
 .сканер.активен{transform:translateX(0)}
 .сканер.сбой .корпус-сканера{border-color:rgba(255,120,120,.24);box-shadow:0 0 0 1px rgba(255,120,120,.05),0 0 60px rgba(255,90,90,.14)}
 .сканер.сбой .экран-сканера{filter:hue-rotate(-35deg) saturate(1.22) contrast(1.06)}
@@ -179,11 +161,9 @@ body.архив-открыт .кнопка-возврата{display:block}
 .данные-сканера{position:relative;z-index:1;display:grid;gap:10px;font-size:.72rem;line-height:1.8;letter-spacing:.15em;text-transform:uppercase;color:#bcffcf}
 .поле-сканера{position:relative;z-index:1;margin-top:14px;padding:12px;border:1px solid rgba(160,255,200,.18);background:rgba(0,0,0,.18);min-height:280px;color:#a2ffc0;font-size:.74rem;line-height:1.75;letter-spacing:.14em;text-transform:uppercase;white-space:pre-wrap}
 
-.досье{
-    position:fixed;top:70px;right:-430px;width:390px;z-index:90;transition:right .5s cubic-bezier(.22,.8,.2,1)
-}
+.досье{position:fixed;top:70px;right:-430px;width:390px;z-index:90;transition:right .5s cubic-bezier(.22,.8,.2,1)}
 .досье.активно{right:18px}
-.лист-досье{position:relative;padding:20px 18px 26px;background:linear-gradient(180deg, #ece7df 0%, #ddd5c7 55%, #c5bcaf 100%);border:1px solid rgba(255,255,255,.14);box-shadow:0 20px 60px rgba(0,0,0,.45), inset 0 0 60px rgba(40,40,40,.08);overflow:hidden}
+.лист-досье{position:relative;padding:20px 18px 26px;background:linear-gradient(180deg,#ece7df 0%,#ddd5c7 55%,#c5bcaf 100%);border:1px solid rgba(255,255,255,.14);box-shadow:0 20px 60px rgba(0,0,0,.45), inset 0 0 60px rgba(40,40,40,.08);overflow:hidden}
 .лист-досье::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23n)' opacity='.10'/%3E%3C/svg%3E");mix-blend-mode:multiply;pointer-events:none}
 .верх-досье{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px;cursor:grab}
 .верх-досье:active{cursor:grabbing}
@@ -200,26 +180,24 @@ body.архив-открыт .кнопка-возврата{display:block}
     .кнопка-призмы{position:static;writing-mode:horizontal-tb;width:100%;height:42px;margin-bottom:14px}
     .сканер{position:relative;width:100%;height:420px;transform:translateY(18px);opacity:0;pointer-events:none;transition:opacity .35s ease, transform .35s ease;margin-top:14px}
     .сканер.активен{transform:translateY(0);opacity:1;pointer-events:auto}
-    .рельсы{position:absolute;left:94px;right:18px;transform:none;width:auto}
-    .призма{width:auto}
-}
-@media (max-width:980px){
-    .страница{min-height:980px}
+    .рельсы{width:calc(100% - 40px)}
+    .призма{width:calc(100% - 40px)}
 }
 @media (max-width:720px){
     .поле-файлов{gap:48px}
     .иконка-файла{width:116px;height:144px}
     .имя-файла{max-width:210px;font-size:.82rem}
-    .страница{min-height:760px;padding:20px 18px 24px 22px}
+    .страница{min-height:900px;padding:22px 18px 26px 22px}
     .абзац{font-size:.92rem;margin-left:28px}
     .досье{width:min(100% - 18px, 390px)}
 }
 @media (max-width:520px){
     .кнопка-возврата{top:10px;left:10px;padding:7px 8px;font-size:.6rem}
-    .архив{width:min(100% - 10px, 1160px)}
+    .архив{width:min(100% - 10px, 1200px)}
     .тетрадь{padding:20px 14px 20px 74px}
     .корешок{width:62px}.кольца{left:40px}
-    .рельсы{left:74px;right:14px}
+    .рельсы{width:calc(100% - 28px)}
+    .призма{width:calc(100% - 28px)}
 }
 </style>
 </head>
@@ -232,9 +210,7 @@ body.архив-открыт .кнопка-возврата{display:block}
 
 <div class="консоль" id="консоль">
     <div class="поле-шума" id="полеШума"></div>
-    <div class="окно-консоли">
-        <div class="строки-консоли" id="строкиКонсоли"></div>
-    </div>
+    <div class="окно-консоли"><div class="строки-консоли" id="строкиКонсоли"></div></div>
 </div>
 
 <main>
@@ -262,7 +238,7 @@ body.архив-открыт .кнопка-возврата{display:block}
             <div class="тетрадь">
                 <div class="корешок"></div>
                 <div class="кольца"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-                <div class="рельсы" id="рельсы"></div>
+                <div class="рельсы"></div>
                 <div class="страницы" id="страницы"></div>
                 <div class="призма" id="призма">
                     <div class="верх-призмы" id="верхПризмы">
@@ -326,10 +302,10 @@ const страницыДанных = [
     ]
 ];
 const досьеДанные = {
-    hiyoshi:{name:'Хиоши Сузуки', fields:[['ФИО','Хиоши Сузуки'],['пол','мужской'],['раса','человек'],['рост','178 см'],['вес','71 кг'],['статус','след оборван'],['родная планета','Земля / солнечная система'],['краткая характеристика','Основатель. Поднял агентство из бытового сыска в рынок корпоративной грязи, предпочитая дробить заказы так, чтобы никто не видел всей картины целиком.']]},
-    cadence:{name:'Каденс Слоан', fields:[['ФИО','Каденс Слоан'],['пол','женский'],['раса','аркана'],['рост','171 см'],['вес','57 кг'],['статус','последний след нестабилен'],['родная планета','не зафиксирована'],['краткая характеристика','Полевой элемент. Сцены вокруг неё выглядят бытовыми, но именно через такие места в архиве чаще всего начинается чужой компромат.']]},
-    iridium:{name:'Иридий', fields:[['ФИО','Иридий'],['пол','мужской'],['раса','человек'],['рост','188 см'],['вес','79 кг'],['статус','следы разорваны'],['родная планета','Ме<span>▓</span>р<span>◢</span>к<span>█</span>у<span>Æ</span>р<span>Я</span>и<span>01</span>-<span>█</span><span>◣</span>'],['краткая характеристика','Принёс агентству подвижность. Возникает рядом с узлами вывоза, передачи и слишком быстрым исчезновением хвостов.']]},
-    daros:{name:'Дарос Полей', fields:[['ФИО','Дарос Полей'],['пол','мужской'],['раса','вульпканин'],['рост','182 см'],['вес','68 кг'],['статус','данные неполные'],['родная планета','не подтверждена'],['краткая характеристика','Связан с частотами, служебными проходами, запасными ключами и нижним плато. От него осталось меньше лица, чем метода.']]}
+    hiyoshi:{name:'Хиоши Сузуки', fields:[['ФИО','Хиоши Сузуки'],['пол','мужской'],['раса','человек'],['рост','178 см'],['вес','71 кг'],['статус','след оборван'],['родная планета','Земля / солнечная система'],['краткая характеристика','Основатель. Поднял агентство из бытового сыска в рынок корпоративной грязи, предпочитая дробить заказы так, чтобы никто не видел всей картины целиком.']]} ,
+    cadence:{name:'Каденс Слоан', fields:[['ФИО','Каденс Слоан'],['пол','женский'],['раса','аркана'],['рост','171 см'],['вес','57 кг'],['статус','последний след нестабилен'],['родная планета','не зафиксирована'],['краткая характеристика','Полевой элемент. Сцены вокруг неё выглядят бытовыми, но именно через такие места в архиве чаще всего начинается чужой компромат.']]} ,
+    iridium:{name:'Иридий', fields:[['ФИО','Иридий'],['пол','мужской'],['раса','человек'],['рост','188 см'],['вес','79 кг'],['статус','следы разорваны'],['родная планета','Ме<span>▓</span>р<span>◢</span>к<span>█</span>у<span>Æ</span>р<span>Я</span>и<span>01</span>-<span>█</span><span>◣</span>'],['краткая характеристика','Принёс агентству подвижность. Возникает рядом с узлами вывоза, передачи и слишком быстрым исчезновением хвостов.']]} ,
+    daros:{name:'Дарос Полей', fields:[['ФИО','Дарос Полей'],['пол','мужской'],['раса','вульпканин'],['рост','182 см'],['вес','68 кг'],['статус','данные неполные'],['родная планета','не подтверждена'],['краткая характеристика','Связан с частотами, служебными проходами, запасными ключами и нижним плато. От него осталось меньше лица, чем метода.']]} 
 };
 
 const экранФайлов = document.getElementById('экранФайлов');
@@ -355,7 +331,7 @@ let призмаПоказана = false;
 let призмаЗафиксирована = false;
 let тащимПризму = false;
 let смещениеПризмыY = 0;
-let позицияПризмыY = 30;
+let позицияПризмыY = 24;
 let границыСтраниц = null;
 let размерПризмыW = 0;
 let размерПризмыH = 260;
@@ -388,15 +364,15 @@ async function получитьJSON(url, timeout=2200){
     }
 }
 async function получитьIPv4(){
-    const варианты = [
+    const задачи = [
         ()=>получитьJSON('https://api.ipify.org?format=json').then(d=>d.ip),
         ()=>получитьJSON('https://api.ip.sb/jsonip').then(d=>d.ip),
         ()=>получитьJSON('https://ipwho.is/').then(d=>d.ip)
     ].map(fn => fn().then(ip => /^\d+\.\d+\.\d+\.\d+$/.test(ip||'') ? ip : Promise.reject()));
-    try{return await Promise.any(варианты);}catch(e){return '0.0.0.0';}
+    try{return await Promise.any(задачи);}catch(e){return '0.0.0.0';}
 }
 
-function матрица(){
+function запуститьМатрицу(){
     const canvas = document.getElementById('матрица');
     const ctx = canvas.getContext('2d');
     const потоки = [];
@@ -406,25 +382,15 @@ function матрица(){
         потоки.length = 0;
         const count = Math.max(24, Math.floor(canvas.width / 54));
         for(let i=0;i<count;i++){
-            потоки.push({
-                x: Math.random()*canvas.width,
-                y: Math.random()*canvas.height,
-                speed: 0.09 + Math.random()*0.22,
-                size: 14 + Math.random()*10,
-                chars: 1 + Math.floor(Math.random()*3),
-                color: ['rgba(150,255,190,.16)','rgba(120,170,255,.13)','rgba(255,120,120,.11)','rgba(200,150,255,.10)','rgba(255,255,255,.10)'][Math.floor(Math.random()*5)]
-            });
+            потоки.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,speed:0.09+Math.random()*0.22,size:14+Math.random()*10,chars:1+Math.floor(Math.random()*3),color:['rgba(150,255,190,.16)','rgba(120,170,255,.13)','rgba(255,120,120,.11)','rgba(200,150,255,.10)','rgba(255,255,255,.10)'][Math.floor(Math.random()*5)]});
         }
     }
     function draw(){
         ctx.fillStyle = '#000';
         ctx.fillRect(0,0,canvas.width,canvas.height);
-        потоки.forEach(p => {
+        потоки.forEach(p=>{
             p.y += p.speed;
-            if(p.y > canvas.height + 50){
-                p.y = -50 - Math.random()*120;
-                p.x = Math.random()*canvas.width;
-            }
+            if(p.y > canvas.height + 50){ p.y = -50 - Math.random()*120; p.x = Math.random()*canvas.width; }
             ctx.fillStyle = p.color;
             ctx.font = p.size + 'px monospace';
             let text = '';
@@ -433,24 +399,23 @@ function матрица(){
         });
         requestAnimationFrame(draw);
     }
-    resize();
-    draw();
-    addEventListener('resize', resize);
+    resize(); draw(); addEventListener('resize', resize);
 }
 
 function шумКонсоли(){
+    полеШума.innerHTML = '';
     let count = 0;
     const timer = setInterval(()=>{
         const row = document.createElement('div');
         row.className = 'шум-строка';
         row.style.top = (Math.random()*100)+'%';
         row.style.animationDuration = (3.6 + Math.random()*2.4)+'s';
-        row.textContent = Array.from({length: 20 + Math.floor(Math.random()*20)}, случайныйСимвол).join('');
+        row.textContent = Array.from({length:20+Math.floor(Math.random()*20)}, случайныйСимвол).join('');
         полеШума.appendChild(row);
         setTimeout(()=>row.remove(),6500);
         count++;
         if(count>36) clearInterval(timer);
-    }, 120);
+    },120);
 }
 
 async function печататьКонсоль(строки){
@@ -476,13 +441,7 @@ async function открытьDecrypt(){
     шумКонсоли();
     const ip = await ipPromise;
     await sleep(160);
-    await печататьКонсоль([
-        'точка входа: ' + ip,
-        'доступ к уцелевшей части подтверждён',
-        'детективное частное агентство “DECRYPT”',
-        'статус: УНИЧТОЖЕНА',
-        'бумажный носитель частично сохранён'
-    ]);
+    await печататьКонсоль(['точка входа: ' + ip,'доступ к уцелевшей части подтверждён','детективное частное агентство “DECRYPT”','статус: УНИЧТОЖЕНА','бумажный носитель частично сохранён']);
     await sleep(900);
     построитьСтраницы();
     архив.classList.add('активен');
@@ -492,22 +451,17 @@ async function открытьDecrypt(){
     шторка.classList.remove('активна');
     window.scrollTo({top:0,behavior:'smooth'});
 }
-
 function назадКФайлам(){
     скрытьПризму();
     закрытьДосье();
     архив.classList.remove('активен');
     document.body.classList.remove('архив-открыт','пойман');
     шторка.classList.add('активна');
-    setTimeout(()=>{
-        экранФайлов.style.display = 'flex';
-        шторка.classList.remove('активна');
-    },220);
+    setTimeout(()=>{экранФайлов.style.display='flex'; шторка.classList.remove('активна');},220);
 }
-
 document.getElementById('открытьDecrypt').addEventListener('click', открытьDecrypt);
 document.getElementById('кФайлам').addEventListener('click', назадКФайлам);
-document.getElementById('открытьIridium77').addEventListener('click', ()=>{ document.querySelector('#открытьIridium77 .имя-файла').style.filter='brightness(1.3)'; setTimeout(()=>document.querySelector('#открытьIridium77 .имя-файла').style.filter='',320); });
+document.getElementById('открытьIridium77').addEventListener('click', e=>{ e.currentTarget.classList.add('битый'); setTimeout(()=>e.currentTarget.classList.remove('битый'), 320); });
 
 function создатьГлиф(char, meta={}){
     const span = document.createElement('span');
@@ -521,34 +475,24 @@ function создатьГлиф(char, meta={}){
 }
 function добавитьФрагмент(parent, part){
     if(typeof part === 'string'){
-        for(const ch of part){
-            if(ch === ' ') parent.appendChild(document.createTextNode(' '));
-            else parent.appendChild(создатьГлиф(ch));
-        }
+        for(const ch of part){ if(ch===' ') parent.appendChild(document.createTextNode(' ')); else parent.appendChild(создатьГлиф(ch)); }
         return;
     }
     if(part.member){
         const wrap = document.createElement('span');
         wrap.className = 'имя-участника';
         wrap.dataset.member = part.member;
-        if(!участники[part.member]) участники[part.member] = {el: wrap, total:0, visible:0};
+        if(!участники[part.member]) участники[part.member] = {el:wrap,total:0,visible:0};
         for(const ch of part.text){
-            if(ch === ' ') wrap.appendChild(document.createTextNode(' '));
-            else{
-                const g = создатьГлиф(ch,{member:part.member});
-                wrap.appendChild(g);
-                участники[part.member].total++;
-            }
+            if(ch===' ') wrap.appendChild(document.createTextNode(' '));
+            else { const g = создатьГлиф(ch,{member:part.member}); wrap.appendChild(g); участники[part.member].total++; }
         }
         wrap.addEventListener('click', ()=>{ if(wrap.classList.contains('активно')) открытьДосье(part.member); });
         parent.appendChild(wrap);
         return;
     }
     if(part.damaged){
-        for(const ch of part.text){
-            if(ch === ' ') parent.appendChild(document.createTextNode(' '));
-            else parent.appendChild(создатьГлиф(ch,{damaged:true}));
-        }
+        for(const ch of part.text){ if(ch===' ') parent.appendChild(document.createTextNode(' ')); else parent.appendChild(создатьГлиф(ch,{damaged:true})); }
     }
 }
 
@@ -556,16 +500,16 @@ function построитьСтраницы(){
     страницы.innerHTML = '';
     участники = {};
     глифы = [];
-    страницыДанных.forEach(pageData => {
+    страницыДанных.forEach(pageData=>{
         const page = document.createElement('div');
         page.className = 'страница';
         page.innerHTML = '<div class="рваный-край верх"></div><div class="рваный-край низ"></div><div class="залом a"></div><div class="залом b"></div><div class="залом c"></div><div class="пятно a"></div><div class="пятно b"></div><div class="угол"></div>';
         const field = document.createElement('div');
         field.className = 'поле-текста';
-        pageData.forEach(par => {
+        pageData.forEach(par=>{
             const p = document.createElement('p');
             p.className = 'абзац' + (par.some(part => typeof part !== 'string' && part.damaged) ? ' повреждённый' : '');
-            par.forEach(part => добавитьФрагмент(p, part));
+            par.forEach(part=>добавитьФрагмент(p, part));
             field.appendChild(p);
         });
         page.appendChild(field);
@@ -583,9 +527,9 @@ function измеритьГлифы(){
         размерПризмыW = r.width - 54;
         призма.style.width = размерПризмыW + 'px';
     }
-    глифы = Array.from(страницы.querySelectorAll('.символ')).map(el => {
+    глифы = Array.from(страницы.querySelectorAll('.символ')).map(el=>{
         const r = el.getBoundingClientRect();
-        return {el, real:el.dataset.real, base:el.dataset.base, damaged:el.dataset.damaged==='1', member:el.dataset.member||null, x:r.left-rect.left+r.width/2, y:r.top-rect.top+r.height/2, progress:0};
+        return {el,real:el.dataset.real,base:el.dataset.base,damaged:el.dataset.damaged==='1',member:el.dataset.member||null,x:r.left-rect.left+r.width/2,y:r.top-rect.top+r.height/2,progress:0};
     });
     if(призмаПоказана) поставитьПризмуY(позицияПризмыY);
 }
@@ -625,8 +569,8 @@ function поставитьПризмуY(y){
 
 document.addEventListener('wheel', e=>{
     if(!призмаПоказана || призмаЗафиксирована) return;
-    const overArchive = e.target.closest('.поле-дела');
-    if(!overArchive) return;
+    const over = e.target.closest('.поле-дела');
+    if(!over) return;
     e.preventDefault();
     поставитьПризмуY(позицияПризмыY + (e.deltaY > 0 ? 38 : -38));
 },{passive:false});
@@ -644,23 +588,23 @@ document.addEventListener('mousemove', e=>{
 });
 document.addEventListener('mouseup', ()=>тащимПризму=false);
 
-function проверкаКрая(){
-    const призTop = позицияПризмыY;
-    const призBottom = позицияПризмыY + размерПризмыH;
+function крайСтраницы(){
+    const top = позицияПризмыY;
+    const bottom = позицияПризмыY + размерПризмыH;
     let near = false;
     document.querySelectorAll('.страница').forEach(page=>{
-        const pageRect = page.getBoundingClientRect();
+        const pr = page.getBoundingClientRect();
         const base = страницы.getBoundingClientRect();
-        const top = pageRect.top - base.top;
-        const bottom = pageRect.bottom - base.top;
-        const overlap = !(призBottom < top || призTop > bottom);
+        const t = pr.top - base.top;
+        const b = pr.bottom - base.top;
+        const overlap = !(bottom < t || top > b);
         if(overlap){
-            if(Math.abs(призTop - top) < 24 || Math.abs(призBottom - bottom) < 24) near = true;
+            if(Math.abs(top - t) < 24 || Math.abs(bottom - b) < 24) near = true;
         }
     });
     return near;
 }
-function переходныйСимвол(real, p){
+function переходный(real, p){
     if(p < .18) return случайныйСимвол();
     if(p < .36) return Math.random()>.45 ? испорченный(real) : случайнаяБуква();
     if(p < .56) return Math.random()>.6 ? real : случайнаяБуква();
@@ -674,24 +618,16 @@ function битыйПереход(real, p){
 }
 
 function обновитьЧтение(){
-    if(!призмаПоказана){
-        document.body.classList.remove('пойман');
-        return;
-    }
-    let сбой = проверкаКрая();
+    if(!призмаПоказана){ document.body.classList.remove('пойман'); return; }
+    let сбой = крайСтраницы();
     let кусок = '';
     Object.values(участники).forEach(v=>v.visible=0);
     for(const g of глифы){
         const inRect = g.x >= 27 && g.x <= 27 + размерПризмыW && g.y >= позицияПризмыY && g.y <= позицияПризмыY + размерПризмыH;
         if(inRect){
             g.progress = Math.min(1, g.progress + (g.damaged ? .03 : .04));
-            if(g.damaged){
-                g.el.textContent = битыйПереход(g.real, g.progress);
-                сбой = true;
-            } else {
-                g.el.textContent = переходныйСимвол(g.real, g.progress);
-                if(g.member && участники[g.member]) участники[g.member].visible += g.progress;
-            }
+            if(g.damaged){ g.el.textContent = битыйПереход(g.real, g.progress); сбой = true; }
+            else { g.el.textContent = переходный(g.real, g.progress); if(g.member && участники[g.member]) участники[g.member].visible += g.progress; }
             if(кусок.length < 220) кусок += g.el.textContent;
         } else {
             g.progress = 0;
@@ -750,8 +686,8 @@ document.addEventListener('mousemove', e=>{
 document.addEventListener('mouseup', ()=>тащимДосье=false);
 
 window.addEventListener('resize', ()=>{ if(архив.classList.contains('активен')) requestAnimationFrame(измеритьГлифы); });
-матрица();
+запуститьМатрицу();
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a098a5603a4b9d94',t:'MTc4MTA5NzMzOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a098b54b6b9a9d94',t:'MTc4MTA5Nzk5MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
