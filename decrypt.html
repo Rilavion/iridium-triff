@@ -3,699 +3,485 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>НЕ_УНАТХ / DECRYPT</title>
+<title>Архив • DECRYPT</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-:root{
-    --чёрный:#000000;
-    --текст:#e6ede8;
-    --тусклый:#7c857f;
-    --зелёный:#9dffbf;
-    --красный:#ff7272;
-    --голубой:#8fb2ff;
-    --розовый:#f0a6ff;
-    --серый-лист:#d8d5cf;
-    --серый-лист-2:#c5c2bb;
-    --серый-лист-3:#b1aea8;
-    --чернила:#1e1a17;
-    --рукопись:"Segoe Print","Bradley Hand","Comic Sans MS",cursive;
-}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
-    min-height:100vh;
-    background:#000;
-    color:var(--текст);
-    font-family:Consolas, Menlo, Monaco, "Courier New", monospace;
-    overflow-x:hidden;
-    position:relative;
+  min-height:100vh;
+  background:#000;
+  color:#e0e0e0;
+  font-family:'Share Tech Mono',monospace;
+  overflow-x:hidden;
 }
-#матрица{position:fixed;inset:0;z-index:0;pointer-events:none;background:#000}
-.скан-линия{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.10;background:linear-gradient(180deg, transparent 0%, rgba(160,255,210,.04) 40%, rgba(160,255,210,.12) 50%, rgba(160,255,210,.04) 60%, transparent 100%);animation:скан 9s linear infinite}
-@keyframes скан{0%{transform:translateY(-110%)}100%{transform:translateY(110%)}}
-.виньетка{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse 84% 70% at 50% 48%, transparent 0%, rgba(0,0,0,.28) 72%, rgba(0,0,0,.9) 100%)}
-.шторка{position:fixed;inset:0;z-index:120;background:#000;opacity:0;pointer-events:none;transition:opacity .36s ease}
-.шторка.активна{opacity:1;pointer-events:auto}
-body.пойман{animation:рывок .22s linear 2}
-@keyframes рывок{0%{filter:brightness(1)}50%{filter:brightness(2.1)}100%{filter:brightness(1)}}
 
-.кнопка-возврата{
-    position:fixed;top:14px;left:14px;z-index:90;display:none;
-    border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.88);color:var(--тусклый);
-    padding:8px 10px;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:.2s ease
-}
-body.архив-открыт .кнопка-возврата{display:block}
-.кнопка-возврата:hover{color:var(--текст);border-color:rgba(255,255,255,.28);transform:translateY(-1px)}
+main{position:relative;z-index:1}
 
-.экран-файлов{position:relative;z-index:10;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px}
-.поле-файлов{display:flex;align-items:center;justify-content:center;gap:110px;flex-wrap:wrap}
-.файл{
-    appearance:none;border:none;background:transparent;color:inherit;cursor:pointer;
-    display:flex;flex-direction:column;align-items:center;gap:16px;position:relative;
-    animation:плавание 8s ease-in-out infinite;transition:transform .22s ease, filter .22s ease
-}
-.файл:nth-child(2){animation-duration:9.3s;animation-delay:-1.8s}
-.файл:hover{transform:translateY(-2px);filter:brightness(1.08)}
-@keyframes плавание{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-.иконка-файла{
-    position:relative;width:138px;height:170px;border:1px solid rgba(255,255,255,.14);
-    background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-    box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 48px rgba(0,0,0,.5);overflow:hidden
-}
-.иконка-файла::before{content:"";position:absolute;right:-1px;top:-1px;border-top:24px solid rgba(255,255,255,.11);border-left:24px solid transparent}
-.иконка-файла::after{content:"";position:absolute;inset:14px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg, rgba(255,255,255,.025), transparent 30%, transparent 70%, rgba(255,255,255,.02)),repeating-linear-gradient(180deg, transparent 0 22px, rgba(255,255,255,.08) 22px 23px)}
-.файл::after{content:"";position:absolute;top:14px;left:50%;transform:translateX(-50%);width:142px;height:176px;background:radial-gradient(circle at center, rgba(255,255,255,.05), transparent 72%);filter:blur(18px);opacity:.44}
-.файл:not(.битый) .иконка-файла,.файл:not(.битый) .имя-файла{animation:дрожь 6.6s steps(2) infinite}
-.файл.битый .иконка-файла,.файл.битый .имя-файла{animation:сбой 3.2s steps(2) infinite}
-@keyframes дрожь{0%,100%{transform:none}8%{transform:translate(1px,0)}10%{transform:none}52%{transform:translate(-1px,1px)}54%{transform:none}}
-@keyframes сбой{0%,100%{transform:none}12%{transform:translate(-2px,1px)}16%{transform:translate(2px,-1px)}20%{transform:none}63%{transform:translate(1px,0)}67%{transform:translate(-2px,0)}71%{transform:none}}
-.имя-файла{max-width:280px;text-align:center;font-size:.92rem;line-height:1.75;letter-spacing:.14em;text-transform:uppercase;color:#eef4f0}
-
-.консоль{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.985)}
-.консоль.активна{display:flex}
-.поле-шума{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-.шум-строка{position:absolute;left:0;right:0;white-space:nowrap;color:rgba(150,255,190,.18);font-size:.86rem;letter-spacing:.21em;text-transform:uppercase;animation:дрейф linear forwards}
-@keyframes дрейф{0%{transform:translateY(40px);opacity:0}10%{opacity:1}100%{transform:translateY(-120px);opacity:0}}
-.окно-консоли{
-    width:min(760px, calc(100% - 30px));padding:22px;border:1px solid rgba(255,255,255,.11);
-    background:linear-gradient(180deg, rgba(4,8,5,.95), rgba(0,0,0,.99));box-shadow:0 0 0 1px rgba(255,255,255,.02),0 0 90px rgba(0,0,0,.85);position:relative;overflow:hidden
-}
-.окно-консоли::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(150,255,190,.05) 0 2px, transparent 2px 4px);opacity:.45;pointer-events:none}
-.окно-консоли::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, transparent 0%, rgba(150,255,190,.06) 46%, rgba(150,255,190,.18) 50%, rgba(150,255,190,.06) 54%, transparent 100%);animation:ходКонсоли 3.4s linear infinite;pointer-events:none}
-@keyframes ходКонсоли{0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}
-.строки-консоли{position:relative;z-index:1;display:grid;gap:8px;min-height:190px}
-.строка-консоли{font-size:.86rem;line-height:1.76;color:#c1d0c7;min-height:1.6em}
-.строка-консоли::before{content:"> ";color:var(--зелёный)}
-
-.архив{position:relative;z-index:20;display:none;width:min(1200px, calc(100% - 24px));margin:76px auto 90px}
+.архив{display:none;width:100%;max-width:1200px;margin:0 auto;padding:40px 20px}
 .архив.активен{display:block}
-.архивная-пометка{
-    margin-bottom:18px;padding:14px 16px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.015);
-    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap
-}
-.архивная-пометка div{font-size:.82rem;line-height:1.75;letter-spacing:.16em;text-transform:uppercase;color:#eef4f0}
-.архивная-пометка .статус{color:var(--красный)}
 
-.поле-дела{position:relative;padding-right:344px}
-.кнопка-призмы{position:absolute;right:0;top:0;z-index:15;width:44px;height:152px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.88);color:var(--белый);writing-mode:vertical-rl;text-orientation:mixed;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:.22s ease}
-.кнопка-призмы:hover{border-color:rgba(255,255,255,.28);transform:translateX(-2px)}
-.тетрадь{position:relative;padding:28px 18px 30px 94px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)}
-.корешок{position:absolute;left:0;top:0;bottom:0;width:80px;background:linear-gradient(90deg,#5d5d5d 0%,#7b7b7b 45%,#464646 100%);border-right:3px solid rgba(18,18,18,.4);box-shadow:inset -10px 0 18px rgba(0,0,0,.22)}
-.корешок::before{content:"";position:absolute;left:14px;right:14px;top:14px;bottom:14px;border:1px solid rgba(255,255,255,.08)}
-.кольца{position:absolute;left:52px;top:18px;bottom:18px;width:24px;display:flex;flex-direction:column;justify-content:space-evenly;z-index:2}
-.кольца span{display:block;width:16px;height:16px;border-radius:50%;border:3px solid #505050;background:linear-gradient(145deg,#9d9d9d,#6e6e6e);box-shadow:inset 1px 1px 2px rgba(255,255,255,.2),1px 2px 4px rgba(0,0,0,.25)}
-.рельсы{position:absolute;top:28px;bottom:30px;left:50%;transform:translateX(-50%);width:min(860px, calc(100% - 40px));pointer-events:none;z-index:18;opacity:0}
-.страницы{position:relative;display:flex;flex-direction:column;gap:30px;align-items:center}
+.поле-дела{position:relative;max-width:900px;margin:0 auto;padding:20px 10px}
+
+.страницы{position:relative;display:flex;flex-direction:column;gap:40px;align-items:center}
+
 .страница{
-    position:relative;width:min(860px, 100%);min-height:1180px;padding:28px 28px 34px 34px;
-    background:radial-gradient(circle at 12% 14%, rgba(255,255,255,.17), transparent 22%), radial-gradient(circle at 82% 18%, rgba(70,70,70,.10), transparent 22%), linear-gradient(180deg, #ebe7df 0%, #dad4ca 56%, #c5beb2 100%);
-    border:1px solid rgba(255,255,255,.14);box-shadow:0 28px 56px rgba(0,0,0,.36), inset 0 0 80px rgba(40,40,40,.08);overflow:hidden
+  position:relative;
+  width:min(860px,100%);
+  padding:44px 40px;
+  background:linear-gradient(180deg,#ebe7df 0%,#ddd5c7 100%);
+  box-shadow:0 14px 44px rgba(0,0,0,.45);
+  overflow:hidden;
 }
-.страница:nth-child(odd){transform:rotate(-.7deg)}
-.страница:nth-child(even){transform:rotate(.7deg)}
-.страница::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23n)' opacity='.11'/%3E%3C/svg%3E");mix-blend-mode:multiply;pointer-events:none}
-.страница::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(180deg, transparent 0 31px, rgba(96,110,122,.14) 31px 32px);pointer-events:none}
-.рваный-край,.залом,.пятно,.угол{position:absolute;pointer-events:none}
-.рваный-край{background:rgba(70,60,48,.13);filter:blur(.5px)}
-.рваный-край.верх{left:0;right:0;top:-4px;height:15px;clip-path:polygon(0 100%,5% 58%,10% 100%,15% 63%,20% 100%,27% 54%,33% 100%,40% 65%,47% 100%,54% 56%,61% 100%,69% 62%,76% 100%,83% 59%,91% 100%,100% 64%,100% 100%)}
-.рваный-край.низ{left:0;right:0;bottom:-5px;height:18px;clip-path:polygon(0 0,7% 46%,14% 0,22% 55%,30% 0,38% 42%,46% 0,56% 58%,64% 0,73% 46%,82% 0,90% 52%,100% 0,100% 100%,0 100%)}
-.залом{width:1px;background:linear-gradient(180deg, transparent, rgba(70,52,30,.42), transparent);opacity:.16}
-.залом.a{left:17%;top:6%;height:84%;transform:rotate(2deg)}
-.залом.b{left:58%;top:10%;height:76%;transform:rotate(-1.8deg)}
-.залом.c{right:13%;top:24%;height:46%;transform:rotate(7deg)}
-.пятно.a{width:160px;height:110px;right:7%;top:7%;border-radius:50%;background:rgba(70,60,50,.18);filter:blur(1.2px)}
-.пятно.b{width:90px;height:60px;left:7%;bottom:12%;border-radius:50%;background:rgba(90,78,62,.14);filter:blur(.8px)}
-.угол{right:-1px;bottom:-1px;width:80px;height:80px;background:linear-gradient(135deg, rgba(0,0,0,0) 52%, rgba(94,84,71,.22) 53%, rgba(255,255,255,.16) 100%);clip-path:polygon(100% 0,100% 100%,0 100%);opacity:.6}
+.страница:nth-child(odd){transform:rotate(-.6deg)}
+.страница:nth-child(even){transform:rotate(.6deg)}
+
 .поле-текста{position:relative;z-index:1}
-.абзац{position:relative;margin:0 0 18px 18px;color:var(--чернила);font-size:1.05rem;line-height:1.9;font-family:var(--рукопись);letter-spacing:.02em;text-shadow:0 .2px 0 rgba(255,255,255,.08)}
-.абзац.повреждённый{color:#2c2320}
-.символ{display:inline-block;min-width:.02em;white-space:pre;color:var(--чернила);transition:color .18s ease, text-shadow .18s ease, opacity .18s ease}
-.символ.внутри-призмы{color:#f4f7f6;text-shadow:0 0 8px rgba(255,255,255,.18)}
-.имя-участника{pointer-events:none;cursor:default;transition:.18s ease;position:relative}
-.имя-участника.активно{pointer-events:auto;cursor:pointer;color:var(--голубой);box-shadow:inset 0 -1px 0 rgba(130,170,255,.44);text-shadow:0 0 7px rgba(130,170,255,.22)}
 
-.призма{position:absolute;z-index:20;display:none;width:min(860px, calc(100% - 40px));height:260px;border:1px solid rgba(160,255,200,.42);background:linear-gradient(180deg, rgba(10,16,12,.68), rgba(10,16,12,.58));box-shadow:0 0 44px rgba(100,255,180,.14), inset 0 0 40px rgba(100,255,180,.08);overflow:hidden;pointer-events:none;backdrop-filter:brightness(.72) contrast(1.05)}
-.призма.активна{display:block}.призма *{pointer-events:auto}
-.призма.сбой{animation:сбойПризмы .18s linear infinite;border-color:rgba(255,120,120,.44);box-shadow:0 0 50px rgba(255,80,80,.15), inset 0 0 40px rgba(255,80,80,.08)}
-@keyframes сбойПризмы{0%,100%{transform:translateY(0)}25%{transform:translateY(1px)}50%{transform:translateY(-1px)}75%{transform:translateY(2px)}}
-.призма::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(170,255,210,.07) 0 2px, transparent 2px 4px);opacity:.68;pointer-events:none}
-.призма::after{content:"";position:absolute;left:0;right:0;height:2px;background:rgba(170,255,210,.48);box-shadow:0 0 16px rgba(170,255,210,.36);animation:лучПризмы 1.8s linear infinite;pointer-events:none}
-@keyframes лучПризмы{0%{top:10px}100%{top:calc(100% - 10px)}}
-.верх-призмы{position:absolute;left:0;right:0;top:0;height:30px;z-index:2;background:rgba(0,0,0,.22);border-bottom:1px solid rgba(160,255,200,.18);display:flex;align-items:center;justify-content:space-between;padding:0 10px;cursor:ns-resize;pointer-events:auto}
-.верх-призмы span{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:#d7ffe4}
-.фиксатор{border:1px solid rgba(160,255,200,.2);background:rgba(0,0,0,.22);color:#d7ffe4;padding:2px 6px;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;cursor:pointer;pointer-events:auto}
-.фиксатор.активен{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.28)}
-.внутренний-шум{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.08;mix-blend-mode:screen;pointer-events:none}
-.призма-затемнение{position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.22), rgba(0,0,0,.12));mix-blend-mode:multiply;pointer-events:none}
+.абзац{
+  position:relative;
+  margin:0 0 18px 0;
+  color:#1e1a17;
+  font-family:'Caveat',cursive;
+  font-size:1.55rem;
+  line-height:1.45;
+  letter-spacing:.02em;
+}
+.абзац:last-child{margin-bottom:0}
 
-.сканер{position:absolute;top:0;right:0;width:320px;height:780px;z-index:25;transform:translateX(120%);transition:transform .55s cubic-bezier(.22,.8,.2,1)}
-.сканер.активен{transform:translateX(0)}
-.сканер.сбой .корпус-сканера{border-color:rgba(255,120,120,.24);box-shadow:0 0 0 1px rgba(255,120,120,.05),0 0 60px rgba(255,90,90,.14)}
-.сканер.сбой .экран-сканера{filter:hue-rotate(-35deg) saturate(1.22) contrast(1.06)}
-.корпус-сканера{width:100%;height:100%;padding:16px;border:1px solid rgba(160,255,200,.22);background:linear-gradient(180deg, rgba(6,12,8,.98), rgba(2,4,3,.99));box-shadow:0 0 0 1px rgba(160,255,200,.05),0 0 52px rgba(80,255,160,.14);position:relative;overflow:hidden}
-.корпус-сканера::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(160,255,200,.06) 0 2px, transparent 2px 4px);mix-blend-mode:screen;opacity:.45;pointer-events:none}
-.корпус-сканера::after{content:"";position:absolute;inset:-30% -20%;background:linear-gradient(180deg, transparent 0%, rgba(120,255,170,.10) 48%, rgba(120,255,170,.22) 50%, rgba(120,255,170,.10) 52%, transparent 100%);animation:лучСканера 2s linear infinite;pointer-events:none}
-@keyframes лучСканера{0%{transform:translateY(-60%)}100%{transform:translateY(60%)}}
-.экран-сканера{position:relative;height:100%;border:1px solid rgba(160,255,200,.2);background:radial-gradient(circle at center, rgba(70,130,90,.16), rgba(0,12,5,.94));padding:14px;overflow:hidden}
-.экран-сканера .шум{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.10;mix-blend-mode:screen}
-.экран-сканера .рябь{position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(150,255,200,.06) 0 1px, transparent 1px 3px);opacity:.5}
-.поле-сканера{position:absolute;left:14px;right:14px;top:14px;bottom:14px;border:1px solid rgba(160,255,200,.18);background:rgba(0,0,0,.16);white-space:pre-wrap}
+.символ{
+  display:inline-block;
+  min-width:.02em;
+  white-space:pre;
+  transition:color .18s ease,text-shadow .18s ease,transform .1s ease;
+}
 
-.досье{position:fixed;top:70px;right:-430px;width:390px;z-index:90;transition:right .5s cubic-bezier(.22,.8,.2,1)}
-.досье.активно{right:18px}
-.лист-досье{position:relative;padding:20px 18px 26px;background:linear-gradient(180deg,#ece7df 0%,#ddd5c7 55%,#c5bcaf 100%);border:1px solid rgba(255,255,255,.14);box-shadow:0 20px 60px rgba(0,0,0,.45), inset 0 0 60px rgba(40,40,40,.08);overflow:hidden}
-.лист-досье::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23n)' opacity='.10'/%3E%3C/svg%3E");mix-blend-mode:multiply;pointer-events:none}
-.верх-досье{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px;cursor:grab}
-.верх-досье:active{cursor:grabbing}
-.верх-досье h3{font-size:.92rem;letter-spacing:.16em;text-transform:uppercase;line-height:1.8;color:#16120e}
-.верх-досье small{display:block;margin-top:6px;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:#60584f}
-.закрыть-досье{min-width:40px;height:40px;border:1px solid rgba(0,0,0,.14);background:rgba(255,255,255,.34);cursor:pointer;transition:.2s ease}
-.закрыть-досье:hover{transform:rotate(90deg)}
-.фото-досье{position:relative;z-index:1;margin-bottom:14px;border:1px solid rgba(0,0,0,.12);background:rgba(255,255,255,.18);padding:8px}
-.фото-досье img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;filter:grayscale(1) contrast(1.08)}
-.поля-досье{position:relative;z-index:1;display:grid;gap:10px}
-.поле-досье{padding:10px 12px;border:1px solid rgba(0,0,0,.1);background:rgba(255,255,255,.22);font-size:.88rem;line-height:1.72;color:#17130f}
-.поле-досье strong{display:block;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:#5d5449;margin-bottom:5px}
+.имя-участника{
+  color:#4a6a9a;
+  border-bottom:1px dashed rgba(74,106,154,.35);
+  transition:color .2s,border-color .2s,text-shadow .2s;
+  pointer-events:none;
+}
+.имя-участника.активно{
+  pointer-events:auto;
+  cursor:pointer;
+  color:#7aaee0;
+  border-bottom:1px solid rgba(122,174,224,.55);
+  text-shadow:0 0 10px rgba(122,174,224,.2);
+}
 
-@media (max-width:1260px){
-    .поле-дела{padding-right:0}
-    .кнопка-призмы{position:static;writing-mode:horizontal-tb;width:100%;height:42px;margin-bottom:14px}
-    .сканер{position:relative;width:100%;height:420px;transform:translateY(18px);opacity:0;pointer-events:none;transition:opacity .35s ease, transform .35s ease;margin-top:14px}
-    .сканер.активен{transform:translateY(0);opacity:1;pointer-events:auto}
-    .рельсы{width:calc(100% - 40px)}
-    .призма{width:calc(100% - 40px)}
+/* Prism */
+.призма{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  z-index:20;
+  width:min(720px,92vw);
+  height:280px;
+  background:rgba(2,4,3,.95);
+  border:1px solid rgba(160,255,200,.32);
+  box-shadow:0 0 60px rgba(0,0,0,.9),inset 0 0 40px rgba(0,0,0,.6);
+  pointer-events:none;
+  overflow:hidden;
+}
+/* no decorative pseudo-elements inside the prism */
+
+.символ.внутри-призмы{
+  color:#f5f5f5;
+  text-shadow:0 0 6px rgba(255,255,255,.22);
+}
+
+@keyframes glitchChar{
+  0%{transform:translate(0);text-shadow:none}
+  20%{transform:translate(-1px,1px);text-shadow:-1px 0 #ff3333,1px 0 #00ff88}
+  40%{transform:translate(1px,-1px);text-shadow:1px 0 #ff3333,-1px 0 #00ff88}
+  60%{transform:translate(-1px,0);text-shadow:-1px 0 #00ff88,1px 0 #ff3333}
+  80%{transform:translate(1px,1px);text-shadow:1px 0 #00ff88,-1px 0 #ff3333}
+  100%{transform:translate(0);text-shadow:none}
+}
+
+.символ.глич{
+  animation:glitchChar .14s infinite;
+  color:#ff9999;
+}
+.символ.глич-имя{
+  animation:glitchChar .07s infinite;
+  color:#ff5555;
+}
+
+/* Dossier */
+.досье{
+  position:fixed;
+  top:60px;
+  right:-430px;
+  width:400px;
+  z-index:90;
+  transition:right .5s cubic-bezier(.22,.8,.2,1);
+}
+.досье.активно{right:14px}
+
+.лист-досье{
+  position:relative;
+  background:#050a08;
+  border:1px solid rgba(100,255,180,.18);
+  box-shadow:0 20px 60px rgba(0,0,0,.85);
+  font-family:'Share Tech Mono',monospace;
+  color:#9dffbf;
+  overflow:hidden;
+}
+.лист-досье::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(0deg,rgba(160,255,200,.04) 0 2px,transparent 2px 4px);
+  pointer-events:none;
+  z-index:2;
+  opacity:.5;
+}
+
+.верх-досье{
+  position:relative;
+  z-index:3;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding:16px 18px;
+  border-bottom:1px solid rgba(100,255,180,.12);
+}
+.верх-досье h3{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.95rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:#d7ffe4;
+  line-height:1.4;
+}
+.верх-досье small{
+  display:block;
+  margin-top:6px;
+  font-size:.6rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#5a8a6f;
+}
+.закрыть-досье{
+  min-width:32px;
+  height:32px;
+  border:1px solid rgba(100,255,180,.2);
+  background:transparent;
+  color:#9dffbf;
+  cursor:pointer;
+  transition:.2s ease;
+  font-family:'Share Tech Mono',monospace;
+  font-size:.9rem;
+}
+.закрыть-досье:hover{background:rgba(100,255,180,.08)}
+
+.фото-досье{
+  position:relative;
+  z-index:3;
+  margin:0 18px 14px;
+  border:1px solid rgba(100,255,180,.12);
+  background:#000;
+  overflow:hidden;
+}
+.фото-досье img{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  filter:grayscale(1) contrast(1.08) brightness(.85);
+}
+
+.поля-досье{
+  position:relative;
+  z-index:3;
+  display:grid;
+  gap:0;
+  padding:0 18px 18px;
+}
+.поле-досье{
+  padding:10px 0;
+  border-bottom:1px solid rgba(100,255,180,.06);
+  font-size:.82rem;
+  line-height:1.6;
+  color:#b8d0c0;
+}
+.поле-досье:last-child{border-bottom:none}
+.поле-досье strong{
+  display:block;
+  font-size:.6rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#5a8a6f;
+  margin-bottom:4px;
+}
+
+@media (max-width:900px){
+  .досье{width:calc(100% - 28px);right:-120%}
+  .досье.активно{right:14px}
 }
 @media (max-width:720px){
-    .поле-файлов{gap:48px}
-    .иконка-файла{width:116px;height:144px}
-    .имя-файла{max-width:210px;font-size:.82rem}
-    .страница{min-height:900px;padding:22px 18px 26px 22px}
-    .абзац{font-size:.92rem;margin-left:28px}
-    .досье{width:min(100% - 18px, 390px)}
+  .страница{padding:28px 22px}
+  .абзац{font-size:1.35rem}
+  .призма{height:220px}
 }
 @media (max-width:520px){
-    .кнопка-возврата{top:10px;left:10px;padding:7px 8px;font-size:.6rem}
-    .архив{width:min(100% - 10px, 1200px)}
-    .тетрадь{padding:20px 14px 20px 74px}
-    .корешок{width:62px}.кольца{left:40px}
-    .рельсы{width:calc(100% - 28px)}
-    .призма{width:calc(100% - 28px)}
+  .поле-дела{padding:10px 6px}
+  .страница{padding:22px 18px}
+  .абзац{font-size:1.25rem}
 }
 </style>
 </head>
 <body>
-<canvas id="матрица"></canvas>
-<div class="скан-линия"></div>
-<div class="виньетка"></div>
-<div class="шторка" id="шторка"></div>
-<button class="кнопка-возврата" id="кФайлам" type="button">к двум файлам</button>
-
-<div class="консоль" id="консоль">
-    <div class="поле-шума" id="полеШума"></div>
-    <div class="окно-консоли"><div class="строки-консоли" id="строкиКонсоли"></div></div>
-</div>
 
 <main>
-    <section class="экран-файлов" id="экранФайлов">
-        <div class="поле-файлов">
-            <button class="файл" id="открытьDecrypt" type="button">
-                <div class="иконка-файла"></div>
-                <div class="имя-файла">детективное частное агентство “DECRYPT”</div>
-            </button>
-            <button class="файл битый" id="открытьIridium77" type="button">
-                <div class="иконка-файла"></div>
-                <div class="имя-файла">иридий77</div>
-            </button>
-        </div>
-    </section>
-
-    <section class="архив" id="архив">
-        <div class="архивная-пометка">
-            <div>детективное частное агентство “DECRYPT”</div>
-            <div class="статус">статус: уничтожена</div>
-        </div>
-
-        <div class="поле-дела">
-            <button class="кнопка-призмы" id="кнопкаПризмы" type="button">призма</button>
-            <div class="тетрадь">
-                <div class="корешок"></div>
-                <div class="кольца"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-                <div class="рельсы"></div>
-                <div class="страницы" id="страницы"></div>
-                <div class="призма" id="призма">
-                    <div class="верх-призмы" id="верхПризмы">
-                        <span>призма</span>
-                        <button class="фиксатор" id="фиксаторПризмы" type="button">свободно</button>
-                    </div>
-                    <div class="внутренний-шум"></div>
-                </div>
-            </div>
-            <aside class="сканер" id="сканер">
-                <div class="корпус-сканера">
-                    <div class="экран-сканера">
-                        <div class="шум"></div>
-                        <div class="рябь"></div>
-                        <div class="поле-сканера" id="полеСканера"></div>
-                    </div>
-                </div>
-            </aside>
-        </div>
-    </section>
+  <section class="архив" id="архив">
+    <div class="поле-дела">
+      <div class="страницы" id="страницы"></div>
+      <div class="призма" id="призма"></div>
+    </div>
+  </section>
 </main>
 
 <div class="досье" id="досье">
-    <div class="лист-досье" id="листДосье">
-        <div class="верх-досье" id="верхДосье">
-            <div>
-                <h3 id="имяДосье">досье</h3>
-                <small>извлечено из повреждённого архива</small>
-            </div>
-            <button class="закрыть-досье" id="закрытьДосье" type="button">✕</button>
-        </div>
-        <div class="фото-досье"><img id="фотоДосье" src="" alt=""></div>
-        <div class="поля-досье" id="поляДосье"></div>
+  <div class="лист-досье">
+    <div class="верх-досье">
+      <div>
+        <h3 id="имяДосье">досье</h3>
+        <small>извлечено из уцелевшего архива</small>
+      </div>
+      <button class="закрыть-досье" id="закрытьДосье" type="button">✕</button>
     </div>
+    <div class="фото-досье" id="фотоДосьеWrap"><img id="фотоДосье" src="" alt=""></div>
+    <div class="поля-досье" id="поляДосье"></div>
+  </div>
 </div>
 
 <script>
+const чужойАлфавит = 'אבגדהוזחטיכלמנסעפצקרשתםףץןן״׳װױײ₪';
 const азбука = '▓▒░█/#<>[]{}01ψΩΛЖЯÆИҰ∎◢◣◤◥';
 const буквы = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЭЮЯ0123456789';
-const мёртвыйАлфавит = 'אבגדהוזחטיכלמנסעפצקרשתװױײ׳״₪';
+
 const страницыДанных = [
-    [
-        ['Детективное частное агентство “DECRYPT” так-же как и большинство нишевых организациях зародилось в секторе Спинвардская Периферия, в самой гуще развития мегаполиса на планете Y-27, первый основатель организации стал ', {member:'hiyoshi', text:'Хиоши Сузуки'}, ', прибывший на планету около 3х лет назад, на небольшой межтрансовом шаттле из солнечной системы. Начальный капитал организации составил 400.000$ наличными что были выделены Хиоши его родителями под залог, с ожиданием того что тот вернёт более 70% залога свыше, если не прогорит в сточной канаве планеты.'],
-        ['Изначально агенство занималось конкретной поставленной задачей, принимая каждое предложение об детективной деятельности. В них часто входили уже клишированные запросы, слежка за второй половинкой которая подозревалась в измене, локальные потери вещей и небольших грабежей, по типу скрытия чей-то квартиры или съёмного жилья, снятие отпечатков, и поиски пропавших посылок утерянных местной почтовой службой.']
-    ],
-    [
-        ['Этот нишевый бизнес буквально держался лишь на бытовых запросах ежедневно пытаясь выйти хоть на пару сотен долларов из долгов. За около чем более годовой работы таким темпом бизнес был приведён в ужасное состояние, помещение которое снимал Хиоши буквально трещало по швам пока арендодатель в очередной раз завышал цены аргументируя это очень просто “Город растёт - а мы теперь в центре его. Нет денег. Вали на окраину.”'],
-        ['Это могло продолжаться буквально не более ещё двух месяцев, пока бы у Хиоши не кончились деньги, с учётом того что его родительский долг съедал более 80% заработка. Но тут как гром с небес появился шанс для малого бизнеса. Либо же до Хиоши самого дошла эта мысль, либо же ему дал очередную идею ежедневный клиент. А именно искать выгоду в корпоративных играх, пытаться заработать на добыче компромата против врагом той или иной фирмы обратившийся к нему, зачистки лишних данных или следов оставленных в ходе очередного “несчастного случая”.']
-    ],
-    [
-        ['А учитывая что к этому времени город давно поделил сектриальный треугольник бизнесов, где самую вершину города занимали мега-корпорации, середину рынки получившие огласку в обществе, а дно подпольные рынки, нарко-базы, и стрип-клубы с провальными бизнесами. Работа была частно пыльной, и требующей поморать руки. Хиоши решил сразу же занять данный рынок, и перейти в политику нейтральных действий, усвоив одно простое правило “За каждым хищником следует свой охотник, и третий наблюдатель что будет пожинать кости обоих.” а название агентства как его основную направленность тот решил не менять в угоду некой конспирации от любопытных глаз правительство. Мол кому есть дело до очередного детектива-самоучки который рано или поздно найдет свою пулу в засанной подворотне.'],
-        ['Данные решения позволили Хиоши с его бизнесом довольно резко начать свое развитие в высь по этажам города. И буквально за пол года такой работы, тот уже смог высунуть голову из канализации в средний сектор, ощутив менее черствый воздух пропитанный наркотой и героином. Первое задание их оказалось до ужасти просто, они получили его от фирмы по продаже средств по уходу за красотой, на другую такую-же фирму. Требовалось лишь сделать фотографии босса фирмы, находящегося в приватном клубе со страпоном не в том месте. И в отличии от низжевого рынка, на среднем рынке это могло реально повлиять на восприятие фирмы вплоть до обвала её акций. Дело тот закрыл быстро и без проблем, что пробило ему сразу небольшие но значительные связи на среднем плато.']
-    ],
-    [
-        ['К тому моменту тот уже начал предпринимать движение в найме дополнительных сотрудников, уверенности естественно в каждом новом не было, и Хиоши понимал что каждый из них может подставить его в любой момент, но это всяко лучше когда предатель прикрывает спину от врага, чем враг смотрящий сквозь дырку в твоем сердце. Первый состав команды был из трёх существ разных расс, аркана девушка, ярко-розового окраса - ', {member:'cadence', text:'Каденс Слоан'}, ', мужчина человеческой расы ', {member:'iridium', text:'Иридий'}, ' с серебряными волосами, и мужчина вульпканин ', {member:'daros', text:'Дарос Полей'}, '.'],
-        ['И если вульпу с арканой Хиоши смог достать буквально с подворотен нижнего плато, человека ему подослал один из знакомых, чьи заказы он уже не раз выполнял со среднего плато. И найм новых сотрудников стал для организации буквально вторым дыханием, это позволило брать на пару заказов больше, а учитывая что с приходом ', {member:'iridium', text:'Иридия'}, ', у них ещё и появился автотранспорт который по явному согласию всех сторон стал принадлежать организации. С того момента их влияние начало расходится по среднему плато, начиная с ежедневных заданий по сборке компромата, заканчиваю уже прямым созданием самого этого компромата.'],
-        [{damaged:true, text:'Я<]#1}01 организация развилась и ◢◤◣}1/<1Æ получила свой первый и ÆЯ█00}<Æ заказ от'}]
-    ]
+  [
+    ['Детективное частное агентство “DECRYPT” так-же как и большинство нишевых организациях зародилось в секторе Спинвардская Периферия, в самой гуще развития мегаполиса на планете Y-27, первый основатель организации стал ', {member:'hiyoshi', text:'Хиоши Сузуки'}, ', прибывший на планету около 3х лет назад, на небольшой межтрансовом шаттле из солнечной системы. Начальный капитал организации составил 400.000$ наличными что были выделены Хиоши его родителями под залог, с ожиданием того что тот вернёт более 70% залога свыше, если не прогорит в сточной канаве планеты.'],
+    ['Изначально агенство занималось конкретной поставленной задачей, принимая каждое предложение об детективной деятельности. В них часто входили уже клишированные запросы, слежка за второй половинкой которая подозревалась в измене, локальные потери вещей и небольших грабежей, по типу скрытия чей-то квартиры или съёмного жилья, снятие отпечатков, и поиски пропавших посылок утерянных местной почтовой службой.']
+  ],
+  [
+    ['Этот нишевый бизнес буквально держался лишь на бытовых запросах ежедневно пытаясь выйти хоть на пару сотен долларов из долгов. За около чем более годовой работы таким темпом бизнес был приведён в ужасное состояние, помещение которое снимал Хиоши буквально трещало по швам пока арендодатель в очередной раз завышал цены аргументируя это очень просто “Город растёт - а мы теперь в центре его. Нет денег. Вали на окраину.”'],
+    ['Это могло продолжаться буквально не более ещё двух месяцев, пока бы у Хиоши не кончились деньги, с учётом того что его родительский долг съедал более 80% заработка. Но тут как гром с небес появился шанс для малого бизнеса. Либо же до Хиоши самого дошла эта мысль, либо же ему дал очередную идею ежедневный клиент. А именно искать выгоду в корпоративных играх, пытаться заработать на добыче компромата против врагом той или иной фирмы обратившийся к нему, зачистки лишних данных или следов оставленных в ходе очередного “несчастного случая”.']
+  ],
+  [
+    ['А учитывая что к этому времени город давно поделил сектриальный треугольник бизнесов, где самую вершину города занимали мега-корпорации, середину рынки получившие огласку в обществе, а дно подпольные рынки, нарко-базы, и стрип-клубы с провальными бизнесами. Работа была частно пыльной, и требующей поморать руки. Хиоши решил сразу же занять данный рынок, и перейти в политику нейтральных действий, усвоив одно простое правило “За каждым хищником следует свой охотник, и третий наблюдатель что будет пожинать кости обоих.” а название агентства как его основную направленность тот решил не менять в угоду некой конспирации от любопытных глаз правительство. Мол кому есть дело до очередного детектива-самоучки который рано или поздно найдет свою пулу в засанной подворотне.'],
+    ['Данные решения позволили Хиоши с его бизнесом довольно резко начать свое развитие в высь по этажам города. И буквально за пол года такой работы, тот уже смог высунуть голову из канализации в средний сектор, ощутив менее черствый воздух пропитанный наркотой и героином. Первое задание их оказалось до ужасти просто, они получили его от фирмы по продаже средств по уходу за красотой, на другую такую-же фирму. Требовалось лишь сделать фотографии босса фирмы, находящегося в приватном клубе со страпоном не в том месте. И в отличии от низжевого рынка, на среднем рынке это могло реально повлиять на восприятие фирмы вплоть до обвала её акций. Дело тот закрыл быстро и без проблем, что пробило ему сразу небольшие но значительные связи на среднем плато.']
+  ],
+  [
+    ['К тому моменту тот уже начал предпринимать движение в найме дополнительных сотрудников, уверенности естественно в каждом новом не было, и Хиоши понимал что каждый из них может подставить его в любой момент, но это всяко лучше когда предатель прикрывает спину от врага, чем враг смотрящий сквозь дырку в твоем сердце. Первый состав команды был из трёх существ разных расс, аркана девушка, ярко-розового окраса - ', {member:'cadence', text:'Каденс Слоан'}, ', мужчина человеческой расы ', {member:'iridium', text:'Иридий'}, ' с серебряными волосами, и мужчина вульпканин ', {member:'daros', text:'Дарос Полей'}, '.'],
+    ['И если вульпу с арканой Хиоши смог достать буквально с подворотен нижнего плато, человека ему подослал один из знакомых, чьи заказы он уже не раз выполнял со среднего плато. И найм новых сотрудников стал для организации буквально вторым дыханием, это позволило брать на пару заказов больше, а учитывая что с приходом ', {member:'iridium', text:'Иридия'}, ', у них ещё и появился автотранспорт который по явному согласию всех сторон стал принадлежать организации. С того момента их влияние начало расходится по среднему плато, начиная с ежедневных заданий по сборке компромата, заканчиваю уже прямым созданием самого этого компромата.'],
+    [{damaged:true, text:'Я<]#1}01 организация развилась и ◢◤◣}1/<1Æ получила свой первый и ÆЯ█00}<Æ заказ от'}]
+  ]
 ];
+
 const досьеДанные = {
-    hiyoshi:{name:'Хиоши Сузуки', photo:'assets/decrypt/hiyoshi-elevator.png', fields:[['ФИО','Хиоши Сузуки'],['пол','мужской'],['раса','человек'],['рост','178 см'],['вес','71 кг'],['статус','след оборван'],['родная планета','Земля / солнечная система'],['краткая характеристика','Основатель. Поднял агентство из бытового сыска в рынок корпоративной грязи, предпочитая дробить заказы так, чтобы никто не видел всей картины целиком.']]} ,
-    cadence:{name:'Каденс Слоан', photo:'assets/decrypt/arcana-cigarettes.jpeg', fields:[['ФИО','Каденс Слоан'],['пол','женский'],['раса','аркана'],['рост','171 см'],['вес','57 кг'],['статус','последний след нестабилен'],['родная планета','не зафиксирована'],['краткая характеристика','Полевой элемент. Сцены вокруг неё выглядят бытовыми, но именно через такие места в архиве чаще всего начинается чужой компромат.']]} ,
-    iridium:{name:'Иридий', photo:'assets/decrypt/iridium-elevator.png', fields:[['ФИО','Иридий'],['пол','мужской'],['раса','человек'],['рост','188 см'],['вес','79 кг'],['статус','следы разорваны'],['родная планета','Ме<span>▓</span>р<span>◢</span>к<span>█</span>у<span>Æ</span>р<span>Я</span>и<span>01</span>-<span>█</span><span>◣</span>'],['краткая характеристика','Принёс агентству подвижность. Возникает рядом с узлами вывоза, передачи и слишком быстрым исчезновением хвостов.']]} ,
-    daros:{name:'Дарос Полей', photo:'assets/decrypt/daros-placeholder.svg', fields:[['ФИО','Дарос Полей'],['пол','мужской'],['раса','вульпканин'],['рост','182 см'],['вес','68 кг'],['статус','данные неполные'],['родная планета','не подтверждена'],['краткая характеристика','Связан с частотами, служебными проходами, запасными ключами и нижним плато. От него осталось меньше лица, чем метода.']]} 
+  hiyoshi:{name:'Хиоши Сузуки', photo:'hiyoshi-elevator.png', fields:[['ФИО','Хиоши Сузуки'],['пол','мужской'],['раса','человек'],['рост','178 см'],['вес','71 кг'],['статус','след оборван'],['родная планета','Земля / солнечная система'],['краткая характеристика','Основатель. Поднял агентство из бытового сыска в рынок корпоративной грязи, предпочитая дробить заказы так, чтобы никто не видел всей картины целиком.']]},
+  cadence:{name:'Каденс Слоан', photo:'arcana-cigarettes.jpeg', fields:[['ФИО','Каденс Слоан'],['пол','женский'],['раса','аркана'],['рост','171 см'],['вес','57 кг'],['статус','последний след нестабилен'],['родная планета','не зафиксирована'],['краткая характеристика','Полевой элемент. Сцены вокруг неё выглядят бытовыми, но именно через такие места в архиве чаще всего начинается чужой компромат.']]},
+  iridium:{name:'Иридий', photo:'iridium-elevator.png', fields:[['ФИО','Иридий'],['пол','мужской'],['раса','человек'],['рост','188 см'],['вес','79 кг'],['статус','следы разорваны'],['родная планета','Ме▓р◢к█уÆрЯи01-█◣'],['краткая характеристика','Принёс агентству подвижность. Возникает рядом с узлами вывоза, передачи и слишком быстрым исчезновением хвостов.']]},
+  daros:{name:'Дарос Полей', photo:'', fields:[['ФИО','Дарос Полей'],['пол','мужской'],['раса','вульпканин'],['рост','182 см'],['вес','68 кг'],['статус','данные неполные'],['родная планета','не подтверждена'],['краткая характеристика','Связан с частотами, служебными проходами, запасными ключами и нижним плато. От него осталось меньше лица, чем метода.']]}
 };
 
-const экранФайлов = document.getElementById('экранФайлов');
 const архив = document.getElementById('архив');
-const консоль = document.getElementById('консоль');
-const строкиКонсоли = document.getElementById('строкиКонсоли');
-const полеШума = document.getElementById('полеШума');
 const страницы = document.getElementById('страницы');
-const кнопкаПризмы = document.getElementById('кнопкаПризмы');
 const призма = document.getElementById('призма');
-const фиксаторПризмы = document.getElementById('фиксаторПризмы');
-const сканер = document.getElementById('сканер');
-const полеСканера = document.getElementById('полеСканера');
 const досье = document.getElementById('досье');
 const имяДосье = document.getElementById('имяДосье');
 const фотоДосье = document.getElementById('фотоДосье');
+const фотоДосьеWrap = document.getElementById('фотоДосьеWrap');
 const поляДосье = document.getElementById('поляДосье');
-const шторка = document.getElementById('шторка');
 
 let глифы = [];
 let участники = {};
-let призмаПоказана = false;
-let призмаЗафиксирована = false;
-let тащимПризму = false;
-let смещениеПризмыY = 0;
-let позицияПризмыX = 27;
-let позицияПризмыY = 24;
-let границыСтраниц = null;
-let размерПризмыW = 0;
-let размерПризмыH = 260;
-let тащимДосье = false;
-let смещениеДосьеX = 0;
-let смещениеДосьеY = 0;
-const ipPromise = получитьIPv4();
 
-function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function случайныйСимвол(){return азбука[Math.floor(Math.random()*азбука.length)]}
 function случайнаяБуква(){return буквы[Math.floor(Math.random()*буквы.length)]}
-function чужаяБуква(){return мёртвыйАлфавит[Math.floor(Math.random()*мёртвыйАлфавит.length)]}
+function чужаяБуква(){return чужойАлфавит[Math.floor(Math.random()*чужойАлфавит.length)]}
 function испорченный(real){
-    if(/[0-9]/.test(real)) return String(Math.floor(Math.random()*10));
-    if(/[A-Za-zА-Яа-яЁё]/.test(real)) return чужаяБуква();
-    if(/[\.,:;!?\-—()«»"'`]/.test(real)) return случайныйСимвол();
-    return Math.random()>.55 ? чужаяБуква() : случайныйСимвол();
+  if(/[0-9]/.test(real)) return String(Math.floor(Math.random()*10));
+  if(/[A-Za-zА-Яа-яЁё]/.test(real)) return чужаяБуква();
+  if(/[.,:;!?\-—()«»"'`]/.test(real)) return случайныйСимвол();
+  return Math.random()>.5 ? чужаяБуква() : случайныйСимвол();
 }
-
-async function получитьJSON(url, timeout=2200){
-    const ctrl = new AbortController();
-    const tm = setTimeout(()=>ctrl.abort(), timeout);
-    try{
-        const r = await fetch(url,{signal:ctrl.signal,cache:'no-store'});
-        clearTimeout(tm);
-        if(!r.ok) throw new Error('bad');
-        return await r.json();
-    }catch(e){
-        clearTimeout(tm);
-        throw e;
-    }
-}
-async function получитьIPv4(){
-    const задачи = [
-        ()=>получитьJSON('https://api.ipify.org?format=json').then(d=>d.ip),
-        ()=>получитьJSON('https://api.ip.sb/jsonip').then(d=>d.ip),
-        ()=>получитьJSON('https://ipwho.is/').then(d=>d.ip)
-    ].map(fn => fn().then(ip => /^\d+\.\d+\.\d+\.\d+$/.test(ip||'') ? ip : Promise.reject()));
-    try{return await Promise.any(задачи);}catch(e){return '0.0.0.0';}
-}
-
-function запуститьМатрицу(){
-    const canvas = document.getElementById('матрица');
-    const ctx = canvas.getContext('2d');
-    const потоки = [];
-    function resize(){
-        canvas.width = innerWidth;
-        canvas.height = innerHeight;
-        потоки.length = 0;
-        const count = Math.max(24, Math.floor(canvas.width / 54));
-        for(let i=0;i<count;i++){
-            потоки.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,speed:0.09+Math.random()*0.22,size:14+Math.random()*10,chars:1+Math.floor(Math.random()*3),color:['rgba(150,255,190,.16)','rgba(120,170,255,.13)','rgba(255,120,120,.11)','rgba(200,150,255,.10)','rgba(255,255,255,.10)'][Math.floor(Math.random()*5)]});
-        }
-    }
-    function draw(){
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-        потоки.forEach(p=>{
-            p.y += p.speed;
-            if(p.y > canvas.height + 50){ p.y = -50 - Math.random()*120; p.x = Math.random()*canvas.width; }
-            ctx.fillStyle = p.color;
-            ctx.font = p.size + 'px monospace';
-            let text = '';
-            for(let i=0;i<p.chars;i++) text += (Math.random()>.55 ? случайныйСимвол() : случайнаяБуква());
-            ctx.fillText(text, p.x, p.y);
-        });
-        requestAnimationFrame(draw);
-    }
-    resize(); draw(); addEventListener('resize', resize);
-}
-
-function шумКонсоли(){
-    полеШума.innerHTML = '';
-    let count = 0;
-    const timer = setInterval(()=>{
-        const row = document.createElement('div');
-        row.className = 'шум-строка';
-        row.style.top = (Math.random()*100)+'%';
-        row.style.animationDuration = (3.6 + Math.random()*2.4)+'s';
-        row.textContent = Array.from({length:20+Math.floor(Math.random()*20)}, случайныйСимвол).join('');
-        полеШума.appendChild(row);
-        setTimeout(()=>row.remove(),6500);
-        count++;
-        if(count>36) clearInterval(timer);
-    },120);
-}
-
-async function печататьКонсоль(строки){
-    строкиКонсоли.innerHTML = '';
-    for(const text of строки){
-        const row = document.createElement('div');
-        row.className = 'строка-консоли';
-        строкиКонсоли.appendChild(row);
-        for(let i=0;i<=text.length;i++){
-            row.textContent = text.slice(0,i);
-            await sleep(16);
-        }
-        await sleep(240);
-    }
-}
-
-async function открытьDecrypt(){
-    шторка.classList.add('активна');
-    await sleep(220);
-    экранФайлов.style.display = 'none';
-    document.body.classList.add('архив-открыт');
-    консоль.classList.add('активна');
-    шумКонсоли();
-    const ip = await ipPromise;
-    await sleep(160);
-    await печататьКонсоль(['точка входа: ' + ip,'доступ к уцелевшей части подтверждён','детективное частное агентство “DECRYPT”','статус: УНИЧТОЖЕНА','бумажный носитель частично сохранён']);
-    await sleep(900);
-    построитьСтраницы();
-    архив.classList.add('активен');
-    await sleep(180);
-    консоль.classList.remove('активна');
-    полеШума.innerHTML = '';
-    шторка.classList.remove('активна');
-    window.scrollTo({top:0,behavior:'smooth'});
-}
-function назадКФайлам(){
-    скрытьПризму();
-    закрытьДосье();
-    архив.classList.remove('активен');
-    document.body.classList.remove('архив-открыт','пойман');
-    шторка.classList.add('активна');
-    setTimeout(()=>{экранФайлов.style.display='flex'; шторка.classList.remove('активна');},220);
-}
-document.getElementById('открытьDecrypt').addEventListener('click', открытьDecrypt);
-document.getElementById('кФайлам').addEventListener('click', назадКФайлам);
-document.getElementById('открытьIridium77').addEventListener('click', e=>{ e.currentTarget.classList.add('битый'); setTimeout(()=>e.currentTarget.classList.remove('битый'), 320); });
 
 function создатьГлиф(char, meta={}){
-    const span = document.createElement('span');
-    span.className = 'символ';
-    span.dataset.real = char;
-    span.dataset.base = meta.damaged ? char : испорченный(char);
-    span.textContent = span.dataset.base;
-    if(meta.damaged) span.dataset.damaged = '1';
-    if(meta.member) span.dataset.member = meta.member;
-    return span;
+  const span = document.createElement('span');
+  span.className = 'символ';
+  span.dataset.real = char;
+  if(meta.damaged){
+    span.dataset.damaged = '1';
+    span.dataset.base = char.split('').map(ch => /[A-Za-zА-Яа-яЁё0-9]/.test(ch) ? чужаяБуква() : ch).join('');
+  } else {
+    span.dataset.base = испорченный(char);
+  }
+  span.textContent = span.dataset.base;
+  if(meta.damaged) span.dataset.damaged = '1';
+  if(meta.member) span.dataset.member = meta.member;
+  return span;
 }
+
 function добавитьФрагмент(parent, part){
-    if(typeof part === 'string'){
-        for(const ch of part){ if(ch===' ') parent.appendChild(document.createTextNode(' ')); else parent.appendChild(создатьГлиф(ch)); }
-        return;
+  if(typeof part === 'string'){
+    for(const ch of part){
+      if(ch === ' ') parent.appendChild(document.createTextNode(' '));
+      else parent.appendChild(создатьГлиф(ch));
     }
-    if(part.member){
-        const wrap = document.createElement('span');
-        wrap.className = 'имя-участника';
-        wrap.dataset.member = part.member;
-        if(!участники[part.member]) участники[part.member] = {el:wrap,total:0,visible:0};
-        for(const ch of part.text){
-            if(ch===' ') wrap.appendChild(document.createTextNode(' '));
-            else { const g = создатьГлиф(ch,{member:part.member}); wrap.appendChild(g); участники[part.member].total++; }
-        }
-        wrap.addEventListener('click', ()=>{ if(wrap.classList.contains('активно')) открытьДосье(part.member); });
-        parent.appendChild(wrap);
-        return;
+    return;
+  }
+  if(part.member){
+    const wrap = document.createElement('span');
+    wrap.className = 'имя-участника';
+    wrap.dataset.member = part.member;
+    if(!участники[part.member]) участники[part.member] = {el:wrap,total:0,visible:0};
+    for(const ch of part.text){
+      if(ch === ' ') wrap.appendChild(document.createTextNode(' '));
+      else {
+        const g = создатьГлиф(ch,{member:part.member});
+        wrap.appendChild(g);
+        участники[part.member].total++;
+      }
     }
-    if(part.damaged){
-        for(const ch of part.text){ if(ch===' ') parent.appendChild(document.createTextNode(' ')); else parent.appendChild(создатьГлиф(ch,{damaged:true})); }
+    wrap.addEventListener('click', ()=>{ if(wrap.classList.contains('активно')) открытьДосье(part.member); });
+    parent.appendChild(wrap);
+    return;
+  }
+  if(part.damaged){
+    for(const ch of part.text){
+      if(ch === ' ') parent.appendChild(document.createTextNode(' '));
+      else parent.appendChild(создатьГлиф(ch,{damaged:true}));
     }
+  }
 }
 
 function построитьСтраницы(){
-    страницы.innerHTML = '';
-    участники = {};
-    глифы = [];
-    страницыДанных.forEach(pageData=>{
-        const page = document.createElement('div');
-        page.className = 'страница';
-        page.innerHTML = '<div class="рваный-край верх"></div><div class="рваный-край низ"></div><div class="залом a"></div><div class="залом b"></div><div class="залом c"></div><div class="пятно a"></div><div class="пятно b"></div><div class="угол"></div>';
-        const field = document.createElement('div');
-        field.className = 'поле-текста';
-        pageData.forEach(par=>{
-            const p = document.createElement('p');
-            p.className = 'абзац' + (par.some(part => typeof part !== 'string' && part.damaged) ? ' повреждённый' : '');
-            par.forEach(part=>добавитьФрагмент(p, part));
-            field.appendChild(p);
-        });
-        page.appendChild(field);
-        страницы.appendChild(page);
+  страницы.innerHTML = '';
+  участники = {};
+  глифы = [];
+  страницыДанных.forEach(pageData=>{
+    const page = document.createElement('div');
+    page.className = 'страница';
+    const field = document.createElement('div');
+    field.className = 'поле-текста';
+    pageData.forEach(par=>{
+      const p = document.createElement('p');
+      p.className = 'абзац';
+      par.forEach(part=>добавитьФрагмент(p, part));
+      field.appendChild(p);
     });
-    requestAnimationFrame(измеритьГлифы);
+    page.appendChild(field);
+    страницы.appendChild(page);
+  });
+  requestAnimationFrame(измеритьГлифы);
 }
 
 function измеритьГлифы(){
-    const rect = страницы.getBoundingClientRect();
-    границыСтраниц = {left:rect.left, top:rect.top, width:rect.width, height:rect.height};
-    const первая = document.querySelector('.страница');
-    if(первая){
-        const r = первая.getBoundingClientRect();
-        размерПризмыW = r.width - 54;
-        позицияПризмыX = первая.offsetLeft + 27;
-        призма.style.width = размерПризмыW + 'px';
-    }
-    глифы = Array.from(страницы.querySelectorAll('.символ')).map(el=>{
-        const r = el.getBoundingClientRect();
-        return {el,real:el.dataset.real,base:el.dataset.base,damaged:el.dataset.damaged==='1',member:el.dataset.member||null,x:r.left-rect.left+r.width/2,y:r.top-rect.top+r.height/2,progress:0};
-    });
-    if(призмаПоказана) поставитьПризмуY(позицияПризмыY);
+  const sRect = страницы.getBoundingClientRect();
+  глифы = Array.from(страницы.querySelectorAll('.символ')).map(el=>{
+    const r = el.getBoundingClientRect();
+    return {
+      el, real:el.dataset.real, base:el.dataset.base,
+      damaged:el.dataset.damaged==='1', member:el.dataset.member||null,
+      x:r.left-sRect.left+r.width/2, y:r.top-sRect.top+r.height/2,
+      progress:0
+    };
+  });
 }
-
-function показатьПризму(){
-    if(!границыСтраниц) измеритьГлифы();
-    призмаПоказана = true;
-    призма.classList.add('активна');
-    сканер.classList.add('активен');
-    поставитьПризмуY(24);
-}
-function скрытьПризму(){
-    призмаПоказана = false;
-    призмаЗафиксирована = false;
-    призма.classList.remove('активна','сбой');
-    сканер.classList.remove('активен','сбой');
-    фиксаторПризмы.classList.remove('активен');
-    фиксаторПризмы.textContent = 'свободно';
-    полеСканера.textContent = '';
-    Object.values(участники).forEach(v=>v.el.classList.remove('активно'));
-    глифы.forEach(g=>{g.progress=0; g.el.textContent=g.base;});
-}
-function поставитьПризмуY(y){
-    if(!границыСтраниц) return;
-    позицияПризмыY = Math.max(0, Math.min(границыСтраниц.height - размерПризмыH, y));
-    призма.style.left = позицияПризмыX + 'px';
-    призма.style.top = позицияПризмыY + 'px';
-}
-кнопкаПризмы.addEventListener('click', ()=>{призмаПоказана ? скрытьПризму() : показатьПризму();});
-фиксаторПризмы.addEventListener('click', e=>{
-    e.stopPropagation();
-    призмаЗафиксирована = !призмаЗафиксирована;
-    фиксаторПризмы.classList.toggle('активен', призмаЗафиксирована);
-    фиксаторПризмы.textContent = призмаЗафиксирована ? 'закреп.' : 'свободно';
-});
-
-document.addEventListener('wheel', e=>{
-    if(!призмаПоказана || призмаЗафиксирована) return;
-    const over = e.target.closest('.поле-дела');
-    if(!over) return;
-    e.preventDefault();
-    поставитьПризмуY(позицияПризмыY + (e.deltaY > 0 ? 38 : -38));
-},{passive:false});
-
-const верхПризмы = document.getElementById('верхПризмы');
-верхПризмы.addEventListener('mousedown', e=>{
-    if(призмаЗафиксирована) return;
-    тащимПризму = true;
-    смещениеПризмыY = e.clientY - призма.getBoundingClientRect().top;
-    e.preventDefault();
-});
-document.addEventListener('mousemove', e=>{
-    if(!тащимПризму || !призмаПоказана || !границыСтраниц) return;
-    поставитьПризмуY(e.clientY - границыСтраниц.top - смещениеПризмыY);
-});
-document.addEventListener('mouseup', ()=>тащимПризму=false);
-
-function крайСтраницы(){
-    const top = позицияПризмыY;
-    const bottom = позицияПризмыY + размерПризмыH;
-    let near = false;
-    document.querySelectorAll('.страница').forEach(page=>{
-        const pr = page.getBoundingClientRect();
-        const base = страницы.getBoundingClientRect();
-        const t = pr.top - base.top;
-        const b = pr.bottom - base.top;
-        const overlap = !(bottom < t || top > b);
-        if(overlap){
-            if(Math.abs(top - t) < 24 || Math.abs(bottom - b) < 24) near = true;
-        }
-    });
-    return near;
-}
-function переходный(real, p){
-    if(p < .18) return случайныйСимвол();
-    if(p < .36) return Math.random()>.45 ? испорченный(real) : случайнаяБуква();
-    if(p < .56) return Math.random()>.6 ? real : случайнаяБуква();
-    if(p < .78) return Math.random()>.34 ? real : испорченный(real);
-    return Math.random()>.1 ? real : испорченный(real);
-}
-function битыйПереход(real, p){
-    if(p < .24) return случайныйСимвол();
-    if(p < .54) return Math.random()>.55 ? испорченный(real) : случайныйСимвол();
-    return Math.random()>.82 ? real : (Math.random()>.5 ? испорченный(real) : случайныйСимвол());
-}
-
-function обновитьЧтение(){
-    if(!призмаПоказана){ document.body.classList.remove('пойман'); return; }
-    let сбой = крайСтраницы();
-    let кусок = '';
-    Object.values(участники).forEach(v=>v.visible=0);
-    for(const g of глифы){
-        const inRect = g.x >= позицияПризмыX && g.x <= позицияПризмыX + размерПризмыW && g.y >= позицияПризмыY && g.y <= позицияПризмыY + размерПризмыH;
-        if(inRect){
-            g.progress = Math.min(1, g.progress + (g.damaged ? .03 : .04));
-            g.el.classList.add('внутри-призмы');
-            if(g.damaged){
-                g.el.textContent = битыйПереход(g.real, g.progress);
-                сбой = true;
-            } else {
-                g.el.textContent = переходный(g.real, g.progress);
-                if(g.member && участники[g.member]) участники[g.member].visible += g.progress;
-            }
-            if(кусок.length < 220) кусок += g.el.textContent;
-        } else {
-            g.progress = 0;
-            g.el.classList.remove('внутри-призмы');
-            g.el.textContent = g.base;
-        }
-    }
-    Object.keys(участники).forEach(key=>{
-        const d = участники[key];
-        d.el.classList.toggle('активно', d.total ? (d.visible / d.total) > .64 : false);
-    });
-    призма.classList.toggle('сбой', сбой);
-    сканер.classList.toggle('сбой', сбой);
-    полеСканера.textContent = кусок.trim() ? кусок.trim().slice(0,220) : '';
-    document.body.classList.toggle('пойман', сбой);
-}
-setInterval(обновитьЧтение, 55);
 
 function открытьДосье(key){
-    const data = досьеДанные[key];
-    if(!data) return;
-    имяДосье.textContent = data.name;
+  const data = досьеДанные[key];
+  if(!data) return;
+  имяДосье.textContent = data.name;
+  if(data.photo){
     фотоДосье.src = data.photo;
     фотоДосье.alt = data.name;
-    поляДосье.innerHTML = '';
-    data.fields.forEach(([k,v])=>{
-        const row = document.createElement('div');
-        row.className = 'поле-досье';
-        row.innerHTML = `<strong>${k}</strong><div>${v}</div>`;
-        поляДосье.appendChild(row);
-    });
-    досье.style.left = 'auto';
-    досье.style.right = '18px';
-    досье.style.top = '70px';
-    досье.classList.add('активно');
+    фотоДосьеWrap.style.display = 'block';
+  } else {
+    фотоДосьеWrap.style.display = 'none';
+  }
+  поляДосье.innerHTML = '';
+  data.fields.forEach(([k,v])=>{
+    const row = document.createElement('div');
+    row.className = 'поле-досье';
+    row.innerHTML = `<strong>${k}</strong><div>${v}</div>`;
+    поляДосье.appendChild(row);
+  });
+  досье.classList.add('активно');
 }
-function закрытьДосье(){
-    досье.classList.remove('активно');
-    досье.style.left = 'auto';
-    досье.style.right = '-430px';
-    досье.style.top = '70px';
-}
-document.getElementById('закрытьДосье').addEventListener('click', закрытьДосье);
-const верхДосье = document.getElementById('верхДосье');
-верхДосье.addEventListener('mousedown', e=>{
-    тащимДосье = true;
-    const r = досье.getBoundingClientRect();
-    смещениеДосьеX = e.clientX - r.left;
-    смещениеДосьеY = e.clientY - r.top;
-    e.preventDefault();
-});
-document.addEventListener('mousemove', e=>{
-    if(!тащимДосье) return;
-    досье.style.right = 'auto';
-    досье.style.left = Math.max(8, Math.min(innerWidth - досье.offsetWidth - 8, e.clientX - смещениеДосьеX)) + 'px';
-    досье.style.top = Math.max(8, Math.min(innerHeight - досье.offsetHeight - 8, e.clientY - смещениеДосьеY)) + 'px';
-});
-document.addEventListener('mouseup', ()=>тащимДосье=false);
 
-window.addEventListener('resize', ()=>{ if(архив.classList.contains('активен')) requestAnimationFrame(измеритьГлифы); });
-запуститьМатрицу();
+function закрытьДосье(){ досье.classList.remove('активно'); }
+
+document.getElementById('закрытьДосье').addEventListener('click', закрытьДосье);
+
+function обновитьЧтение(){
+  const pRect = призма.getBoundingClientRect();
+  const sRect = страницы.getBoundingClientRect();
+  const px1 = pRect.left, px2 = pRect.right, py1 = pRect.top, py2 = pRect.bottom;
+
+  Object.values(участники).forEach(v=>v.visible=0);
+
+  for(const g of глифы){
+    const gx = g.x + sRect.left;
+    const gy = g.y + sRect.top;
+    const inRect = gx >= px1 && gx <= px2 && gy >= py1 && gy <= py2;
+    if(inRect){
+      g.progress = Math.min(1, g.progress + (g.damaged ? .05 : .065));
+      g.el.classList.add('внутри-призмы');
+
+      if(g.progress < 0.45){
+        g.el.classList.add('глич');
+        if(g.member) g.el.classList.add('глич-имя');
+        g.el.textContent = Math.random()>.4 ? случайныйСимвол() : чужаяБуква();
+      } else if(g.progress < 0.72){
+        g.el.classList.remove('глич','глич-имя');
+        g.el.textContent = Math.random()>.45 ? g.real : чужаяБуква();
+      } else if(g.progress < 0.9){
+        g.el.classList.remove('глич','глич-имя');
+        g.el.textContent = Math.random()>.22 ? g.real : испорченный(g.real);
+      } else {
+        g.el.classList.remove('глич','глич-имя');
+        g.el.textContent = g.real;
+      }
+
+      if(g.member && участники[g.member]) участники[g.member].visible += g.progress;
+    } else {
+      g.progress = 0;
+      g.el.classList.remove('внутри-призмы','глич','глич-имя');
+      g.el.textContent = g.base;
+    }
+  }
+
+  Object.keys(участники).forEach(key=>{
+    const d = участники[key];
+    d.el.classList.toggle('активно', d.total ? (d.visible / d.total) > .55 : false);
+  });
+}
+
+setInterval(обновитьЧтение, 60);
+
+window.addEventListener('resize', ()=>{
+  if(архив.classList.contains('активен')) requestAnimationFrame(измеритьГлифы);
+});
+
+window.addEventListener('scroll', ()=>{
+  if(архив.classList.contains('активен')) requestAnimationFrame(измеритьГлифы);
+}, {passive:true});
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  построитьСтраницы();
+  архив.classList.add('активен');
+});
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a098e100bf6b9d94',t:'MTc4MTA5OTc4MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
