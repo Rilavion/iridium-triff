@@ -61,10 +61,10 @@ body{
     gap:16px;
     position:relative;
     animation:плавание 8s ease-in-out infinite;
-    transition:filter .22s ease;
+    transition:filter .22s ease, transform .22s ease;
 }
 .файл:nth-child(2){animation-duration:9.4s;animation-delay:-1.8s}
-.файл:hover{filter:brightness(1.08)}
+.файл:hover{filter:brightness(1.08);transform:translateY(-2px)}
 .файл::after{
     content:"";
     position:absolute;
@@ -88,6 +88,8 @@ body{
     overflow:hidden;
     animation:дыханиеФайла 4.8s ease-in-out infinite;
 }
+.файл:first-child .иконка-файла{box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 44px rgba(130,255,190,.05), 0 0 44px rgba(0,0,0,.45)}
+.файл:last-child .иконка-файла{box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 0 44px rgba(255,110,110,.045), 0 0 44px rgba(0,0,0,.45)}
 .иконка-файла::before{
     content:"";
     position:absolute;
@@ -226,7 +228,7 @@ body.архив-открыт .кнопка-возврата{display:block}
 
 .тетрадь{
     position:relative;
-    padding:26px 20px 26px 98px;
+    padding:28px 22px 30px 102px;
     background:rgba(255,255,255,.02);
     border:1px solid rgba(255,255,255,.06);
 }
@@ -258,14 +260,17 @@ body.архив-открыт .кнопка-возврата{display:block}
     position:relative;
     display:grid;
     grid-template-columns:repeat(2, minmax(0,1fr));
-    gap:34px;
+    gap:30px;
     align-items:start;
 }
 .страница{
     position:relative;
-    min-height:640px;
-    padding:22px 22px 28px 26px;
-    background:linear-gradient(180deg, var(--бумага1) 0%, var(--бумага2) 55%, var(--бумага3) 100%);
+    min-height:clamp(560px, 34vw, 700px);
+    padding:22px 22px 30px 26px;
+    background:
+        radial-gradient(circle at 15% 18%, rgba(255,255,255,.18), transparent 26%),
+        radial-gradient(circle at 82% 16%, rgba(106,74,38,.12), transparent 24%),
+        linear-gradient(180deg, var(--бумага1) 0%, var(--бумага2) 55%, var(--бумага3) 100%);
     border:1px solid rgba(255,255,255,.18);
     box-shadow:0 26px 54px rgba(0,0,0,.34), inset 0 0 70px rgba(88,60,29,.08);
     overflow:hidden;
@@ -300,6 +305,11 @@ body.архив-открыт .кнопка-возврата{display:block}
 .пятно{position:absolute;border-radius:50%;filter:blur(1px);opacity:.16;pointer-events:none}
 .страница .пятно1{width:130px;height:90px;right:8%;top:8%;background:rgba(98,61,28,.25)}
 .страница .пятно2{width:78px;height:54px;left:8%;bottom:13%;background:rgba(112,80,42,.2)}
+.страница .залом1,.страница .залом2,.страница .залом3{position:absolute;pointer-events:none;opacity:.12;background:linear-gradient(180deg, transparent, rgba(70,52,28,.4), transparent)}
+.страница .залом1{left:18%;top:8%;width:1px;height:78%;transform:rotate(2deg)}
+.страница .залом2{left:58%;top:14%;width:1px;height:70%;transform:rotate(-1.5deg)}
+.страница .залом3{right:11%;top:24%;width:1px;height:44%;transform:rotate(7deg)}
+.страница .угол{position:absolute;right:-1px;bottom:-1px;width:74px;height:74px;background:linear-gradient(135deg, rgba(0,0,0,0) 54%, rgba(120,97,61,.26) 55%, rgba(255,255,255,.15) 100%);clip-path:polygon(100% 0,100% 100%,0 100%);opacity:.55;pointer-events:none}
 .поле-текста{
     position:relative;
     z-index:1;
@@ -310,8 +320,9 @@ body.архив-открыт .кнопка-возврата{display:block}
     position:relative;
     margin:0 0 18px 34px;
     color:var(--чернила);
-    font-size:1rem;
+    font-size:.98rem;
     line-height:1.95;
+    text-shadow:0 .2px 0 rgba(255,255,255,.08);
 }
 .абзац.повреждённый{color:#2b2320}
 .символ{
@@ -333,8 +344,10 @@ body.архив-открыт .кнопка-возврата{display:block}
     background:linear-gradient(180deg, rgba(70,255,170,.08), rgba(70,255,170,.04));
     box-shadow:0 0 36px rgba(100,255,180,.12), inset 0 0 34px rgba(100,255,180,.08);
     overflow:hidden;
+    pointer-events:none;
 }
 .призма.активна{display:block}
+.призма *{pointer-events:auto}
 .призма.сбой{animation:сбойПризмы .18s linear infinite;border-color:rgba(255,120,120,.44);box-shadow:0 0 40px rgba(255,80,80,.14), inset 0 0 34px rgba(255,80,80,.08)}
 @keyframes сбойПризмы{0%,100%{transform:translate(0,0)}25%{transform:translate(-1px,1px)}50%{transform:translate(2px,-1px)}75%{transform:translate(-2px,0)}}
 .призма::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(170,255,210,.07) 0 2px, transparent 2px 4px);opacity:.65;pointer-events:none}
@@ -354,6 +367,7 @@ body.архив-открыт .кнопка-возврата{display:block}
     justify-content:space-between;
     padding:0 8px;
     cursor:grab;
+    pointer-events:auto;
 }
 .верх-призмы:active{cursor:grabbing}
 .верх-призмы span{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:#d7ffe4}
@@ -366,6 +380,7 @@ body.архив-открыт .кнопка-возврата{display:block}
     letter-spacing:.13em;
     text-transform:uppercase;
     cursor:pointer;
+    pointer-events:auto;
 }
 .фиксатор.активен{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.28)}
 .внутренний-шум{
@@ -674,20 +689,21 @@ async function печататьКонсоль(lines){
         строкиКонсоли.appendChild(row);
         for(let i=0;i<=text.length;i++){
             row.textContent = text.slice(0,i);
-            await sleep(12);
+            await sleep(16);
         }
-        await sleep(120);
+        await sleep(240);
     }
 }
 
 async function открытьDecrypt(){
     шторка.classList.add('активна');
-    await sleep(180);
+    await sleep(220);
     экранФайлов.style.display = 'none';
     document.body.classList.add('архив-открыт');
     консоль.classList.add('активна');
     создатьШумовыеСтроки();
     const ip = await ipPromise;
+    await sleep(180);
     await печататьКонсоль([
         'точка входа: ' + ip,
         'доступ к уцелевшей части подтверждён',
@@ -695,14 +711,15 @@ async function открытьDecrypt(){
         'статус: УНИЧТОЖЕНА',
         'бумажный носитель частично сохранён'
     ]);
-    await sleep(500);
-    архив.classList.add('активен');
+    await sleep(900);
     построитьСтраницы();
+    архив.classList.add('активен');
+    await sleep(160);
     консоль.classList.remove('активна');
     setTimeout(()=>{
         const noiseField = консоль.querySelector('.полеШума');
         if(noiseField) noiseField.remove();
-    }, 100);
+    }, 120);
     шторка.classList.remove('активна');
     window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -775,7 +792,7 @@ function построитьСтраницы(){
     страницыДанных.forEach((pageData, idx)=>{
         const page = document.createElement('div');
         page.className = 'страница';
-        page.innerHTML = '<div class="рваный-край верх"></div><div class="рваный-край низ"></div><div class="пятно пятно1"></div><div class="пятно пятно2"></div>';
+        page.innerHTML = '<div class="рваный-край верх"></div><div class="рваный-край низ"></div><div class="пятно пятно1"></div><div class="пятно пятно2"></div><div class="залом1"></div><div class="залом2"></div><div class="залом3"></div><div class="угол"></div>';
         const field = document.createElement('div');
         field.className = 'поле-текста';
         pageData.forEach(par => {
@@ -807,8 +824,15 @@ function измеритьГлифы(){
         };
     });
     if(призмаПоказана){
-        размерПризмыW = Math.min(420, Math.max(280, rect.width * .28));
-        размерПризмыH = Math.min(300, Math.max(200, rect.height * .18));
+        const перваяСтраница = document.querySelector('.страница');
+        let pageW = 440, pageH = 620;
+        if(перваяСтраница){
+            const p = перваяСтраница.getBoundingClientRect();
+            pageW = p.width;
+            pageH = p.height;
+        }
+        размерПризмыW = Math.min(460, Math.max(260, pageW * 0.78));
+        размерПризмыH = Math.min(320, Math.max(180, pageH * 0.42));
         призма.style.width = размерПризмыW + 'px';
         призма.style.height = размерПризмыH + 'px';
         поставитьПризму(позицияПризмыX, позицияПризмыY);
@@ -817,12 +841,19 @@ function измеритьГлифы(){
 
 function показатьПризму(){
     if(!прямоугольникСтраниц) измеритьГлифы();
+    const перваяСтраница = document.querySelector('.страница');
+    let pageW = 440, pageH = 620;
+    if(перваяСтраница){
+        const p = перваяСтраница.getBoundingClientRect();
+        pageW = p.width;
+        pageH = p.height;
+    }
     призмаПоказана = true;
-    размерПризмыW = Math.min(420, Math.max(280, прямоугольникСтраниц.width * .28));
-    размерПризмыH = Math.min(300, Math.max(200, прямоугольникСтраниц.height * .18));
+    размерПризмыW = Math.min(460, Math.max(260, pageW * 0.78));
+    размерПризмыH = Math.min(320, Math.max(180, pageH * 0.42));
     призма.style.width = размерПризмыW + 'px';
     призма.style.height = размерПризмыH + 'px';
-    поставитьПризму(прямоугольникСтраниц.width * .34, прямоугольникСтраниц.height * .18);
+    поставитьПризму(34, 24);
     призма.classList.add('активна');
 }
 function скрытьПризму(){
@@ -875,16 +906,29 @@ function проверитьКрай(){
         const base = страницы.getBoundingClientRect();
         const r = {left:r0.left-base.left, top:r0.top-base.top, right:r0.right-base.left, bottom:r0.bottom-base.top};
         if(пересечение(приз,r)){
-            if(Math.abs(приз.left-r.left)<22 || Math.abs(приз.right-r.right)<22 || Math.abs(приз.top-r.top)<22 || Math.abs(приз.bottom-r.bottom)<22) край = true;
+            if(Math.abs(приз.left-r.left)<24 || Math.abs(приз.right-r.right)<24 || Math.abs(приз.top-r.top)<24 || Math.abs(приз.bottom-r.bottom)<24) край = true;
         }
     });
     return край;
 }
+function переходныйСимвол(real, progress){
+    if(progress < .2) return случайныйСимвол();
+    if(progress < .42) return Math.random()>.45 ? испорченныйСимвол(real) : случайнаяБуква();
+    if(progress < .64) return Math.random()>.55 ? real : случайнаяБуква();
+    if(progress < .86) return Math.random()>.28 ? real : испорченныйСимвол(real);
+    return Math.random()>.08 ? real : испорченныйСимвол(real);
+}
+function битыйПереход(real, progress){
+    if(progress < .25) return случайныйСимвол();
+    if(progress < .55) return Math.random()>.6 ? испорченныйСимвол(real) : случайныйСимвол();
+    return Math.random()>.78 ? real : (Math.random()>.5 ? испорченныйСимвол(real) : случайныйСимвол());
+}
 
 function обновитьЧтение(){
-    if(!призмаПоказана) return;
-    const центрX = позицияПризмыX + размерПризмыW/2;
-    const центрY = позицияПризмыY + размерПризмыH/2;
+    if(!призмаПоказана){
+        document.body.classList.remove('пойман');
+        return;
+    }
     let кусок = '';
     let сбой = проверитьКрай();
     Object.values(участники).forEach(v=>v.visible=0);
@@ -892,18 +936,17 @@ function обновитьЧтение(){
     for(const g of глифы){
         const inRect = g.x >= позицияПризмыX && g.x <= позицияПризмыX + размерПризмыW && g.y >= позицияПризмыY && g.y <= позицияПризмыY + размерПризмыH;
         if(inRect){
+            g.progress = Math.min(1, g.progress + (g.damaged ? 0.03 : 0.035));
             if(g.damaged){
-                g.el.textContent = Math.random()>.5 ? случайныйСимвол() : испорченныйСимвол(g.real);
+                g.el.textContent = битыйПереход(g.real, g.progress);
                 сбой = true;
             } else {
-                g.progress = Math.min(1, g.progress + 0.055);
-                if(g.progress > 0.78) g.el.textContent = g.real;
-                else g.el.textContent = Math.random()>.35 ? испорченныйСимвол(g.real) : g.real;
+                g.el.textContent = переходныйСимвол(g.real, g.progress);
                 if(g.member && участники[g.member]) участники[g.member].visible += g.progress;
             }
             if(кусок.length < 180) кусок += g.el.textContent;
         } else {
-            g.progress = 0;
+            g.progress = Math.max(0, g.progress - 0.07);
             g.el.textContent = g.base;
         }
     }
@@ -960,5 +1003,5 @@ window.addEventListener('resize', ()=>{if(архив.classList.contains('акт�
 обновитьМатрицуРазмер();
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a09881e4df12f107',t:'MTc4MTA5NTg4NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
