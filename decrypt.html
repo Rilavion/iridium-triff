@@ -9,375 +9,380 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
-  min-height:100vh;
-  background:#000;
-  color:#e0e0e0;
+  background:#000;color:#e0e0e0;
   font-family:'Share Tech Mono',monospace;
-  overflow-x:hidden;
+  overflow-x:hidden;min-height:100vh;
 }
 
-#матрица{
-  position:fixed;inset:0;z-index:0;pointer-events:none;background:#000;
-}
+/* === ФОНОВАЯ МАТРИЦА === */
+#matrix{position:fixed;inset:0;z-index:0;pointer-events:none;background:#000}
 
 /* === ЭКРАН ФАЙЛОВ === */
-.экран-файлов{
+.screen-files{
   position:fixed;inset:0;z-index:100;
   display:flex;align-items:center;justify-content:center;
-  background:#000;
+  background:#000;transition:opacity .4s ease;
 }
-.экран-файлов.скрыт{display:none}
+.screen-files.hidden{opacity:0;pointer-events:none}
 
-.поле-файлов{
-  display:flex;align-items:center;justify-content:center;gap:110px;flex-wrap:wrap;
-  position:relative;z-index:2;
+.files-wrap{
+  display:flex;align-items:center;justify-content:center;
+  gap:110px;flex-wrap:wrap;position:relative;z-index:2;
 }
-.файл{
+.file-btn{
   appearance:none;border:none;background:transparent;color:inherit;cursor:pointer;
   display:flex;flex-direction:column;align-items:center;gap:16px;position:relative;
-  animation:плавание 8s ease-in-out infinite;transition:transform .22s ease,filter .22s ease;
+  animation:floatFile 8s ease-in-out infinite;
+  transition:transform .22s ease,filter .22s ease;
 }
-.файл:nth-child(2){animation-duration:9.3s;animation-delay:-1.8s}
-.файл:hover{transform:translateY(-2px);filter:brightness(1.08)}
-@keyframes плавание{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.file-btn:nth-child(2){animation-duration:9.3s;animation-delay:-1.8s}
+.file-btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
+@keyframes floatFile{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 
-.иконка-файла{
+.file-icon{
   position:relative;width:138px;height:170px;
   border:1px solid rgba(255,255,255,.14);
   background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));
   box-shadow:0 0 0 1px rgba(255,255,255,.02),0 0 48px rgba(0,0,0,.5);
   overflow:hidden;
 }
-.иконка-файла::before{
+.file-icon::before{
   content:"";position:absolute;right:-1px;top:-1px;
   border-top:24px solid rgba(255,255,255,.11);border-left:24px solid transparent;
 }
-.иконка-файла::after{
+.file-icon::after{
   content:"";position:absolute;inset:14px;border:1px solid rgba(255,255,255,.08);
   background:linear-gradient(180deg,rgba(255,255,255,.025),transparent 30%,transparent 70%,rgba(255,255,255,.02)),
               repeating-linear-gradient(180deg,transparent 0 22px,rgba(255,255,255,.08) 22px 23px);
 }
-.файл::after{
+.file-btn::after{
   content:"";position:absolute;top:14px;left:50%;transform:translateX(-50%);
   width:142px;height:176px;
   background:radial-gradient(circle at center,rgba(255,255,255,.05),transparent 72%);
   filter:blur(18px);opacity:.44;
 }
-.файл:not(.битый) .иконка-файла,.файл:not(.битый) .имя-файла{animation:дрожь 6.6s steps(2) infinite}
-.файл.битый .иконка-файла,.файл.битый .имя-файла{animation:сбой 3.2s steps(2) infinite}
-@keyframes дрожь{
-  0%,100%{transform:none}8%{transform:translate(1px,0)}10%{transform:none}52%{transform:translate(-1px,1px)}54%{transform:none}
+.file-btn:not(.corrupt) .file-icon,
+.file-btn:not(.corrupt) .file-label{animation:jitter 6.6s steps(2) infinite}
+.file-btn.corrupt .file-icon,
+.file-btn.corrupt .file-label{animation:glitchFile 3.2s steps(2) infinite}
+@keyframes jitter{
+  0%,100%{transform:none}8%{transform:translate(1px,0)}10%{transform:none}
+  52%{transform:translate(-1px,1px)}54%{transform:none}
 }
-@keyframes сбой{
+@keyframes glitchFile{
   0%,100%{transform:none}12%{transform:translate(-2px,1px)}16%{transform:translate(2px,-1px)}20%{transform:none}
   63%{transform:translate(1px,0)}67%{transform:translate(-2px,0)}71%{transform:none}
 }
-.имя-файла{
+.file-label{
   max-width:280px;text-align:center;font-size:.92rem;line-height:1.75;
   letter-spacing:.14em;text-transform:uppercase;color:#eef4f0;
+  font-family:'Share Tech Mono',monospace;
 }
 
 /* === КОНСОЛЬ === */
-.консоль{
-  position:fixed;inset:0;z-index:100;display:none;
+.console{
+  position:fixed;inset:0;z-index:200;display:none;
   align-items:center;justify-content:center;
   background:rgba(0,0,0,.985);
 }
-.консоль.активна{display:flex}
-.поле-шума{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-.шум-строка{
+.console.active{display:flex}
+.console-noise{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.noise-row{
   position:absolute;left:0;right:0;white-space:nowrap;
-  color:rgba(150,255,190,.18);font-size:.86rem;letter-spacing:.21em;text-transform:uppercase;
-  animation:дрейф linear forwards;
+  color:rgba(150,255,190,.18);font-size:.86rem;letter-spacing:.21em;
+  text-transform:uppercase;font-family:'Share Tech Mono',monospace;
+  animation:noiseDrift linear forwards;
 }
-@keyframes дрейф{
+@keyframes noiseDrift{
   0%{transform:translateY(40px);opacity:0}10%{opacity:1}100%{transform:translateY(-120px);opacity:0}
 }
-.окно-консоли{
+.console-box{
   width:min(760px,calc(100% - 30px));padding:22px;
   border:1px solid rgba(255,255,255,.11);
   background:linear-gradient(180deg,rgba(4,8,5,.95),rgba(0,0,0,.99));
   box-shadow:0 0 0 1px rgba(255,255,255,.02),0 0 90px rgba(0,0,0,.85);
   position:relative;overflow:hidden;
 }
-.окно-консоли::before{
+.console-box::before{
   content:"";position:absolute;inset:0;
   background:repeating-linear-gradient(0deg,rgba(150,255,190,.05) 0 2px,transparent 2px 4px);
   opacity:.45;pointer-events:none;
 }
-.окно-консоли::after{
+.console-box::after{
   content:"";position:absolute;inset:0;
   background:linear-gradient(180deg,transparent 0%,rgba(150,255,190,.06) 46%,rgba(150,255,190,.18) 50%,rgba(150,255,190,.06) 54%,transparent 100%);
-  animation:ходКонсоли 3.4s linear infinite;pointer-events:none;
+  animation:scanBar 3.4s linear infinite;pointer-events:none;
 }
-@keyframes ходКонсоли{0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}
-.строки-консоли{position:relative;z-index:1;display:grid;gap:8px;min-height:190px}
-.строка-консоли{font-size:.86rem;line-height:1.76;color:#c1d0c7;min-height:1.6em}
-.строка-консоли::before{content:"> ";color:#9dffbf}
+@keyframes scanBar{0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}
+.console-lines{position:relative;z-index:1;display:grid;gap:8px;min-height:190px}
+.console-line{font-size:.86rem;line-height:1.76;color:#c1d0c7;min-height:1.6em;font-family:'Share Tech Mono',monospace}
+.console-line::before{content:"> ";color:#9dffbf}
 
-/* === КНОПКА ВОЗВРАТА === */
-.кнопка-возврата{
+/* === АРХИВ === */
+.archive{
+  display:none;position:relative;z-index:10;
+  width:100%;max-width:900px;margin:0 auto;
+  padding:60px 20px 120px;
+  flex-direction:column;align-items:center;gap:60px;
+}
+.archive.active{display:flex}
+
+/* === СТРАНИЦЫ === */
+.page{
+  position:relative;width:min(210mm,calc(100vw - 40px));min-height:297mm;
+  background:#d8d5cd;
+  box-shadow:0 20px 60px rgba(0,0,0,.7),inset 0 0 80px rgba(60,50,40,.08);
+  overflow:hidden;flex-shrink:0;
+  filter:contrast(1.05);
+}
+/* Грязная текстура бумаги */
+.page::before{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E"),
+    linear-gradient(180deg,rgba(120,110,90,.12),transparent 40%,transparent 60%,rgba(90,80,70,.15)),
+    radial-gradient(ellipse at 20% 30%,rgba(80,70,60,.18),transparent 55%),
+    radial-gradient(ellipse at 80% 70%,rgba(70,60,50,.14),transparent 50%),
+    radial-gradient(ellipse at 50% 50%,rgba(100,95,85,.06),transparent 70%);
+  mix-blend-mode:multiply;
+}
+.page::after{
+  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:repeating-linear-gradient(180deg,transparent 0 31px,rgba(60,55,50,.12) 31px 32px);
+}
+
+/* Износ */
+.paper-edge{position:absolute;left:0;right:0;pointer-events:none;z-index:3;background:rgba(60,50,40,.13);filter:blur(.5px)}
+.paper-edge.top{top:-4px;height:15px;clip-path:polygon(0 100%,5% 58%,10% 100%,15% 63%,20% 100%,27% 54%,33% 100%,40% 65%,47% 100%,54% 56%,61% 100%,69% 62%,76% 100%,83% 59%,91% 100%,100% 64%,100% 100%)}
+.paper-edge.bottom{bottom:-5px;height:18px;clip-path:polygon(0 0,7% 46%,14% 0,22% 55%,30% 0,38% 42%,46% 0,56% 58%,64% 0,73% 46%,82% 0,90% 52%,100% 0,100% 100%,0 100%)}
+.crease{position:absolute;width:1px;background:linear-gradient(180deg,transparent,rgba(60,50,40,.42),transparent);opacity:.16;pointer-events:none;z-index:3}
+.crease.a{left:17%;top:6%;height:84%;transform:rotate(2deg)}
+.crease.b{left:58%;top:10%;height:76%;transform:rotate(-1.8deg)}
+.crease.c{right:13%;top:24%;height:46%;transform:rotate(7deg)}
+.stain{position:absolute;border-radius:50%;filter:blur(1.2px);pointer-events:none;z-index:3}
+.stain.a{width:160px;height:110px;right:7%;top:7%;background:rgba(70,60,50,.18)}
+.stain.b{width:90px;height:60px;left:7%;bottom:12%;background:rgba(90,78,62,.14)}
+.corner-fold{position:absolute;right:-1px;bottom:-1px;width:80px;height:80px;z-index:3;pointer-events:none;
+  background:linear-gradient(135deg,rgba(0,0,0,0) 52%,rgba(94,84,71,.22) 53%,rgba(255,255,255,.16) 100%);
+  clip-path:polygon(100% 0,100% 100%,0 100%);opacity:.6;
+}
+
+.page-content{position:relative;z-index:4;padding:48px 44px}
+
+.handwritten{
+  font-family:'Caveat',cursive;font-size:1.7rem;line-height:1.45;
+  color:#1a1612;margin-bottom:22px;letter-spacing:.01em;
+}
+.handwritten:last-child{margin-bottom:0}
+
+.glyph{
+  display:inline-block;min-width:.02em;white-space:pre;
+  transition:color .1s ease;
+}
+.glyph.in-prism{
+  color:#f0f0f0;text-shadow:0 0 6px rgba(255,255,255,.25);
+}
+.glyph.glitching{
+  animation:glyphGlitch .1s infinite;
+  color:#ff9999;
+}
+@keyframes glyphGlitch{
+  0%{transform:translate(0)}20%{transform:translate(-1px,1px)}40%{transform:translate(1px,-1px)}60%{transform:translate(-1px,0)}80%{transform:translate(1px,1px)}100%{transform:translate(0)}
+}
+
+.member-name{
+  pointer-events:none;cursor:default;position:relative;
+  transition:all .2s ease;
+  border-bottom:1px dashed transparent;
+}
+.member-name.active{
+  pointer-events:auto;cursor:pointer;
+  color:#a0d0ff;border-bottom:1px solid rgba(160,208,255,.45);
+  text-shadow:0 0 10px rgba(160,208,255,.2);
+}
+.member-name .glyph.in-prism{color:#d0ecff}
+
+/* === КНОПКА НАЗАД === */
+.btn-back{
   position:fixed;top:14px;left:14px;z-index:90;display:none;
   border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.88);color:#7c857f;
   padding:8px 10px;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;
   cursor:pointer;transition:.2s ease;font-family:'Share Tech Mono',monospace;
 }
-.кнопка-возврата:hover{color:#e0e0e0;border-color:rgba(255,255,255,.28);transform:translateY(-1px)}
-body.архив-открыт .кнопка-возврата{display:block}
+.btn-back:hover{color:#e0e0e0;border-color:rgba(255,255,255,.28);transform:translateY(-1px)}
+body.archive-open .btn-back{display:block}
 
-/* === АРХИВ === */
-.архив{display:none;width:100%;max-width:1200px;margin:0 auto;padding:40px 20px}
-.архив.активен{display:block}
-.поле-дела{position:relative;max-width:900px;margin:0 auto}
-
-.страницы{
-  position:relative;display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:start;
-}
-@media(max-width:900px){.страницы{grid-template-columns:1fr}}
-
-.страница{
-  position:relative;width:100%;min-height:480px;padding:36px 32px;
-  background:linear-gradient(180deg,#ebe7df 0%,#ddd5c7 100%);
-  box-shadow:0 14px 44px rgba(0,0,0,.45);overflow:hidden;
-}
-.страница:nth-child(1){transform:rotate(-.6deg) translateY(4px)}
-.страница:nth-child(2){transform:rotate(.8deg) translateY(-2px)}
-.страница:nth-child(3){transform:rotate(-.4deg) translateY(6px)}
-.страница:nth-child(4){transform:rotate(.5deg) translateY(-4px)}
-
-/* текстура бумаги */
-.страница::before{
-  content:"";position:absolute;inset:0;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23n)' opacity='.11'/%3E%3C/svg%3E");
-  mix-blend-mode:multiply;pointer-events:none;
-}
-.страница::after{
-  content:"";position:absolute;inset:0;
-  background:repeating-linear-gradient(180deg,transparent 0 31px,rgba(96,110,122,.14) 31px 32px);
-  pointer-events:none;
-}
-
-/* износ */
-.рваный-край{position:absolute;pointer-events:none;background:rgba(70,60,48,.13);filter:blur(.5px)}
-.рваный-край.верх{left:0;right:0;top:-4px;height:15px;clip-path:polygon(0 100%,5% 58%,10% 100%,15% 63%,20% 100%,27% 54%,33% 100%,40% 65%,47% 100%,54% 56%,61% 100%,69% 62%,76% 100%,83% 59%,91% 100%,100% 64%,100% 100%)}
-.рваный-край.низ{left:0;right:0;bottom:-5px;height:18px;clip-path:polygon(0 0,7% 46%,14% 0,22% 55%,30% 0,38% 42%,46% 0,56% 58%,64% 0,73% 46%,82% 0,90% 52%,100% 0,100% 100%,0 100%)}
-.залом{position:absolute;width:1px;background:linear-gradient(180deg,transparent,rgba(70,52,30,.42),transparent);opacity:.16;pointer-events:none}
-.залом.a{left:17%;top:6%;height:84%;transform:rotate(2deg)}
-.залом.b{left:58%;top:10%;height:76%;transform:rotate(-1.8deg)}
-.залом.c{right:13%;top:24%;height:46%;transform:rotate(7deg)}
-.пятно{position:absolute;pointer-events:none;border-radius:50%;filter:blur(1.2px)}
-.пятно.a{width:160px;height:110px;right:7%;top:7%;background:rgba(70,60,50,.18)}
-.пятно.b{width:90px;height:60px;left:7%;bottom:12%;background:rgba(90,78,62,.14)}
-.угол{position:absolute;right:-1px;bottom:-1px;width:80px;height:80px;background:linear-gradient(135deg,rgba(0,0,0,0) 52%,rgba(94,84,71,.22) 53%,rgba(255,255,255,.16) 100%);clip-path:polygon(100% 0,100% 100%,0 100%);opacity:.6;pointer-events:none}
-
-.поле-текста{position:relative;z-index:1}
-.абзац{
-  position:relative;margin:0 0 18px 0;color:#1e1a17;
-  font-family:'Caveat',cursive;font-size:1.55rem;line-height:1.45;letter-spacing:.02em;
-}
-.абзац:last-child{margin-bottom:0}
-
-.символ{
-  display:inline-block;min-width:.02em;white-space:pre;
-  transition:color .18s ease,text-shadow .18s ease,transform .1s ease;
-}
-.символ.внутри-призмы{
-  color:#f4f7f6;text-shadow:0 0 8px rgba(255,255,255,.18);
-}
-
-@keyframes glitchChar{
-  0%{transform:translate(0);text-shadow:none}
-  20%{transform:translate(-1px,1px);text-shadow:-1px 0 #ff3333,1px 0 #00ff88}
-  40%{transform:translate(1px,-1px);text-shadow:1px 0 #ff3333,-1px 0 #00ff88}
-  60%{transform:translate(-1px,0);text-shadow:-1px 0 #00ff88,1px 0 #ff3333}
-  80%{transform:translate(1px,1px);text-shadow:1px 0 #00ff88,-1px 0 #ff3333}
-  100%{transform:translate(0);text-shadow:none}
-}
-.символ.глич{animation:glitchChar .14s infinite;color:#ff9999}
-.символ.глич-имя{animation:glitchChar .07s infinite;color:#ff5555}
-
-.имя-участника{
-  pointer-events:none;cursor:default;transition:.18s ease;position:relative;
-  color:#4a6a9a;border-bottom:1px dashed rgba(74,106,154,.35);
-}
-.имя-участника.активно{
-  pointer-events:auto;cursor:pointer;color:#7aaee0;
-  border-bottom:1px solid rgba(122,174,224,.55);
-  text-shadow:0 0 10px rgba(122,174,224,.2);
-}
-
-/* кнопка призмы */
-.кнопка-призмы{
-  position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:15;
+/* === КНОПКА ПРИЗМЫ === */
+.btn-prism{
+  position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:50;
   width:44px;height:152px;border:1px solid rgba(255,255,255,.12);
   background:rgba(0,0,0,.88);color:#fff;writing-mode:vertical-rl;text-orientation:mixed;
   font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;
   transition:.22s ease;font-family:'Share Tech Mono',monospace;
 }
-.кнопка-призмы:hover{border-color:rgba(255,255,255,.28);transform:translateY(-50%) translateX(-2px)}
+.btn-prism:hover{border-color:rgba(255,255,255,.28);transform:translateY(-50%) translateX(-2px)}
+@media(max-width:900px){
+  .btn-prism{position:static;writing-mode:horizontal-tb;width:100%;height:42px;margin-bottom:14px;transform:none}
+  .btn-prism:hover{transform:translateY(-2px)}
+}
 
-/* призма */
-.призма{
-  position:fixed;z-index:20;display:none;
-  width:min(720px,92vw);height:280px;
-  border:1px solid rgba(160,255,200,.42);
-  background:linear-gradient(180deg,rgba(10,16,12,.88),rgba(10,16,12,.78));
-  box-shadow:0 0 44px rgba(100,255,180,.14),inset 0 0 40px rgba(100,255,180,.08);
+/* === ПРИЗМА === */
+.prism{
+  position:fixed;z-index:40;display:none;
+  height:260px;
+  border:1px solid rgba(100,255,160,.42);
+  background:linear-gradient(180deg,rgba(0,15,5,.9),rgba(0,12,4,.85));
+  box-shadow:0 0 40px rgba(0,255,100,.12),inset 0 0 30px rgba(0,255,80,.06);
   overflow:hidden;pointer-events:none;
-  backdrop-filter:brightness(.72) contrast(1.05);
 }
-.призма.активна{display:block}
-.призма *{pointer-events:auto}
+.prism.active{display:block}
+.prism *{pointer-events:auto}
 
-.призма.сбой{
-  animation:сбойПризмы .18s linear infinite;
-  border-color:rgba(255,120,120,.44);
-  box-shadow:0 0 50px rgba(255,80,80,.15),inset 0 0 40px rgba(255,80,80,.08);
+/* VHS-эффекты */
+.prism::before{
+  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(150,255,190,.06) 0 2px,transparent 2px 4px);
+  opacity:.5;
 }
-@keyframes сбойПризмы{
-  0%,100%{transform:translateY(0)}25%{transform:translateY(1px)}50%{transform:translateY(-1px)}75%{transform:translateY(2px)}
+.prism::after{
+  content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(0,255,60,.03),transparent);
+  animation:vhsPulse 4s ease-in-out infinite;
 }
+@keyframes vhsPulse{0%,100%{opacity:.3}50%{opacity:.6}}
 
-.верх-призмы{
-  position:absolute;left:0;right:0;top:0;height:30px;z-index:2;
-  background:rgba(0,0,0,.22);border-bottom:1px solid rgba(160,255,200,.18);
-  display:flex;align-items:center;justify-content:space-between;padding:0 10px;
+.prism-glitch{
+  position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;
+  background:radial-gradient(circle at 30% 50%,rgba(0,255,0,.08),transparent 60%);
+}
+.prism.glitching .prism-glitch{opacity:1;animation:prismFlicker .12s infinite}
+@keyframes prismFlicker{0%,100%{opacity:.2}50%{opacity:.6}}
+
+.prism-header{
+  position:absolute;left:0;right:0;top:0;height:32px;z-index:10;
+  background:rgba(0,0,0,.3);border-bottom:1px solid rgba(100,255,160,.2);
+  display:flex;align-items:center;justify-content:space-between;padding:0 12px;
   cursor:ns-resize;pointer-events:auto;
 }
-.фиксатор{
-  border:1px solid rgba(160,255,200,.2);background:rgba(0,0,0,.22);color:#d7ffe4;
-  padding:2px 6px;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;
-  cursor:pointer;pointer-events:auto;font-family:'Share Tech Mono',monospace;
+.prism-pin{
+  border:1px solid rgba(100,255,160,.3);background:rgba(0,0,0,.3);color:#9dffbf;
+  padding:2px 8px;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;
+  cursor:pointer;font-family:'Share Tech Mono',monospace;
 }
-.фиксатор.активен{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.28)}
+.prism-pin.active{background:rgba(100,255,160,.15);border-color:rgba(100,255,160,.6)}
 
-.внутренний-шум{
-  position:absolute;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-  opacity:.08;mix-blend-mode:screen;pointer-events:none;
+/* === ДОСЬЕ === */
+.dossier{
+  position:fixed;top:60px;right:0;z-index:100;
+  width:min(420px,calc(100vw - 28px));
+  transform:translateX(110%);
+  transition:transform .7s cubic-bezier(.22,.8,.2,1);
+  pointer-events:none;
 }
-.призма-затемнение{
-  position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.12));
-  mix-blend-mode:multiply;pointer-events:none;
-}
-
-/* досье */
-.досье{
-  position:fixed;top:60px;right:-430px;width:400px;z-index:90;
-  transition:right .5s cubic-bezier(.22,.8,.2,1);
-}
-.досье.активно{right:14px}
-.лист-досье{
+.dossier.active{transform:translateX(0);pointer-events:auto}
+.dossier-inner{
   position:relative;background:#050a08;border:1px solid rgba(100,255,180,.18);
-  box-shadow:0 20px 60px rgba(0,0,0,.85);font-family:'Share Tech Mono',monospace;
-  color:#9dffbf;overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,.85);overflow:hidden;
+  margin:0 14px;
 }
-.лист-досье::before{
-  content:"";position:absolute;inset:0;
+.dossier-inner::before{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
   background:repeating-linear-gradient(0deg,rgba(160,255,200,.04) 0 2px,transparent 2px 4px);
-  pointer-events:none;z-index:2;opacity:.5;
+  opacity:.5;
 }
-.верх-досье{
-  position:relative;z-index:3;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
-  padding:16px 18px;border-bottom:1px solid rgba(100,255,180,.12);
+.dossier-top{
+  position:relative;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  padding:18px;border-bottom:1px solid rgba(100,255,180,.12);
 }
-.верх-досье h3{font-family:'Share Tech Mono',monospace;font-size:.95rem;letter-spacing:.1em;text-transform:uppercase;color:#d7ffe4;line-height:1.4}
-.верх-досье small{display:block;margin-top:6px;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#5a8a6f}
-.закрыть-досье{
+.dossier-title{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;color:#d7ffe4;line-height:1.4}
+.dossier-sub{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#5a8a6f;display:block;margin-top:6px}
+.dossier-close{
   min-width:32px;height:32px;border:1px solid rgba(100,255,180,.2);background:transparent;color:#9dffbf;
-  cursor:pointer;transition:.2s ease;font-family:'Share Tech Mono',monospace;font-size:.9rem;
+  cursor:pointer;transition:.2s ease;font-family:'Share Tech Mono',monospace;font-size:.9rem;z-index:2;position:relative;
 }
-.закрыть-досье:hover{background:rgba(100,255,180,.08)}
-.фото-досье{position:relative;z-index:3;margin:0 18px 14px;border:1px solid rgba(100,255,180,.12);background:#000;overflow:hidden}
-.фото-досье img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;filter:grayscale(1) contrast(1.08) brightness(.85)}
-.поля-досье{position:relative;z-index:3;display:grid;gap:0;padding:0 18px 18px}
-.поле-досье{padding:10px 0;border-bottom:1px solid rgba(100,255,180,.06);font-size:.82rem;line-height:1.6;color:#b8d0c0}
-.поле-досье:last-child{border-bottom:none}
-.поле-досье strong{display:block;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#5a8a6f;margin-bottom:4px}
+.dossier-close:hover{background:rgba(100,255,180,.08)}
+.dossier-photo{
+  position:relative;z-index:2;margin:0 18px 14px;border:1px solid rgba(100,255,180,.12);background:#000;overflow:hidden;
+}
+.dossier-photo img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;filter:grayscale(1) contrast(1.15) brightness(.85)}
+.dossier-fields{position:relative;z-index:2;display:grid;gap:0;padding:0 18px 18px}
+.dossier-field{padding:10px 0;border-bottom:1px solid rgba(100,255,180,.06);font-size:.82rem;line-height:1.6;color:#b8d0c0}
+.dossier-field:last-child{border-bottom:none}
+.dossier-field strong{display:block;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#5a8a6f;margin-bottom:4px}
 
 @media(max-width:900px){
-  .досье{width:calc(100% - 28px);right:-120%}
-  .досье.активно{right:14px}
-  .кнопка-призмы{position:static;writing-mode:horizontal-tb;width:100%;height:42px;margin-bottom:14px;transform:none}
-  .кнопка-призмы:hover{transform:translateY(-2px)}
-  .призма{width:calc(100% - 40px)}
-}
-@media(max-width:720px){
-  .страница{min-height:380px;padding:28px 22px}
-  .абзац{font-size:1.35rem}
-  .призма{height:220px}
+  .files-wrap{gap:48px}
+  .page{min-height:auto}
+  .page-content{padding:32px 24px}
+  .handwritten{font-size:1.45rem}
+  .prism{height:220px}
 }
 @media(max-width:520px){
-  .поле-дела{padding:10px 6px}
-  .страница{padding:22px 18px}
-  .абзац{font-size:1.25rem}
+  .file-icon{width:116px;height:144px}
+  .file-label{max-width:210px;font-size:.82rem}
+  .page-content{padding:26px 20px}
+  .handwritten{font-size:1.3rem}
 }
 </style>
 </head>
 <body>
 
-<canvas id="матрица"></canvas>
+<canvas id="matrix"></canvas>
 
-<div class="экран-файлов" id="экранФайлов">
-  <div class="поле-файлов">
-    <button class="файл" id="открытьDecrypt" type="button">
-      <div class="иконка-файла"></div>
-      <div class="имя-файла">детективное частное агентство "DECRYPT"</div>
+<div class="screen-files" id="screenFiles">
+  <div class="files-wrap">
+    <button class="file-btn" id="openDecrypt" type="button">
+      <div class="file-icon"></div>
+      <div class="file-label">детективное частное агентство "DECRYPT"</div>
     </button>
-    <button class="файл битый" id="открытьIridium77" type="button">
-      <div class="иконка-файла"></div>
-      <div class="имя-файла">не_унатх</div>
+    <button class="file-btn corrupt" id="openUnath" type="button">
+      <div class="file-icon"></div>
+      <div class="file-label">не_унатх</div>
     </button>
   </div>
 </div>
 
-<div class="консоль" id="консоль">
-  <div class="поле-шума" id="полеШума"></div>
-  <div class="окно-консоли">
-    <div class="строки-консоли" id="строкиКонсоли"></div>
+<div class="console" id="console">
+  <div class="console-noise" id="consoleNoise"></div>
+  <div class="console-box">
+    <div class="console-lines" id="consoleLines"></div>
   </div>
 </div>
 
-<button class="кнопка-возврата" id="кФайлам" type="button">к двум файлам</button>
+<button class="btn-back" id="btnBack" type="button">к двум файлам</button>
 
-<main>
-  <section class="архив" id="архив">
-    <div class="поле-дела">
-      <button class="кнопка-призмы" id="кнопкаПризмы" type="button">призма</button>
-      <div class="страницы" id="страницы"></div>
-      <div class="призма" id="призма">
-        <div class="верх-призмы" id="верхПризмы">
-          <span></span>
-          <button class="фиксатор" id="фиксаторПризмы" type="button"></button>
-        </div>
-        <div class="внутренний-шум"></div>
-        <div class="призма-затемнение"></div>
-      </div>
-    </div>
-  </section>
+<main class="archive" id="archive">
+  <button class="btn-prism" id="btnPrism" type="button">призма</button>
+  <div id="pages"></div>
 </main>
 
-<div class="досье" id="досье">
-  <div class="лист-досье">
-    <div class="верх-досье">
+<div class="prism" id="prism">
+  <div class="prism-glitch"></div>
+  <div class="prism-header" id="prismHeader">
+    <span></span>
+    <button class="prism-pin" id="prismPin" type="button">закрепить</button>
+  </div>
+</div>
+
+<div class="dossier" id="dossier">
+  <div class="dossier-inner">
+    <div class="dossier-top">
       <div>
-        <h3 id="имяДосье">досье</h3>
-        <small>извлечено из уцелевшего архива</small>
+        <div class="dossier-title" id="dossierName">досье</div>
+        <span class="dossier-sub">извлечено из уцелевшего архива</span>
       </div>
-      <button class="закрыть-досье" id="закрытьДосье" type="button">✕</button>
+      <button class="dossier-close" id="dossierClose" type="button">✕</button>
     </div>
-    <div class="фото-досье" id="фотоДосьеWrap"><img id="фотоДосье" src="" alt=""></div>
-    <div class="поля-досье" id="поляДосье"></div>
+    <div class="dossier-photo" id="dossierPhotoWrap"><img id="dossierPhoto" src="" alt=""></div>
+    <div class="dossier-fields" id="dossierFields"></div>
   </div>
 </div>
 
 <script>
-const чужойАлфавит = 'אבגדהוזחטיכלמנסעפצקרשתםףץן״׳װױײ₪';
-const азбука = '▓▒░█/#<>[]{}01ψΩΛЖЯÆИҰ∎◢◣◤◥';
-const буквы = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЭЮЯ0123456789';
+const foreignAlphabet = 'אבגדהוזחטיכלמנסעפצקרשתםףץן״׳װױײ₪';
+const glitchChars = '▓▒░█/#<>[]{}01ψΩΛЖЯÆИҰ∎◢◣◤◥';
 
-const страницыДанных = [
+const pagesData = [
   [
     ['Детективное частное агентство "DECRYPT" так-же как и большинство нишевых организациях зародилось в секторе Спинвардская Периферия, в самой гуще развития мегаполиса на планете Y-27, первый основатель организации стал ', {member:'hiyoshi', text:'Хиоши Сузуки'}, ', прибывший на планету около 3х лет назад, на небольшой межтрансовом шаттле из солнечной системы. Начальный капитал организации составил 400.000$ наличными что были выделены Хиоши его родителями под залог, с ожиданием того что тот вернёт более 70% залога свыше, если не прогорит в сточной канаве планеты.'],
     ['Изначально агенство занималось конкретной поставленной задачей, принимая каждое предложение об детективной деятельности. В них часто входили уже клишированные запросы, слежка за второй половинкой которая подозревалась в измене, локальные потери вещей и небольших грабежей, по типу скрытия чей-то квартиры или съёмного жилья, снятие отпечатков, и поиски пропавших посылок утерянных местной почтовой службой.']
@@ -397,96 +402,87 @@ const страницыДанных = [
   ]
 ];
 
-const досьеДанные = {
-  hiyoshi:{name:'Хиоши Сузуки', photo:'hiyoshi-elevator.png', fields:[['ФИО','Хиоши Сузуки'],['пол','мужской'],['раса','человек'],['рост','178 см'],['вес','71 кг'],['статус','след оборван'],['родная планета','Земля / солнечная система'],['краткая характеристика','Основатель. Поднял агентство из бытового сыска в рынок корпоративной грязи, предпочитая дробить заказы так, чтобы никто не видел всей картины целиком.']]},
-  cadence:{name:'Каденс Слоан', photo:'arcana-cigarettes.jpeg', fields:[['ФИО','Каденс Слоан'],['пол','женский'],['раса','аркана'],['рост','171 см'],['вес','57 кг'],['статус','последний след нестабилен'],['родная планета','не зафиксирована'],['краткая характеристика','Полевой элемент. Сцены вокруг неё выглядят бытовыми, но именно через такие места в архиве чаще всего начинается чужой компромат.']]},
-  iridium:{name:'Иридий', photo:'iridium-elevator.png', fields:[['ФИО','Иридий'],['пол','мужской'],['раса','человек'],['рост','188 см'],['вес','79 кг'],['статус','следы разорваны'],['родная планета','Ме▓р◢к█уÆрЯи01-█◣'],['краткая характеристика','Принёс агентству подвижность. Возникает рядом с узлами вывоза, передачи и слишком быстрым исчезновением хвостов.']]},
-  daros:{name:'Дарос Полей', photo:'', fields:[['ФИО','Дарос Полей'],['пол','мужской'],['раса','вульпканин'],['рост','182 см'],['вес','68 кг'],['статус','данные неполные'],['родная планета','не подтверждена'],['краткая характеристика','Связан с частотами, служебными проходами, запасными ключами и нижним плато. От него осталось меньше лица, чем метода.']]}
+const dossierData = {
+  hiyoshi:{name:'Хиоши Сузуки', photo:'assets/decrypt/hiyoshi-elevator.png', fields:[['ФИО','Хиоши Сузуки'],['пол','мужской'],['раса','человек'],['рост','178 см'],['вес','71 кг'],['статус','след оборван'],['родная планета','Земля / солнечная система'],['краткая характеристика','Основатель. Поднял агентство из бытового сыска в рынок корпоративной грязи, предпочитая дробить заказы так, чтобы никто не видел всей картины целиком.']]},
+  cadence:{name:'Каденс Слоан', photo:'assets/decrypt/arcana-cigarettes.jpeg', fields:[['ФИО','Каденс Слоан'],['пол','женский'],['раса','аркана'],['рост','171 см'],['вес','57 кг'],['статус','последний след нестабилен'],['родная планета','не зафиксирована'],['краткая характеристика','Полевой элемент. Сцены вокруг неё выглядят бытовыми, но именно через такие места в архиве чаще всего начинается чужой компромат.']]},
+  iridium:{name:'Иридий', photo:'assets/decrypt/iridium-elevator.png', fields:[['ФИО','Иридий'],['пол','мужской'],['раса','человек'],['рост','188 см'],['вес','79 кг'],['статус','следы разорваны'],['родная планета','Ме▓р◢к█уÆрЯи01-█◣'],['краткая характеристика','Принёс агентству подвижность. Возникает рядом с узлами вывоза, передачи и слишком быстрым исчезновением хвостов.']]},
+  daros:{name:'Дарос Полей', photo:'assets/decrypt/daros-placeholder.svg', fields:[['ФИО','Дарос Полей'],['пол','мужской'],['раса','вульпканин'],['рост','182 см'],['вес','68 кг'],['статус','данные неполные'],['родная планета','не подтверждена'],['краткая характеристика','Связан с частотами, служебными проходами, запасными ключами и нижним плато. От него осталось меньше лица, чем метода.']]}
 };
 
-const экранФайлов = document.getElementById('экранФайлов');
-const архив = document.getElementById('архив');
-const консоль = document.getElementById('консоль');
-const строкиКонсоли = document.getElementById('строкиКонсоли');
-const полеШума = document.getElementById('полеШума');
-const страницы = document.getElementById('страницы');
-const кнопкаПризмы = document.getElementById('кнопкаПризмы');
-const призма = document.getElementById('призма');
-const фиксаторПризмы = document.getElementById('фиксаторПризмы');
-const досье = document.getElementById('досье');
-const имяДосье = document.getElementById('имяДосье');
-const фотоДосье = document.getElementById('фотоДосье');
-const фотоДосьеWrap = document.getElementById('фотоДосьеWrap');
-const поляДосье = document.getElementById('поляДосье');
+const screenFiles = document.getElementById('screenFiles');
+const consoleEl = document.getElementById('console');
+const consoleLines = document.getElementById('consoleLines');
+const consoleNoise = document.getElementById('consoleNoise');
+const archive = document.getElementById('archive');
+const pagesWrap = document.getElementById('pages');
+const btnBack = document.getElementById('btnBack');
+const btnPrism = document.getElementById('btnPrism');
+const prism = document.getElementById('prism');
+const prismHeader = document.getElementById('prismHeader');
+const prismPin = document.getElementById('prismPin');
+const dossier = document.getElementById('dossier');
+const dossierName = document.getElementById('dossierName');
+const dossierPhoto = document.getElementById('dossierPhoto');
+const dossierPhotoWrap = document.getElementById('dossierPhotoWrap');
+const dossierFields = document.getElementById('dossierFields');
 
-let глифы = [];
-let участники = {};
-let призмаПоказана = false;
-let призмаЗафиксирована = false;
-let тащимПризму = false;
-let смещениеПризмыX = 0;
-let смещениеПризмыY = 0;
-const ipPromise = получитьIPv4();
+let allGlyphs = [];
+let members = {};
+let prismActive = false;
+let prismFixed = false;
+let prismY = 120;
+let prismDragging = false;
+let dragOffsetY = 0;
+const ipPromise = fetchIP();
 
 function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
-function случайныйСимвол(){return азбука[Math.floor(Math.random()*азбука.length)]}
-function случайнаяБуква(){return буквы[Math.floor(Math.random()*буквы.length)]}
-function чужаяБуква(){return чужойАлфавит[Math.floor(Math.random()*чужойАлфавит.length)]}
-function испорченный(real){
-  if(/[0-9]/.test(real)) return String(Math.floor(Math.random()*10));
-  if(/[A-Za-zА-Яа-яЁё]/.test(real)) return чужаяБуква();
-  if(/[.,:;!?\-—()«»"'`]/.test(real)) return случайныйСимвол();
-  return Math.random()>.5 ? чужаяБуква() : случайныйСимвол();
-}
+function randomForeign(){return foreignAlphabet[Math.floor(Math.random()*foreignAlphabet.length)]}
+function randomGlitch(){return glitchChars[Math.floor(Math.random()*glitchChars.length)]}
+function foreignOrGlitch(){return Math.random()>0.3?randomForeign():randomGlitch()}
 
-async function получитьJSON(url,timeout=2200){
-  const ctrl=new AbortController();
-  const tm=setTimeout(()=>ctrl.abort(),timeout);
-  try{
-    const r=await fetch(url,{signal:ctrl.signal,cache:'no-store'});
-    clearTimeout(tm);
-    if(!r.ok) throw new Error('bad');
-    return await r.json();
-  }catch(e){
-    clearTimeout(tm);
-    throw e;
-  }
-}
-async function получитьIPv4(){
-  const задачи=[
-    ()=>получитьJSON('https://api.ipify.org?format=json').then(d=>d.ip),
-    ()=>получитьJSON('https://api.ip.sb/jsonip').then(d=>d.ip),
-    ()=>получитьJSON('https://ipwho.is/').then(d=>d.ip)
-  ].map(fn=>fn().then(ip=>/^\d+\.\d+\.\d+\.\d+$/.test(ip||'')?ip:Promise.reject()));
-  try{return await Promise.any(задачи);}catch(e){return '0.0.0.0';}
+async function fetchIP(){
+  const tryFetch = async(url)=>{
+    try{
+      const r=await fetch(url,{cache:'no-store'});
+      if(!r.ok) throw new Error('bad');
+      const d=await r.json();
+      return d.ip||null;
+    }catch(e){return null}
+  };
+  const ip = await tryFetch('https://api.ipify.org?format=json')
+    || await tryFetch('https://api.ip.sb/jsonip')
+    || await tryFetch('https://ipwho.is/');
+  if(ip && /^\d+\.\d+\.\d+\.\d+$/.test(ip)) return ip;
+  return '0.0.0.0';
 }
 
 /* === МАТРИЦА === */
-function запуститьМатрицу(){
-  const canvas=document.getElementById('матрица');
-  const ctx=canvas.getContext('2d');
-  const потоки=[];
+function startMatrix(){
+  const c=document.getElementById('matrix');
+  const ctx=c.getContext('2d');
+  const streams=[];
+  const chars=foreignAlphabet+glitchChars+'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   function resize(){
-    canvas.width=innerWidth;canvas.height=innerHeight;
-    потоки.length=0;
-    const count=Math.max(24,Math.floor(canvas.width/54));
+    c.width=innerWidth;c.height=innerHeight;
+    streams.length=0;
+    const count=Math.max(20,Math.floor(c.width/70));
     for(let i=0;i<count;i++){
-      потоки.push({
-        x:Math.random()*canvas.width,y:Math.random()*canvas.height,
-        speed:0.09+Math.random()*0.22,size:14+Math.random()*10,chars:1+Math.floor(Math.random()*3),
-        color:['rgba(150,255,190,.16)','rgba(120,170,255,.13)','rgba(255,120,120,.11)','rgba(200,150,255,.10)','rgba(255,255,255,.10)'][Math.floor(Math.random()*5)]
+      streams.push({
+        x:Math.random()*c.width,y:Math.random()*c.height,
+        speed:0.2+Math.random()*0.6,size:12+Math.random()*10,chars:1+Math.floor(Math.random()*2),
+        color:['rgba(150,255,190,.12)','rgba(120,170,255,.10)','rgba(255,120,120,.08)','rgba(200,150,255,.08)','rgba(255,255,255,.08)'][Math.floor(Math.random()*5)]
       });
     }
   }
   function draw(){
-    ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);
-    потоки.forEach(p=>{
+    ctx.fillStyle='#000';ctx.fillRect(0,0,c.width,c.height);
+    streams.forEach(p=>{
       p.y+=p.speed;
-      if(p.y>canvas.height+50){p.y=-50-Math.random()*120;p.x=Math.random()*canvas.width;}
+      if(p.y>c.height+50){p.y=-50-Math.random()*100;p.x=Math.random()*c.width;}
       ctx.fillStyle=p.color;ctx.font=p.size+'px monospace';
-      let text='';
-      for(let i=0;i<p.chars;i++) text+=(Math.random()>.55?случайныйСимвол():случайнаяБуква());
-      ctx.fillText(text,p.x,p.y);
+      let t='';
+      for(let i=0;i<p.chars;i++) t+=chars[Math.floor(Math.random()*chars.length)];
+      ctx.fillText(t,p.x,p.y);
     });
     requestAnimationFrame(draw);
   }
@@ -495,304 +491,331 @@ function запуститьМатрицу(){
 }
 
 /* === КОНСОЛЬ === */
-function шумКонсоли(){
-  полеШума.innerHTML='';
+function consoleNoise(){
+  consoleNoise.innerHTML='';
   let count=0;
   const timer=setInterval(()=>{
     const row=document.createElement('div');
-    row.className='шум-строка';
+    row.className='noise-row';
     row.style.top=(Math.random()*100)+'%';
-    row.style.animationDuration=(3.6+Math.random()*2.4)+'s';
-    row.textContent=Array.from({length:20+Math.floor(Math.random()*20)},случайныйСимвол).join('');
-    полеШума.appendChild(row);
-    setTimeout(()=>row.remove(),6500);
+    row.style.animationDuration=(4+Math.random()*3)+'s';
+    row.textContent=Array.from({length:16+Math.floor(Math.random()*12)},randomGlitch).join('');
+    consoleNoise.appendChild(row);
+    setTimeout(()=>row.remove(),7000);
     count++;
-    if(count>36) clearInterval(timer);
-  },120);
+    if(count>30) clearInterval(timer);
+  },150);
 }
-async function печататьКонсоль(строки){
-  строкиКонсоли.innerHTML='';
-  for(const text of строки){
-    const row=document.createElement('div');
-    row.className='строка-консоли';
-    строкиКонсоли.appendChild(row);
+async function typeConsole(lines){
+  consoleLines.innerHTML='';
+  for(const text of lines){
+    const div=document.createElement('div');
+    div.className='console-line';
+    consoleLines.appendChild(div);
     for(let i=0;i<=text.length;i++){
-      row.textContent=text.slice(0,i);
-      await sleep(16);
+      div.textContent=text.slice(0,i);
+      await sleep(18);
     }
-    await sleep(240);
+    await sleep(260);
   }
 }
-async function открытьНеУнатх(){
-  экранФайлов.classList.add('скрыт');
-  консоль.classList.add('активна');
-  шумКонсоли();
+async function runConsoleDecrypt(){
+  screenFiles.classList.add('hidden');
+  consoleEl.classList.add('active');
+  consoleNoise();
   const ip=await ipPromise;
-  await sleep(160);
-  await печататьКонсоль([
+  await sleep(200);
+  await typeConsole([
     'точка входа: '+ip,
     'доступ к уцелевшей части подтверждён',
     'детективное частное агентство "DECRYPT"',
     'статус: УНИЧТОЖЕНА',
     'бумажный носитель частично сохранён'
   ]);
-  await sleep(900);
-  построитьСтраницы();
-  архив.classList.add('активен');
-  document.body.classList.add('архив-открыт');
-  await sleep(180);
-  консоль.classList.remove('активна');
-  полеШума.innerHTML='';
+  await sleep(700);
+  buildPages();
+  archive.classList.add('active');
+  document.body.classList.add('archive-open');
+  await sleep(200);
+  consoleEl.classList.remove('active');
+  consoleNoise.innerHTML='';
+  alignPrismToPage();
 }
-function открытьDecrypt(){
-  экранФайлов.classList.add('скрыт');
-  построитьСтраницы();
-  архив.classList.add('активен');
-  document.body.classList.add('архив-открыт');
+async function runConsoleUnath(){
+  screenFiles.classList.add('hidden');
+  consoleEl.classList.add('active');
+  consoleNoise();
+  const ip=await ipPromise;
+  await sleep(200);
+  await typeConsole([
+    'точка входа: '+ip,
+    'ФАЙЛ: не_унатх',
+    'СТАТУС: КРИТИЧЕСКОЕ ПОВРЕЖДЕНИЕ',
+    'восстановление невозможно',
+    '[ нажмите любую клавишу для возврата ]'
+  ]);
+  const back=()=>{
+    consoleEl.classList.remove('active');
+    consoleNoise.innerHTML='';
+    screenFiles.classList.remove('hidden');
+    document.removeEventListener('keydown',back);
+    document.removeEventListener('click',back);
+  };
+  document.addEventListener('keydown',back);
+  setTimeout(()=>document.addEventListener('click',back),500);
 }
-function назадКФайлам(){
-  скрытьПризму();
-  закрытьДосье();
-  архив.classList.remove('активен');
-  document.body.classList.remove('архив-открыт');
-  экранФайлов.classList.remove('скрыт');
-}
-document.getElementById('открытьDecrypt').addEventListener('click',открытьDecrypt);
-document.getElementById('открытьIridium77').addEventListener('click',открытьНеУнатх);
-document.getElementById('кФайлам').addEventListener('click',назадКФайлам);
 
 /* === СТРАНИЦЫ === */
-function создатьГлиф(char,meta={}){
+function createGlyph(real,damaged,memberId){
   const span=document.createElement('span');
-  span.className='символ';
-  span.dataset.real=char;
-  if(meta.damaged){
-    span.dataset.damaged='1';
-    span.dataset.base=char.split('').map(ch=>/[A-Za-zА-Яа-яЁё0-9]/.test(ch)?чужаяБуква():ch).join('');
-  }else{
-    span.dataset.base=испорченный(char);
-  }
-  span.textContent=span.dataset.base;
-  if(meta.damaged) span.dataset.damaged='1';
-  if(meta.member) span.dataset.member=meta.member;
+  span.className='glyph';
+  span.dataset.real=real;
+  span.dataset.damaged=damaged?'1':'0';
+  if(memberId) span.dataset.member=memberId;
+  span.textContent=damaged?randomGlitch():randomForeign();
+  span._progress=0;
   return span;
 }
-function добавитьФрагмент(parent,part){
-  if(typeof part==='string'){
-    for(const ch of part){
-      if(ch===' ') parent.appendChild(document.createTextNode(' '));
-      else parent.appendChild(создатьГлиф(ch));
-    }
-    return;
-  }
-  if(part.member){
-    const wrap=document.createElement('span');
-    wrap.className='имя-участника';
-    wrap.dataset.member=part.member;
-    if(!участники[part.member]) участники[part.member]={el:wrap,total:0,visible:0};
-    for(const ch of part.text){
-      if(ch===' ') wrap.appendChild(document.createTextNode(' '));
-      else{
-        const g=создатьГлиф(ch,{member:part.member});
-        wrap.appendChild(g);
-        участники[part.member].total++;
-      }
-    }
-    wrap.addEventListener('click',()=>{if(wrap.classList.contains('активно')) открытьДосье(part.member);});
-    parent.appendChild(wrap);
-    return;
-  }
-  if(part.damaged){
-    for(const ch of part.text){
-      if(ch===' ') parent.appendChild(document.createTextNode(' '));
-      else parent.appendChild(создатьГлиф(ch,{damaged:true}));
-    }
-  }
-}
-function построитьСтраницы(){
-  страницы.innerHTML='';
-  участники={};
-  глифы=[];
-  страницыДанных.forEach(pageData=>{
+function buildPages(){
+  pagesWrap.innerHTML='';
+  allGlyphs=[];
+  members={};
+  pagesData.forEach(pageData=>{
     const page=document.createElement('div');
-    page.className='страница';
-    page.innerHTML='<div class="рваный-край верх"></div><div class="рваный-край низ"></div><div class="залом a"></div><div class="залом b"></div><div class="залом c"></div><div class="пятно a"></div><div class="пятно b"></div><div class="угол"></div>';
-    const field=document.createElement('div');
-    field.className='поле-текста';
-    pageData.forEach(par=>{
+    page.className='page';
+    page.innerHTML='<div class="paper-edge top"></div><div class="paper-edge bottom"></div><div class="crease a"></div><div class="crease b"></div><div class="crease c"></div><div class="stain a"></div><div class="stain b"></div><div class="corner-fold"></div>';
+    const content=document.createElement('div');
+    content.className='page-content';
+    pageData.forEach(para=>{
       const p=document.createElement('p');
-      p.className='абзац';
-      par.forEach(part=>добавитьФрагмент(p,part));
-      field.appendChild(p);
+      p.className='handwritten';
+      para.forEach(part=>{
+        if(typeof part==='string'){
+          for(const ch of part){
+            if(ch===' ') p.appendChild(document.createTextNode(' '));
+            else p.appendChild(createGlyph(ch,false));
+          }
+        }else if(part.member){
+          const wrap=document.createElement('span');
+          wrap.className='member-name';
+          wrap.dataset.member=part.member;
+          if(!members[part.member]) members[part.member]={el:wrap,total:0,visible:0};
+          for(const ch of part.text){
+            if(ch===' ') wrap.appendChild(document.createTextNode(' '));
+            else{
+              const g=createGlyph(ch,false,part.member);
+              wrap.appendChild(g);
+              members[part.member].total++;
+            }
+          }
+          wrap.addEventListener('click',()=>{if(wrap.classList.contains('active')) openDossier(part.member);});
+          p.appendChild(wrap);
+        }else if(part.damaged){
+          for(const ch of part.text){
+            if(ch===' ') p.appendChild(document.createTextNode(' '));
+            else p.appendChild(createGlyph(ch,true));
+          }
+        }
+      });
+      content.appendChild(p);
     });
-    page.appendChild(field);
-    страницы.appendChild(page);
+    page.appendChild(content);
+    pagesWrap.appendChild(page);
   });
-  requestAnimationFrame(измеритьГлифы);
+  measureGlyphs();
+}
+function measureGlyphs(){
+  allGlyphs=Array.from(document.querySelectorAll('.glyph')).map(el=>{
+    const r=el.getBoundingClientRect();
+    return {el,real:el.dataset.real,damaged:el.dataset.damaged==='1',member:el.dataset.member||null,x:r.left+r.width/2,y:r.top+r.height/2};
+  });
 }
 
 /* === ПРИЗМА === */
-function показатьПризму(){
-  призмаПоказана=true;
-  призма.classList.add('активна');
-  if(!призма.style.left){
-    призма.style.left=(innerWidth/2-призма.offsetWidth/2)+'px';
-    призма.style.top=(innerHeight/2-призма.offsetHeight/2)+'px';
-  }
+function alignPrismToPage(){
+  const page=document.querySelector('.page');
+  if(!page) return;
+  const r=page.getBoundingClientRect();
+  prism.style.width=r.width+'px';
+  prism.style.left=r.left+'px';
+  prism.style.top=(r.top+80)+'px';
 }
-function скрытьПризму(){
-  призмаПоказана=false;
-  призмаЗафиксирована=false;
-  призма.classList.remove('активна','сбой');
-  фиксаторПризмы.classList.remove('активен');
-  Object.values(участники).forEach(v=>v.el.classList.remove('активно'));
-  глифы.forEach(g=>{g.progress=0;g.el.classList.remove('внутри-призмы','глич','глич-имя');g.el.textContent=g.base;});
+function showPrism(){
+  prismActive=true;
+  prism.classList.add('active');
+  if(!prism.style.left) alignPrismToPage();
 }
-кнопкаПризмы.addEventListener('click',()=>{призмаПоказана?скрытьПризму():показатьПризму();});
-фиксаторПризмы.addEventListener('click',e=>{
+function hidePrism(){
+  prismActive=false;
+  prismFixed=false;
+  prism.classList.remove('active','glitching');
+  prismPin.classList.remove('active');
+  prismPin.textContent='закрепить';
+  Object.values(members).forEach(m=>m.el.classList.remove('active'));
+  allGlyphs.forEach(g=>{
+    g.el._progress=0;
+    g.el.classList.remove('in-prism','glitching');
+    g.el.textContent=g.damaged?randomGlitch():randomForeign();
+  });
+}
+btnPrism.addEventListener('click',()=>{prismActive?hidePrism():showPrism();});
+prismPin.addEventListener('click',e=>{
   e.stopPropagation();
-  призмаЗафиксирована=!призмаЗафиксирована;
-  фиксаторПризмы.classList.toggle('активен',призмаЗафиксирована);
+  prismFixed=!prismFixed;
+  prismPin.classList.toggle('active',prismFixed);
+  prismPin.textContent=prismFixed?'закреплено':'закрепить';
 });
 
-const верхПризмы=document.getElementById('верхПризмы');
-верхПризмы.addEventListener('mousedown',e=>{
-  if(призмаЗафиксирована) return;
-  тащимПризму=true;
-  смещениеПризмыX=e.clientX-parseInt(призма.style.left||0);
-  смещениеПризмыY=e.clientY-parseInt(призма.style.top||0);
+prismHeader.addEventListener('mousedown',e=>{
+  if(prismFixed) return;
+  prismDragging=true;
+  dragOffsetY=e.clientY-prism.getBoundingClientRect().top;
   e.preventDefault();
 });
 document.addEventListener('mousemove',e=>{
-  if(!тащимПризму||!призмаПоказана) return;
-  призма.style.left=(e.clientX-смещениеПризмыX)+'px';
-  призма.style.top=(e.clientY-смещениеПризмыY)+'px';
+  if(!prismDragging||!prismActive) return;
+  let y=e.clientY-dragOffsetY;
+  const ph=prism.offsetHeight;
+  y=Math.max(0,Math.min(innerHeight-ph,y));
+  prism.style.top=y+'px';
 });
-document.addEventListener('mouseup',()=>тащимПризму=false);
+document.addEventListener('mouseup',()=>prismDragging=false);
 
 document.addEventListener('wheel',e=>{
-  if(!призмаПоказана||призмаЗафиксирована) return;
-  const over=e.target.closest('.поле-дела');
+  if(!prismActive||prismFixed) return;
+  const over=e.target.closest('.archive');
   if(!over) return;
   e.preventDefault();
-  const top=parseInt(призма.style.top||0)+(e.deltaY>0?38:-38);
-  призма.style.top=top+'px';
+  let y=parseInt(prism.style.top||0)+e.deltaY;
+  const ph=prism.offsetHeight;
+  y=Math.max(0,Math.min(innerHeight-ph,y));
+  prism.style.top=y+'px';
 },{passive:false});
 
-function крайСтраницы(){
-  const pRect=призма.getBoundingClientRect();
-  let near=false;
-  document.querySelectorAll('.страница').forEach(page=>{
-    const pr=page.getBoundingClientRect();
-    const overlap=!(pRect.bottom<pr.top||pRect.top>pr.bottom);
+function isPrismGlitching(){
+  const pR=prism.getBoundingClientRect();
+  let glitch=false;
+  document.querySelectorAll('.page').forEach(page=>{
+    const r=page.getBoundingClientRect();
+    const overlap=!(pR.bottom<r.top||pR.top>r.bottom);
     if(overlap){
-      if(Math.abs(pRect.top-pr.top)<24||Math.abs(pRect.bottom-pr.bottom)<24) near=true;
-      if(Math.abs(pRect.left-pr.left)<24||Math.abs(pRect.right-pr.right)<24) near=true;
+      if(Math.abs(pR.top-r.top)<20||Math.abs(pR.bottom-r.bottom)<20) glitch=true;
+      if(Math.abs(pR.left-r.left)<20||Math.abs(pR.right-r.right)<20) glitch=true;
     }
   });
-  return near;
-}
-function переходный(real,p){
-  if(p<.18) return случайныйСимвол();
-  if(p<.36) return Math.random()>.45?испорченный(real):случайнаяБуква();
-  if(p<.56) return Math.random()>.6?real:случайнаяБуква();
-  if(p<.78) return Math.random()>.34?real:испорченный(real);
-  return Math.random()>.1?real:испорченный(real);
-}
-function битыйПереход(real,p){
-  if(p<.24) return случайныйСимвол();
-  if(p<.54) return Math.random()>.55?испорченный(real):случайныйСимвол();
-  return Math.random()>.82?real:(Math.random()>.5?испорченный(real):случайныйСимвол());
+  return glitch;
 }
 
-function измеритьГлифы(){
-  глифы=Array.from(страницы.querySelectorAll('.символ')).map(el=>{
-    const r=el.getBoundingClientRect();
-    return {
-      el,real:el.dataset.real,base:el.dataset.base,
-      damaged:el.dataset.damaged==='1',member:el.dataset.member||null,
-      x:r.left+r.width/2,y:r.top+r.height/2,
-      progress:0
-    };
-  });
-}
-
-function обновитьЧтение(){
-  if(!призмаПоказана) return;
-  const pRect=призма.getBoundingClientRect();
-  let сбой=крайСтраницы();
-  Object.values(участники).forEach(v=>v.visible=0);
-  for(const g of глифы){
-    const inRect=g.x>=pRect.left&&g.x<=pRect.right&&g.y>=pRect.top&&g.y<=pRect.bottom;
-    if(inRect){
-      g.progress=Math.min(1,g.progress+(g.damaged?.03:.04));
-      g.el.classList.add('внутри-призмы');
+function updatePrism(){
+  if(!prismActive) return;
+  const pR=prism.getBoundingClientRect();
+  let hasGlitch=false;
+  Object.values(members).forEach(m=>m.visible=0);
+  allGlyphs.forEach(g=>{
+    const inPrism=g.x>=pR.left&&g.x<=pR.right&&g.y>=pR.top&&g.y<=pR.bottom;
+    if(inPrism){
+      const speed=g.damaged?0.012:0.028;
+      g.el._progress=Math.min(1,(g.el._progress||0)+speed);
+      const prog=g.el._progress;
+      g.el.classList.add('in-prism');
       if(g.damaged){
-        g.el.textContent=битыйПереход(g.real,g.progress);
-        g.el.classList.add('глич');
-        сбой=true;
+        // Повреждённые: постоянный глитч, иногда мелькает реальный символ
+        g.el.classList.add('glitching');
+        g.el.textContent=Math.random()>0.85?g.real:(Math.random()>0.5?randomGlitch():randomForeign());
+        hasGlitch=true;
       }else{
-        if(g.progress<0.35){
-          g.el.classList.add('глич');
-          if(g.member) g.el.classList.add('глич-имя');
-          g.el.textContent=случайныйСимвол();
-        }else if(g.progress<0.55){
-          g.el.classList.remove('глич','глич-имя');
-          g.el.textContent=переходный(g.real,g.progress);
-        }else if(g.progress<0.85){
-          g.el.classList.remove('глич','глич-имя');
-          g.el.textContent=Math.random()>.25?g.real:испорченный(g.real);
+        if(prog<0.25){
+          // Стадия 1: хаотичная прокрутка символов
+          g.el.classList.add('glitching');
+          g.el.textContent=Math.random()>0.4?randomGlitch():randomForeign();
+          hasGlitch=true;
+        }else if(prog<0.45){
+          // Стадия 2: быстрая прокрутка с редкими реальными
+          g.el.classList.add('glitching');
+          g.el.textContent=Math.random()>0.75?g.real:(Math.random()>0.5?randomForeign():randomGlitch());
+          hasGlitch=true;
+        }else if(prog<0.7){
+          // Стадия 3: переход, мелькают гличи
+          g.el.classList.remove('glitching');
+          g.el.textContent=Math.random()>0.6?g.real:randomForeign();
+        }else if(prog<0.9){
+          // Стадия 4: почти стабильно
+          g.el.classList.remove('glitching');
+          g.el.textContent=Math.random()>0.15?g.real:randomForeign();
         }else{
-          g.el.classList.remove('глич','глич-имя');
+          // Стадия 5: стабильный реальный текст
+          g.el.classList.remove('glitching');
           g.el.textContent=g.real;
         }
-        if(g.member&&участники[g.member]) участники[g.member].visible+=g.progress;
+        if(g.member&&members[g.member]){
+          members[g.member].visible+=prog;
+        }
       }
     }else{
-      g.progress=0;
-      g.el.classList.remove('внутри-призмы','глич','глич-имя');
-      g.el.textContent=g.base;
+      g.el._progress=0;
+      g.el.classList.remove('in-prism','glitching');
+      g.el.textContent=g.damaged?randomGlitch():randomForeign();
     }
-  }
-  Object.keys(участники).forEach(key=>{
-    const d=участники[key];
-    d.el.classList.toggle('активно',d.total?(d.visible/d.total)>.55:false);
   });
-  призма.classList.toggle('сбой',сбой);
-}
-setInterval(обновитьЧтение,55);
+  if(isPrismGlitching()) hasGlitch=true;
+  prism.classList.toggle('glitching',hasGlitch);
 
-window.addEventListener('resize',()=>{
-  if(архив.classList.contains('активен')) requestAnimationFrame(измеритьГлифы);
-});
+  Object.keys(members).forEach(id=>{
+    const m=members[id];
+    const ratio=m.total?m.visible/m.total:0;
+    m.el.classList.toggle('active',ratio>0.55);
+  });
+}
+setInterval(updatePrism,45);
 
 /* === ДОСЬЕ === */
-function открытьДосье(key){
-  const data=досьеДанные[key];
+function openDossier(id){
+  const data=dossierData[id];
   if(!data) return;
-  имяДосье.textContent=data.name;
+  dossierName.textContent=data.name;
   if(data.photo){
-    фотоДосье.src=data.photo;
-    фотоДосье.alt=data.name;
-    фотоДосьеWrap.style.display='block';
+    dossierPhoto.src=data.photo;
+    dossierPhoto.alt=data.name;
+    dossierPhotoWrap.style.display='block';
   }else{
-    фотоДосьеWrap.style.display='none';
+    dossierPhotoWrap.style.display='none';
   }
-  поляДосье.innerHTML='';
+  dossierFields.innerHTML='';
   data.fields.forEach(([k,v])=>{
     const row=document.createElement('div');
-    row.className='поле-досье';
+    row.className='dossier-field';
     row.innerHTML=`<strong>${k}</strong><div>${v}</div>`;
-    поляДосье.appendChild(row);
+    dossierFields.appendChild(row);
   });
-  досье.classList.add('активно');
+  dossier.classList.add('active');
 }
-function закрытьДосье(){досье.classList.remove('активно');}
-document.getElementById('закрытьДосье').addEventListener('click',закрытьДосье);
+function closeDossier(){dossier.classList.remove('active');}
+document.getElementById('dossierClose').addEventListener('click',closeDossier);
 
-/* === СТАРТ === */
-запуститьМатрицу();
+/* === НАВИГАЦИЯ === */
+function backToFiles(){
+  hidePrism();
+  closeDossier();
+  archive.classList.remove('active');
+  document.body.classList.remove('archive-open');
+  screenFiles.classList.remove('hidden');
+}
+btnBack.addEventListener('click',backToFiles);
+document.getElementById('openDecrypt').addEventListener('click',runConsoleDecrypt);
+document.getElementById('openUnath').addEventListener('click',runConsoleUnath);
+
+window.addEventListener('resize',()=>{
+  if(archive.classList.contains('active')){
+    measureGlyphs();
+    alignPrismToPage();
+  }
+});
+window.addEventListener('scroll',()=>{
+  if(archive.classList.contains('active')) measureGlyphs();
+},{passive:true});
+
+startMatrix();
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a099231fbd719da9',t:'MTc4MTEwMjQ4OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
