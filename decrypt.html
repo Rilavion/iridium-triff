@@ -11,51 +11,51 @@
   --c-dim: #1a8020;
   --c-warn: #ffaa33;
   --c-alert: #ff3333;
-  --c-text: #d0d0d0;
-  --c-mute: #666;
+  --c-text: #f0f0f0;
+  --c-mute: #999;
   --font-mono: 'Share Tech Mono', monospace;
   --font-display: 'Unbounded', sans-serif;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 html { scroll-behavior: smooth; }
 body {
-  background:#000; color: var(--c-text); font-family: var(--font-mono);
+  background: #080808; color: var(--c-text); font-family: var(--font-mono);
   overflow-x: hidden; min-height: 100vh;
 }
 
-/* Overlays — lightweight */
+/* Overlays — lighter */
 .scanlines {
-  position: fixed; inset:0; z-index: 9999; pointer-events: none; opacity: 0.12;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.35) 2px, rgba(0,0,0,0.35) 4px);
+  position: fixed; inset:0; z-index: 9999; pointer-events: none; opacity: 0.06;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.08) 2px, rgba(255,255,255,0.08) 4px);
   animation: scanMove 6s linear infinite;
 }
 @keyframes scanMove { to { background-position: 0 100vh; } }
 
 .noise {
-  position: fixed; inset:0; z-index: 9998; pointer-events: none; opacity: 0.04;
+  position: fixed; inset:0; z-index: 9998; pointer-events: none; opacity: 0.03;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 .vignette {
   position: fixed; inset:0; z-index: 9997; pointer-events: none;
-  background: radial-gradient(ellipse 75% 60% at 50% 50%, transparent 0%, rgba(0,0,0,0.5) 70%, rgba(0,0,0,0.85) 100%);
+  background: radial-gradient(ellipse 75% 60% at 50% 50%, transparent 0%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0.45) 100%);
 }
 
 /* Boot */
 #boot {
-  position: fixed; inset:0; z-index: 10000; background:#000;
+  position: fixed; inset:0; z-index: 10000; background: #080808;
   display:flex; align-items:center; justify-content:center; flex-direction:column;
   transition: opacity 0.8s ease, visibility 0.8s;
 }
 #boot.done { opacity:0; visibility:hidden; pointer-events:none; }
 .boot-inner {
-  width: min(800px, 90vw); border: 1px solid rgba(0,255,0,0.25);
-  background: linear-gradient(180deg, rgba(0,20,0,0.95), rgba(0,8,0,0.98));
-  padding: 30px; box-shadow: 0 0 60px rgba(0,0,0,0.9), inset 0 0 30px rgba(0,60,0,0.15);
+  width: min(800px, 90vw); border: 1px solid rgba(0,255,0,0.3);
+  background: linear-gradient(180deg, rgba(0,25,0,0.95), rgba(0,10,0,0.98));
+  padding: 30px; box-shadow: 0 0 60px rgba(0,0,0,0.9), inset 0 0 30px rgba(0,80,0,0.15);
   position: relative;
 }
 .boot-line {
-  color: var(--c-green); font-size: 1rem; line-height: 1.8;
-  text-shadow: 0 0 8px rgba(51,255,51,0.35); opacity: 0;
+  color: var(--c-green); font-size: 1.05rem; line-height: 1.8;
+  text-shadow: 0 0 10px rgba(51,255,51,0.45); opacity: 0;
   transition: opacity 0.2s; white-space: pre-wrap;
 }
 .boot-line.visible { opacity: 1; }
@@ -63,75 +63,132 @@ body {
   display: inline-block; width: 10px; height: 1.1em; background: var(--c-green);
   animation: blink 1s step-end infinite; vertical-align: bottom; margin-left: 4px;
 }
+.file-choice {
+  color: #fff; margin-top: 8px; cursor: pointer; transition: color 0.2s, text-shadow 0.2s;
+  display: inline-block; padding: 2px 0; font-size: 1.05rem; line-height: 1.8;
+}
+.file-choice:hover {
+  color: var(--c-green); text-shadow: 0 0 12px rgba(51,255,51,0.6);
+}
 
 /* Log stream */
-.log-container { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 100px 20px 300px; }
-.log-block { margin-bottom: 56px; opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.22,1,0.36,1); }
-.log-block.visible { opacity: 1; transform: translateY(0); }
-.log-type {
-  font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--c-dim); margin-bottom: 12px; border-bottom: 1px solid rgba(0,255,0,0.12);
-  padding-bottom: 6px; font-family: var(--font-mono);
+.log-container {
+  position: relative; z-index: 1; max-width: 880px; margin: 0 auto;
+  padding: 80px 20px 300px; display: none;
 }
-.log-type.warn { color: var(--c-warn); border-color: rgba(255,170,51,0.2); }
-.log-type.alert { color: var(--c-alert); border-color: rgba(255,51,51,0.2); }
-.log-type.pulse { animation: typePulse 2.2s ease-in-out infinite; }
-@keyframes typePulse { 0%,100%{ opacity: 1; } 50%{ opacity: 0.6; } }
+.log-container.active { display: block; }
 
-.log-content { font-size: 1.05rem; line-height: 1.75; color: var(--c-text); text-shadow: 0 0 2px rgba(255,255,255,0.03); white-space: pre-wrap; }
+.log-block {
+  margin-bottom: 36px; opacity: 0; transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.22,1,0.36,1);
+  border-left: 2px solid rgba(255,255,255,0.08); padding-left: 20px;
+}
+.log-block.visible { opacity: 1; transform: translateY(0); }
+
+.log-content {
+  font-size: 1.08rem; line-height: 1.85; color: var(--c-text);
+  text-shadow: 0 0 4px rgba(255,255,255,0.06); white-space: pre-wrap;
+}
 .log-content.done .cursor { display: none; }
-.cursor { display: inline-block; width: 8px; height: 1.1em; background: var(--c-text); vertical-align: bottom; margin-left: 2px; animation: blink 1s step-end infinite; }
+.cursor {
+  display: inline-block; width: 8px; height: 1.1em; background: var(--c-text);
+  vertical-align: bottom; margin-left: 2px; animation: blink 1s step-end infinite;
+}
 @keyframes blink { 50% { opacity: 0; } }
 
-/* Glitch names */
-.glitch-name {
-  color: #fff; border-bottom: 1px dashed rgba(255,255,255,0.25); cursor: pointer;
-  transition: color 0.2s, text-shadow 0.2s, border-bottom-style 0.2s; position: relative;
-}
-.glitch-name:hover { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.45); border-bottom-style: solid; }
-
-/* Images in stream */
+/* Images in stream — vertical */
 .log-image {
-  margin: 24px 0; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02);
-  padding: 8px; position: relative; overflow: hidden; transition: transform 0.3s ease;
+  margin: 20px 0 0; border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.03); padding: 6px;
+  position: relative; overflow: hidden; transition: transform 0.3s ease;
+  max-width: 380px;
 }
-.log-image:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.25); }
-.log-image img { display: block; width: 100%; height: auto; filter: grayscale(1) contrast(1.1) brightness(0.85); }
+.log-image:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); }
+.log-image img {
+  display: block; width: 100%; height: auto;
+  aspect-ratio: 3/4; object-fit: cover;
+  filter: contrast(1.1) brightness(0.95);
+}
 .log-image::after {
   content: ''; position: absolute; inset: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.2) 2px, rgba(0,0,0,0.2) 4px);
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px);
   pointer-events: none;
 }
 
-/* Personnel inline */
-.personnel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 20px; }
-@media (min-width: 700px) { .personnel-grid { grid-template-columns: repeat(4, 1fr); } }
-.personnel-thumb {
-  border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); cursor: pointer;
-  padding: 10px; transition: all 0.25s ease; position: relative; overflow: hidden;
+/* Personnel vertical */
+.personnel-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 20px;
 }
-.personnel-thumb:hover { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.06); transform: translateY(-2px); }
-.personnel-thumb img { width: 100%; aspect-ratio: 16/9; object-fit: cover; filter: grayscale(1) contrast(1.15) brightness(0.8); display: block; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.08); }
-.p-name { font-family: var(--font-display); font-size: 0.75rem; color: #fff; letter-spacing: 0.03em; text-align: center; }
+@media (min-width: 700px) { .personnel-grid { grid-template-columns: repeat(4, 1fr); } }
 
-.dossier-drawer { max-height: 0; overflow: hidden; transition: max-height 0.6s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease; opacity: 0; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); margin-top: 12px; }
-.dossier-drawer.open { max-height: 600px; opacity: 1; }
-.dossier-inner { padding: 20px; display: grid; gap: 16px; }
+.personnel-thumb {
+  border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04);
+  padding: 10px; cursor: pointer; transition: all 0.25s ease; position: relative; overflow: hidden;
+}
+.personnel-thumb:hover {
+  border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.07);
+  transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+.personnel-thumb img {
+  width: 100%; aspect-ratio: 2/3; object-fit: cover;
+  filter: contrast(1.15) brightness(0.92);
+  display: block; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.08);
+}
+.p-name {
+  font-family: var(--font-display); font-size: 0.75rem; color: #fff;
+  letter-spacing: 0.03em; text-align: center;
+}
+
+/* Dossier drawer */
+.dossier-drawer {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.6s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease;
+  opacity: 0; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02);
+  margin-top: 12px;
+}
+.dossier-drawer.open { max-height: 700px; opacity: 1; }
+.dossier-inner {
+  padding: 20px; display: grid; gap: 16px;
+}
 @media (min-width: 600px) { .dossier-inner { grid-template-columns: 1.2fr 1fr; } }
-.dossier-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; filter: grayscale(1) contrast(1.2) brightness(0.8); border: 1px solid rgba(255,255,255,0.1); }
+.dossier-img {
+  width: 100%; aspect-ratio: 2/3; object-fit: cover;
+  filter: contrast(1.2) brightness(0.92);
+  border: 1px solid rgba(255,255,255,0.1);
+}
 .dossier-fields { display: grid; gap: 8px; }
-.d-field { font-size: 0.85rem; line-height: 1.4; color: #bbb; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 6px; }
+.d-field {
+  font-size: 0.88rem; line-height: 1.4; color: #ddd;
+  border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 6px;
+}
 .d-field strong { display: block; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: #fff; margin-bottom: 3px; }
 .d-field:last-child { border-bottom: none; }
 
-/* Damaged / Finale */
-.damaged-text { color: #444; font-size: 0.95rem; line-height: 1.8; word-break: break-all; letter-spacing: 0.02em; }
-.corruption-block { margin-top: 80px; }
+/* Glitch names */
+.glitch-name {
+  color: #fff; border-bottom: 1px dashed rgba(255,255,255,0.3); cursor: pointer;
+  transition: color 0.2s, text-shadow 0.2s, border-bottom-style 0.2s;
+}
+.glitch-name:hover { color: #fff; text-shadow: 0 0 12px rgba(255,255,255,0.5); border-bottom-style: solid; }
 
-.glitch-text { position: relative; display: inline-block; color: #fff; }
-.glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; }
-.glitch-text::before { left: 2px; text-shadow: -1px 0 #fff; clip-path: inset(20% 0 55% 0); animation: g1 2.5s infinite linear alternate-reverse; }
-.glitch-text::after { left: -2px; text-shadow: -1px 0 #888; clip-path: inset(60% 0 15% 0); animation: g2 3s infinite linear alternate-reverse; }
+/* Damaged / Finale */
+.damaged-text {
+  color: #555; font-size: 1rem; line-height: 1.8; word-break: break-all; letter-spacing: 0.02em;
+}
+.glitch-text {
+  position: relative; display: inline-block; color: #fff;
+}
+.glitch-text::before, .glitch-text::after {
+  content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #080808;
+}
+.glitch-text::before {
+  left: 2px; text-shadow: -1px 0 #fff; clip-path: inset(20% 0 55% 0);
+  animation: g1 2.5s infinite linear alternate-reverse;
+}
+.glitch-text::after {
+  left: -2px; text-shadow: -1px 0 #888; clip-path: inset(60% 0 15% 0);
+  animation: g2 3s infinite linear alternate-reverse;
+}
 @keyframes g1 {
   0%{clip-path:inset(15% 0 65% 0); transform:translate(-2px,1px)} 20%{clip-path:inset(55% 0 10% 0); transform:translate(2px,-1px)}
   40%{clip-path:inset(30% 0 40% 0); transform:translate(-1px,2px)} 60%{clip-path:inset(70% 0 5% 0); transform:translate(1px,0)}
@@ -145,11 +202,12 @@ body {
 
 .nt-alert {
   font-family: var(--font-display); text-align: center; margin-top: 40px; color: var(--c-alert);
-  text-shadow: 0 0 12px rgba(255,51,51,0.4); font-size: clamp(1.1rem, 3vw, 1.6rem); line-height: 1.8;
-  letter-spacing: 0.04em; opacity: 0; transform: scale(0.95); transition: opacity 1.5s ease, transform 1.5s ease;
+  text-shadow: 0 0 15px rgba(255,51,51,0.5); font-size: clamp(1.2rem, 3.5vw, 1.8rem); line-height: 1.8;
+  letter-spacing: 0.04em; opacity: 0; transform: scale(0.95);
+  transition: opacity 1.5s ease, transform 1.5s ease;
 }
 .nt-alert.visible { opacity: 1; transform: scale(1); }
-.nt-alert .sub { font-family: var(--font-mono); font-size: 0.75rem; color: #555; margin-top: 20px; text-shadow: none; }
+.nt-alert .sub { font-family: var(--font-mono); font-size: 0.8rem; color: #777; margin-top: 20px; text-shadow: none; }
 
 /* Effects */
 .shake { animation: shake 0.15s cubic-bezier(.36,.07,.19,.97) both; }
@@ -160,8 +218,9 @@ body {
 }
 
 .particle {
-  position: fixed; pointer-events: none; z-index: 10001; font-family: var(--font-mono);
-  font-weight: bold; color: #fff; text-shadow: 0 0 6px rgba(255,255,255,0.7);
+  position: fixed; pointer-events: none; z-index: 10001;
+  font-family: var(--font-mono); font-weight: bold; color: #fff;
+  text-shadow: 0 0 6px rgba(255,255,255,0.7);
   animation: pFly 0.8s ease-out forwards;
 }
 @keyframes pFly {
@@ -176,8 +235,8 @@ body {
 @keyframes flashCorrupt { 0%,100%{ opacity:1; color:#fff; } 50%{ opacity:0.4; color:#ff3333; } }
 
 @media (max-width: 600px) {
-  .log-container { padding: 80px 16px 200px; }
-  .log-content { font-size: 0.95rem; }
+  .log-container { padding: 60px 16px 200px; }
+  .log-content { font-size: 1rem; }
   .dossier-inner { grid-template-columns: 1fr !important; }
 }
 </style>
@@ -192,70 +251,50 @@ body {
 <div id="boot">
   <div class="boot-inner">
     <div id="bootLines"></div>
-    <span class="boot-cursor">▮</span>
+    <div id="fileChoices" style="display:none; margin-top:16px;">
+      <div class="file-choice" data-choice="history">> [1] archive_decrypt_full.log  — полная хронология агентства</div>
+      <div class="file-choice" data-choice="dossier">> [2] personnel_dossier.enc     — данные на известных лицах</div>
+      <div class="boot-line" style="margin-top:12px; color: var(--c-dim);">> выберите файл для чтения...</div>
+    </div>
+    <span class="boot-cursor" id="bootCursor">▮</span>
   </div>
 </div>
 
-<div class="log-container">
+<div class="log-container" id="logContainer">
 
+  <!-- Block 1: Foundation & early days -->
   <div class="log-block">
-    <div class="log-type">Архив: Досье DECRYPT</div>
-    <div class="log-content">Детективное частное агентство “DECRYPT” так-же как и большинство нишевых организациях зародилось в секторе Спинвардская Периферия, в самой гуще развития мегаполиса на планете Y-27, первый основатель организации стал Хиоши Сузуки, прибывший на планету около 3х лет назад, на небольшой межтрансовом шаттле из солнечной системы.</div>
+    <div class="log-content">Детективное частное агентство “DECRYPT” так-же как и большинство нишевых организациях зародилось в секторе Спинвардская Периферия, в самой гуще развития мегаполиса на планете Y-27, первый основатель организации стал Хиоши Сузуки, прибывший на планету около 3х лет назад, на небольшой межтрансовом шаттле из солнечной системы. Начальный капитал организации составил 400.000$ наличными что были выделены Хиоши его родителями под залог, с ожиданием того что тот вернёт более 70% залога свыше, если не прогорит в сточной канаве планеты.
+
+Изначально агенство занималось конкретной поставленной задачей, принимая каждое предложение об детективной деятельности. В них часто входили уже клишированные запросы, слежка за второй половинкой которая подозревалась в измене, локальные потери вещей и небольших грабежей, по типу скрытия чей-то квартиры или съёмного жилья, снятие отпечатков, и поиски пропавших посылок утерянных местной почтовой службой.
+
+Этот нишевый бизнес буквально держался лишь на бытовых запросах ежедневно пытаясь выйти хоть на пару сотен долларов из долгов. За около чем более годовой работы таким темпом бизнес был приведён в ужасное состояние, помещение которое снимал Хиоши буквально трещало по швам пока арендодатель в очередной раз завышал цены аргументируя это очень просто “Город растёт - а мы теперь в центре его. Нет денег. Вали на окраину.”.
+
+Это могло продолжаться буквально не более ещё двух месяцев, пока бы у Хиоши не кончились деньги, с учётом того что его родительский долг съедал более 80% заработка. Но тут как гром с небес появился шанс для малого бизнеса. Либо же до Хиоши самого дошла эта мысль, либо же ему дал очередную идею ежедневный клиент. А именно искать выгоду в корпоративных играх, пытаться заработать на добыче компромата против врагом той или иной фирмы обратившийся к нему, зачистки лишних данных или следов оставленных в ходе очередного “несчастного случая”.</div>
   </div>
 
+  <!-- Block 2: Triangle & climb -->
   <div class="log-block">
-    <div class="log-type">Финансовый лог</div>
-    <div class="log-content">Начальный капитал организации составил 400.000$ наличными что были выделены Хиоши его родителями под залог, с ожиданием того что тот вернёт более 70% залога свыше, если не прогорит в сточной канаве планеты.</div>
-  </div>
+    <div class="log-content">А учитывая что к этому времени город давно поделил сектриальный треугольник бизнесов, где самую вершину города занимали мега-корпорации, середину рынки получившие огласку в обществе, а дно подпольные рынки, нарко-базы, и стрип-клубы с провальными бизнесами. Работа была частно пыльной, и требующей поморать руки.
 
-  <div class="log-block">
-    <div class="log-type">Журнал деятельности</div>
-    <div class="log-content">Изначально агенство занималось конкретной поставленной задачей, принимая каждое предложение об детективной деятельности. В них часто входили уже клишированные запросы, слежка за второй половинкой которая подозревалась в измене, локальные потери вещей и небольших грабежей, по типу скрытия чей-то квартиры или съёмного жилья, снятие отпечатков, и поиски пропавших посылок утерянных местной почтовой службой.</div>
-  </div>
+Хиоши решил сразу же занять данный рынок, и перейти в политику нейтральных действий, усвоив одно простое правило “За каждым хищником следует свой охотник, и третий наблюдатель что будет пожинать кости обоих.” а название агентства как его основную направленность тот решил не менять в угоду некой конспирации от любопытных глаз правительство. Мол кому есть дело до очередного детектива-самоучки который рано или поздно найдет свою пулу в засанной подворотне.
 
-  <div class="log-block">
-    <div class="log-type warn">Статус: Критический</div>
-    <div class="log-content">Этот нишевый бизнес буквально держался лишь на бытовых запросах ежедневно пытаясь выйти хоть на пару сотен долларов из долгов. За около чем более годовой работы таким темпом бизнес был приведён в ужасное состояние, помещение которое снимал Хиоши буквально трещало по швам пока арендодатель в очередной раз завышал цены аргументируя это очень просто “Город растёт - а мы теперь в центре его. Нет денег. Вали на окраину.”.</div>
-  </div>
+Данные решения позволили Хиоши с его бизнесом довольно резко начать свое развитие в высь по этажам города. И буквально за пол года такой работы, тот уже смог высунуть голову из канализации в средний сектор, ощутив менее черствый воздух пропитанный наркотой и героином.
 
-  <div class="log-block">
-    <div class="log-type">Поворотная точка</div>
-    <div class="log-content">Это могло продолжаться буквально не более ещё двух месяцев, пока бы у Хиоши не кончились деньги, с учётом того что его родительский долг съедал более 80% заработка. Но тут как гром с небес появился шанс для малого бизнеса. Либо же до Хиоши самого дошла эта мысль, либо же ему дал очередную идею ежедневный клиент. А именно искать выгоду в корпоративных играх, пытаться заработать на добыче компромата против врагом той или иной фирмы обратившийся к нему, зачистки лишних данных или следов оставленных в ходе очередного “несчастного случая”.</div>
-  </div>
-
-  <div class="log-block">
-    <div class="log-type">Схема: Сектириальный треугольник</div>
-    <div class="log-content">А учитывая что к этому времени город давно поделил сектриальный треугольник бизнесов, где самую вершину города занимали мега-корпорации, середину рынки получившие огласку в обществе, а дно подпольные рынки, нарко-базы, и стрип-клубы с провальными бизнесами. Работа была частно пыльной, и требующей поморать руки.</div>
+Первое задание их оказалось до ужасти просто, они получили его от фирмы по продаже средств по уходу за красотой, на другую такую-же фирму. Требовалось лишь сделать фотографии босса фирмы, находящегося в приватном клубе со страпоном не в том месте. И в отличии от низжевого рынка, на среднем рынке это могло реально повлиять на восприятие фирмы вплоть до обвала её акций. Дело тот закрыл быстро и без проблем, что пробило ему сразу небольшие но значительные связи на среднем плато.</div>
     <div class="log-image">
       <img src="assets/decrypt/society-triangle.png" alt="[СХЕМА: СЕКТИРИАЛЬНЫЙ ТРЕУГОЛЬНИК]">
     </div>
   </div>
 
-  <div class="log-block">
-    <div class="log-type">Анализ: Нейтралитет</div>
-    <div class="log-content">Хиоши решил сразу же занять данный рынок, и перейти в политику нейтральных действий, усвоив одно простое правило “За каждым хищником следует свой охотник, и третий наблюдатель что будет пожинать кости обоих.” а название агентства как его основную направленность тот решил не менять в угоду некой конспирации от любопытных глаз правительство. Мол кому есть дело до очередного детектива-самоучки который рано или поздно найдет свою пулу в засанной подворотне.</div>
-  </div>
+  <!-- Block 3: Team -->
+  <div class="log-block" id="personnelBlock">
+    <div class="log-content">К тому моменту тот уже начал предпринимать движение в найме дополнительных сотрудников, уверенности естественно в каждом новом не было, и Хиоши понимал что каждый из них может подставить его в любой момент, но это всяко лучше когда предатель прикрывает спину от врага, чем враг смотрящий сквозь дырку в твоем сердце.
 
-  <div class="log-block">
-    <div class="log-type">Прогресс: Высота</div>
-    <div class="log-content">Данные решения позволили Хиоши с его бизнесом довольно резко начать свое развитие в высь по этажам города. И буквально за пол года такой работы, тот уже смог высунуть голову из канализации в средний сектор, ощутив менее черствый воздух пропитанный наркотой и героином.</div>
-  </div>
+Первый состав команды был из трёх существ разных расс, аркана девушка, ярко-розового окраса — <span class="glitch-name" data-name="Каденс Слоан" data-id="cadence">Каденс Слоан</span>, мужчина человеческой расы <span class="glitch-name" data-name="Иридий" data-id="iridium">Иридий</span> с серебряными волосами, и мужчина вульпканин <span class="glitch-name" data-name="Дарос Полей" data-id="daros">Дарос Полей</span>.
 
-  <div class="log-block">
-    <div class="log-type">Дело: Красота</div>
-    <div class="log-content">Первое задание их оказалось до ужасти просто, они получили его от фирмы по продаже средств по уходу за красотой, на другую такую-же фирму. Требовалось лишь сделать фотографии босса фирмы, находящегося в приватном клубе со страпоном не в том месте. И в отличии от низжевого рынка, на среднем рынке это могло реально повлиять на восприятие фирмы вплоть до обвала её акций. Дело тот закрыл быстро и без проблем, что пробило ему сразу небольшие но значительные связи на среднем плато.</div>
-  </div>
+И если вульпу с арканой Хиоши смог достать буквально с подворотен нижнего плато, человека ему подослал один из знакомых, чьи заказы он уже не раз выполнял со среднего плато. И найм новых сотрудников стал для организации буквально вторым дыханием, это позволило брать на пару заказов больше, а учитывая что с приходом Иридия, у них ещё и появился автотранспорт который по явному согласию всех сторон стал принадлежать организации. С того момента их влияние начало расходиться по среднему плато, начиная с ежедневных заданий по сборке компромата, заканчиваю уже прямым созданием самого этого компромата.</div>
 
-  <div class="log-block">
-    <div class="log-type">Найм: Команда</div>
-    <div class="log-content">К тому моменту тот уже начал предпринимать движение в найме дополнительных сотрудников, уверенности естественно в каждом новом не было, и Хиоши понимал что каждый из них может подставить его в любой момент, но это всяко лучше когда предатель прикрывает спину от врага, чем враг смотрящий сквозь дырку в твоем сердце.</div>
-  </div>
-
-  <div class="log-block no-type">
-    <div class="log-type">Состав: Команда</div>
-    <div class="log-content">
-      Первый состав команды был из трёх существ разных расс, аркана девушка, ярко-розового окраса - <span class="glitch-name" data-name="Каденс Слоан" data-id="cadence">Каденс Слоан</span>, мужчина человеческой расы <span class="glitch-name" data-name="Иридий" data-id="iridium">Иридий</span> с серебряными волосами, и мужчина вульпканин <span class="glitch-name" data-name="Дарос Полей" data-id="daros">Дарос Полей</span>.
-    </div>
     <div class="personnel-grid">
       <div class="personnel-thumb" data-id="hiyoshi"><img src="assets/decrypt/hiyoshi-elevator.png" alt=""><div class="p-name">ХИОШИ СУЗУКИ</div></div>
       <div class="personnel-thumb" data-id="cadence"><img src="assets/decrypt/arcana-cigarettes.jpeg" alt=""><div class="p-name">КАДЕНС СЛОАН</div></div>
@@ -325,23 +364,9 @@ body {
     </div>
   </div>
 
-  <div class="log-block">
-    <div class="log-type">Источник: Найм</div>
-    <div class="log-content">И если вульпу с арканой Хиоши смог достать буквально с подворотен нижнего плато, человека ему подослал один из знакомых, чьи заказы он уже не раз выполнял со среднего плато. И найм новых сотрудников стал для организации буквально вторым дыханием, это позволило брать на пару заказов больше, а учитывая что с приходом Иридия, у них ещё и появился автотранспорт который по явному согласию всех сторон стал принадлежать организации.</div>
-  </div>
-
-  <div class="log-block">
-    <div class="log-type">Развитие: Влияние</div>
-    <div class="log-content">С того момента их влияние начало расходиться по среднему плато, начиная с ежедневных заданий по сборке компромата, заканчиваю уже прямым созданием самого этого компромата.</div>
-  </div>
-
-  <div class="log-block no-type">
-    <div class="log-type alert">Предупреждение: Повреждение данных</div>
-    <div class="log-content glitch-flash">[Тут сильный нарастающий глитч эффект будто много информации уничтожено]</div>
-  </div>
-
-  <div class="log-block no-type corruption-block">
-    <div class="log-type alert">Коррупция: Финал</div>
+  <!-- Block 4: Corruption finale -->
+  <div class="log-block" id="corruptionBlock">
+    <div class="log-content glitch-flash" style="min-height: 60px; margin-bottom: 16px;"></div>
     <div class="damaged-text">
       начиная с <span class="glitch-text" data-text="[ДАННЫЕ УДАЛЕНЫ]">[ДАННЫЕ УДАЛЕНЫ]</span> организация развилась и <span class="glitch-text" data-text="[ДАННЫЕ УДАЛЕНЫ]">[ДАННЫЕ УДАЛЕНЫ]</span> получила свой первый и <span class="glitch-text" data-text="[ДАННЫЕ УДАЛЕНЫ]">[ДАННЫЕ УДАЛЕНЫ]</span>, заказ от <span class="glitch-text" data-text="[ДАННЫЕ УДАЛЕНЫ]">[ДАННЫЕ УДАЛЕНЫ]</span>
     </div>
@@ -356,14 +381,8 @@ body {
 </div>
 
 <script>
-/* ========== DATA ========== */
 const CORRUPT_CHARS = '▓▒░█/#<>[]{}01ψΩΛЖЯÆИҰ∎◢◣◤◥';
-const DOSSIER = {
-  hiyoshi: { name: 'ХИОШИ СУЗУКИ', photo: 'assets/decrypt/hiyoshi-elevator.png', fields: [['ФИО','Хиоши Сузуки'],['ПОЛ','мужской'],['РАСА','человек'],['РОСТ','178 см'],['ВЕС','71 кг'],['СТАТУС','след оборван'],['РОДНАЯ ПЛАНЕТА','Земля / Солнечная система'],['КРАТКАЯ ХАРАКТЕРИСТИКА','Основатель. Поднял агентство из бытового сыска в рынок корпоративной грязи, предпочитая дробить заказы так, чтобы никто не видел всей картины целиком.']] },
-  cadence: { name: 'КАДЕНС СЛОАН', photo: 'assets/decrypt/arcana-cigarettes.jpeg', fields: [['ФИО','Каденс Слоан'],['ПОЛ','женский'],['РАСА','аркана'],['РОСТ','171 см'],['ВЕС','57 кг'],['СТАТУС','последний след нестабилен'],['РОДНАЯ ПЛАНЕТА','не зафиксирована'],['КРАТКАЯ ХАРАКТЕРИСТИКА','Полевой элемент. Сцены вокруг неё выглядят бытовыми, но именно через такие места в архиве чаще всего начинается чужой компромат.']] },
-  iridium: { name: 'ИРИДИЙ', photo: 'assets/decrypt/iridium-elevator.png', fields: [['ФИО','Иридий'],['ПОЛ','мужской'],['РАСА','человек'],['РОСТ','188 см'],['ВЕС','79 кг'],['СТАТУС','следы разорваны'],['РОДНАЯ ПЛАНЕТА','Ме▓р◢к█уÆрЯи01-█◣'],['КРАТКАЯ ХАРАКТЕРИСТИКА','Принёс агентству подвижность. Возникает рядом с узлами вывоза, передачи и слишком быстрым исчезновением хвостов.']] },
-  daros:   { name: 'ДАРОС ПОЛЕЙ', photo: 'assets/decrypt/daros-placeholder.svg', fields: [['ФИО','Дарос Полей'],['ПОЛ','мужской'],['РАСА','вульпканин'],['РОСТ','182 см'],['ВЕС','68 кг'],['СТАТУС','данные неполные'],['РОДНАЯ ПЛАНЕТА','не подтверждена'],['КРАТКАЯ ХАРАКТЕРИСТИКА','Связан с частотами, служебными проходами, запасными ключами и нижним плато. От него осталось меньше лица, чем метода.']] }
-};
+const MCHARS = '0123456789ABCDEF▓▒░█アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
 
 /* ========== BOOT ========== */
 async function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
@@ -381,12 +400,27 @@ async function runBoot(){
     const div = document.createElement('div'); div.className = 'boot-line'; div.textContent = line; box.appendChild(div);
     await sleep(40); div.classList.add('visible'); await sleep(220);
   }
-  await sleep(600);
+  await sleep(500);
+  document.getElementById('fileChoices').style.display = 'block';
+  document.querySelectorAll('.file-choice').forEach(c => {
+    c.addEventListener('click', () => startArchive(c.dataset.choice));
+  });
+}
+
+function startArchive(choice){
   document.getElementById('boot').classList.add('done');
+  const container = document.getElementById('logContainer');
+  container.classList.add('active');
+  initTypewriter();
+  if(choice === 'dossier'){
+    setTimeout(()=>{
+      document.getElementById('personnelBlock').scrollIntoView({behavior:'smooth', block:'start'});
+    }, 1500);
+  }
 }
 
 /* ========== TYPEWRITER ========== */
-function typeWriter(el, speed=10){
+function typeWriter(el, speed=7){
   const full = el.dataset.text || el.textContent.trim();
   if(!full) return;
   el.dataset.text = full; el.textContent = '';
@@ -398,20 +432,24 @@ function typeWriter(el, speed=10){
   }, speed);
 }
 
-/* ========== OBSERVER ========== */
-const observer = new IntersectionObserver((entries)=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting){
-      entry.target.classList.add('visible');
-      const type = entry.target.querySelector('.log-type'); if(type) type.classList.add('pulse');
-      const content = entry.target.querySelector('.log-content');
-      if(content && !entry.target.classList.contains('no-type') && !content.classList.contains('done')){
-        typeWriter(content, 9);
-      }
-      if(entry.target.classList.contains('corruption-block')) triggerFinale();
+function initTypewriter(){
+  const blocks = document.querySelectorAll('.log-block');
+  let idx = 0;
+  function next(){
+    if(idx >= blocks.length) return;
+    const block = blocks[idx];
+    block.classList.add('visible');
+    const content = block.querySelector('.log-content');
+    if(content && !content.classList.contains('done') && content.textContent.trim()){
+      typeWriter(content, 7);
+      setTimeout(next, Math.min(content.textContent.length * 7 + 400, 8000));
+    } else {
+      setTimeout(next, 600);
     }
-  });
-}, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    idx++;
+  }
+  next();
+}
 
 /* ========== GLITCH HOVER NAMES ========== */
 function initGlitchNames(){
@@ -461,11 +499,10 @@ function spawnParticles(x, y, count){
   }
 }
 
-/* ========== MATRIX RAIN (lightweight) ========== */
+/* ========== MATRIX RAIN ========== */
 const canvas = document.getElementById('matrixCanvas');
 const ctx = canvas.getContext('2d');
 let mw, mh, drops = [], mActive = false, mId;
-const MCHARS = '0123456789ABCDEF▓▒░█アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
 function resizeM(){
   mw = canvas.width = window.innerWidth; mh = canvas.height = window.innerHeight;
   const cols = Math.floor(mw/16); drops = [];
@@ -501,6 +538,16 @@ function triggerFinale(){
   setTimeout(()=>{ document.getElementById('ntAlert').classList.add('visible'); }, 1400);
 }
 
+/* ========== OBSERVER ========== */
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      if(entry.target.id === 'corruptionBlock') triggerFinale();
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('#corruptionBlock').forEach(el=>observer.observe(el));
+
 /* ========== AMBIENT GLITCH ========== */
 setInterval(()=>{
   const blocks = document.querySelectorAll('.log-block.visible');
@@ -513,15 +560,9 @@ setInterval(()=>{
 /* ========== INIT ========== */
 window.addEventListener('DOMContentLoaded', ()=>{
   runBoot();
-  document.querySelectorAll('.log-content').forEach(el=>{
-    if(!el.closest('.log-block').classList.contains('no-type')){
-      el.dataset.text = el.textContent.trim(); el.textContent = '';
-    }
-  });
-  document.querySelectorAll('.log-block').forEach(el=>observer.observe(el));
   initGlitchNames(); initDossier();
 });
 window.addEventListener('resize', ()=>{ if(mActive) resizeM(); });
 </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a09ce5777da40d1a',t:'MTc4MTE0MTkwNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a09cf76f1c150d1a',t:'MTc4MTE0MjY0Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
