@@ -34,29 +34,30 @@ body{
   display:flex;flex-direction:column;align-items:center;gap:16px;position:relative;
   animation:floatFile 8s ease-in-out infinite;
   transition:transform .22s ease,filter .22s ease;
+  z-index:3;
 }
 .file-btn:nth-child(2){animation-duration:9.3s;animation-delay:-1.8s}
 .file-btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
 @keyframes floatFile{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 
 .file-icon{
-  position:relative;width:138px;height:170px;
+  position:relative;width:138px;height:170px;z-index:4;
   border:1px solid rgba(255,255,255,.14);
   background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));
   box-shadow:0 0 0 1px rgba(255,255,255,.02),0 0 48px rgba(0,0,0,.5);
-  overflow:hidden;
+  overflow:hidden;pointer-events:none;
 }
 .file-icon::before{
-  content:"";position:absolute;right:-1px;top:-1px;
+  content:"";position:absolute;right:-1px;top:-1px;pointer-events:none;
   border-top:24px solid rgba(255,255,255,.11);border-left:24px solid transparent;
 }
 .file-icon::after{
-  content:"";position:absolute;inset:14px;border:1px solid rgba(255,255,255,.08);
+  content:"";position:absolute;inset:14px;border:1px solid rgba(255,255,255,.08);pointer-events:none;
   background:linear-gradient(180deg,rgba(255,255,255,.025),transparent 30%,transparent 70%,rgba(255,255,255,.02)),
               repeating-linear-gradient(180deg,transparent 0 22px,rgba(255,255,255,.08) 22px 23px);
 }
 .file-btn::after{
-  content:"";position:absolute;top:14px;left:50%;transform:translateX(-50%);
+  content:"";position:absolute;top:14px;left:50%;transform:translateX(-50%);pointer-events:none;
   width:142px;height:176px;
   background:radial-gradient(circle at center,rgba(255,255,255,.05),transparent 72%);
   filter:blur(18px);opacity:.44;
@@ -74,9 +75,9 @@ body{
   63%{transform:translate(1px,0)}67%{transform:translate(-2px,0)}71%{transform:none}
 }
 .file-label{
-  max-width:280px;text-align:center;font-size:.92rem;line-height:1.75;
+  max-width:280px;text-align:center;font-size:.92rem;line-height:1.75;z-index:4;
   letter-spacing:.14em;text-transform:uppercase;color:#eef4f0;
-  font-family:'Share Tech Mono',monospace;
+  font-family:'Share Tech Mono',monospace;pointer-events:none;
 }
 
 /* === КОНСОЛЬ === */
@@ -86,9 +87,9 @@ body{
   background:rgba(0,0,0,.985);
 }
 .console.active{display:flex}
-.console-noise{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.console-noise-area{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .noise-row{
-  position:absolute;left:0;right:0;white-space:nowrap;
+  position:absolute;left:0;right:0;white-space:nowrap;pointer-events:none;
   color:rgba(150,255,190,.18);font-size:.86rem;letter-spacing:.21em;
   text-transform:uppercase;font-family:'Share Tech Mono',monospace;
   animation:noiseDrift linear forwards;
@@ -104,14 +105,14 @@ body{
   position:relative;overflow:hidden;
 }
 .console-box::before{
-  content:"";position:absolute;inset:0;
+  content:"";position:absolute;inset:0;pointer-events:none;
   background:repeating-linear-gradient(0deg,rgba(150,255,190,.05) 0 2px,transparent 2px 4px);
-  opacity:.45;pointer-events:none;
+  opacity:.45;
 }
 .console-box::after{
-  content:"";position:absolute;inset:0;
+  content:"";position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,transparent 0%,rgba(150,255,190,.06) 46%,rgba(150,255,190,.18) 50%,rgba(150,255,190,.06) 54%,transparent 100%);
-  animation:scanBar 3.4s linear infinite;pointer-events:none;
+  animation:scanBar 3.4s linear infinite;
 }
 @keyframes scanBar{0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}
 .console-lines{position:relative;z-index:1;display:grid;gap:8px;min-height:190px}
@@ -121,7 +122,7 @@ body{
 /* === АРХИВ === */
 .archive{
   display:none;position:relative;z-index:10;
-  width:100%;max-width:900px;margin:0 auto;
+  width:100%;max-width:960px;margin:0 auto;
   padding:60px 20px 120px;
   flex-direction:column;align-items:center;gap:60px;
 }
@@ -130,10 +131,10 @@ body{
 /* === СТРАНИЦЫ === */
 .page{
   position:relative;width:min(210mm,calc(100vw - 40px));min-height:297mm;
-  background:#d8d5cd;
+  background:#d4d0c8;
   box-shadow:0 20px 60px rgba(0,0,0,.7),inset 0 0 80px rgba(60,50,40,.08);
   overflow:hidden;flex-shrink:0;
-  filter:contrast(1.05);
+  filter:contrast(1.05) brightness(.98);
 }
 /* Грязная текстура бумаги */
 .page::before{
@@ -180,7 +181,7 @@ body{
   transition:color .1s ease;
 }
 .glyph.in-prism{
-  color:#f0f0f0;text-shadow:0 0 6px rgba(255,255,255,.25);
+  color:#f0f0f0;text-shadow:0 0 8px rgba(255,255,255,.3);
 }
 .glyph.glitching{
   animation:glyphGlitch .1s infinite;
@@ -230,8 +231,8 @@ body.archive-open .btn-back{display:block}
 .prism{
   position:fixed;z-index:40;display:none;
   height:260px;
-  border:1px solid rgba(100,255,160,.42);
-  background:linear-gradient(180deg,rgba(0,15,5,.9),rgba(0,12,4,.85));
+  border:1px solid rgba(100,255,160,.5);
+  background:linear-gradient(180deg,rgba(0,15,5,.92),rgba(0,12,4,.88));
   box-shadow:0 0 40px rgba(0,255,100,.12),inset 0 0 30px rgba(0,255,80,.06);
   overflow:hidden;pointer-events:none;
 }
@@ -251,11 +252,11 @@ body.archive-open .btn-back{display:block}
 }
 @keyframes vhsPulse{0%,100%{opacity:.3}50%{opacity:.6}}
 
-.prism-glitch{
+.prism-glitch-layer{
   position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;
   background:radial-gradient(circle at 30% 50%,rgba(0,255,0,.08),transparent 60%);
 }
-.prism.glitching .prism-glitch{opacity:1;animation:prismFlicker .12s infinite}
+.prism.glitching .prism-glitch-layer{opacity:1;animation:prismFlicker .12s infinite}
 @keyframes prismFlicker{0%,100%{opacity:.2}50%{opacity:.6}}
 
 .prism-header{
@@ -343,7 +344,7 @@ body.archive-open .btn-back{display:block}
 </div>
 
 <div class="console" id="console">
-  <div class="console-noise" id="consoleNoise"></div>
+  <div class="console-noise-area" id="consoleNoiseArea"></div>
   <div class="console-box">
     <div class="console-lines" id="consoleLines"></div>
   </div>
@@ -357,7 +358,7 @@ body.archive-open .btn-back{display:block}
 </main>
 
 <div class="prism" id="prism">
-  <div class="prism-glitch"></div>
+  <div class="prism-glitch-layer"></div>
   <div class="prism-header" id="prismHeader">
     <span></span>
     <button class="prism-pin" id="prismPin" type="button">закрепить</button>
@@ -412,7 +413,7 @@ const dossierData = {
 const screenFiles = document.getElementById('screenFiles');
 const consoleEl = document.getElementById('console');
 const consoleLines = document.getElementById('consoleLines');
-const consoleNoise = document.getElementById('consoleNoise');
+const consoleNoiseArea = document.getElementById('consoleNoiseArea');
 const archive = document.getElementById('archive');
 const pagesWrap = document.getElementById('pages');
 const btnBack = document.getElementById('btnBack');
@@ -430,7 +431,6 @@ let allGlyphs = [];
 let members = {};
 let prismActive = false;
 let prismFixed = false;
-let prismY = 120;
 let prismDragging = false;
 let dragOffsetY = 0;
 const ipPromise = fetchIP();
@@ -438,7 +438,6 @@ const ipPromise = fetchIP();
 function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function randomForeign(){return foreignAlphabet[Math.floor(Math.random()*foreignAlphabet.length)]}
 function randomGlitch(){return glitchChars[Math.floor(Math.random()*glitchChars.length)]}
-function foreignOrGlitch(){return Math.random()>0.3?randomForeign():randomGlitch()}
 
 async function fetchIP(){
   const tryFetch = async(url)=>{
@@ -491,8 +490,8 @@ function startMatrix(){
 }
 
 /* === КОНСОЛЬ === */
-function consoleNoise(){
-  consoleNoise.innerHTML='';
+function startConsoleNoise(){
+  consoleNoiseArea.innerHTML='';
   let count=0;
   const timer=setInterval(()=>{
     const row=document.createElement('div');
@@ -500,7 +499,7 @@ function consoleNoise(){
     row.style.top=(Math.random()*100)+'%';
     row.style.animationDuration=(4+Math.random()*3)+'s';
     row.textContent=Array.from({length:16+Math.floor(Math.random()*12)},randomGlitch).join('');
-    consoleNoise.appendChild(row);
+    consoleNoiseArea.appendChild(row);
     setTimeout(()=>row.remove(),7000);
     count++;
     if(count>30) clearInterval(timer);
@@ -522,7 +521,7 @@ async function typeConsole(lines){
 async function runConsoleDecrypt(){
   screenFiles.classList.add('hidden');
   consoleEl.classList.add('active');
-  consoleNoise();
+  startConsoleNoise();
   const ip=await ipPromise;
   await sleep(200);
   await typeConsole([
@@ -538,13 +537,13 @@ async function runConsoleDecrypt(){
   document.body.classList.add('archive-open');
   await sleep(200);
   consoleEl.classList.remove('active');
-  consoleNoise.innerHTML='';
+  consoleNoiseArea.innerHTML='';
   alignPrismToPage();
 }
 async function runConsoleUnath(){
   screenFiles.classList.add('hidden');
   consoleEl.classList.add('active');
-  consoleNoise();
+  startConsoleNoise();
   const ip=await ipPromise;
   await sleep(200);
   await typeConsole([
@@ -556,7 +555,7 @@ async function runConsoleUnath(){
   ]);
   const back=()=>{
     consoleEl.classList.remove('active');
-    consoleNoise.innerHTML='';
+    consoleNoiseArea.innerHTML='';
     screenFiles.classList.remove('hidden');
     document.removeEventListener('keydown',back);
     document.removeEventListener('click',back);
@@ -627,7 +626,11 @@ function buildPages(){
 function measureGlyphs(){
   allGlyphs=Array.from(document.querySelectorAll('.glyph')).map(el=>{
     const r=el.getBoundingClientRect();
-    return {el,real:el.dataset.real,damaged:el.dataset.damaged==='1',member:el.dataset.member||null,x:r.left+r.width/2,y:r.top+r.height/2};
+    return {
+      el,real:el.dataset.real,damaged:el.dataset.damaged==='1',
+      member:el.dataset.member||null,
+      x:r.left+r.width/2,y:r.top+r.height/2
+    };
   });
 }
 
@@ -719,31 +722,25 @@ function updatePrism(){
       const prog=g.el._progress;
       g.el.classList.add('in-prism');
       if(g.damaged){
-        // Повреждённые: постоянный глитч, иногда мелькает реальный символ
         g.el.classList.add('glitching');
         g.el.textContent=Math.random()>0.85?g.real:(Math.random()>0.5?randomGlitch():randomForeign());
         hasGlitch=true;
       }else{
         if(prog<0.25){
-          // Стадия 1: хаотичная прокрутка символов
           g.el.classList.add('glitching');
           g.el.textContent=Math.random()>0.4?randomGlitch():randomForeign();
           hasGlitch=true;
         }else if(prog<0.45){
-          // Стадия 2: быстрая прокрутка с редкими реальными
           g.el.classList.add('glitching');
           g.el.textContent=Math.random()>0.75?g.real:(Math.random()>0.5?randomForeign():randomGlitch());
           hasGlitch=true;
         }else if(prog<0.7){
-          // Стадия 3: переход, мелькают гличи
           g.el.classList.remove('glitching');
           g.el.textContent=Math.random()>0.6?g.real:randomForeign();
         }else if(prog<0.9){
-          // Стадия 4: почти стабильно
           g.el.classList.remove('glitching');
           g.el.textContent=Math.random()>0.15?g.real:randomForeign();
         }else{
-          // Стадия 5: стабильный реальный текст
           g.el.classList.remove('glitching');
           g.el.textContent=g.real;
         }
@@ -767,6 +764,16 @@ function updatePrism(){
   });
 }
 setInterval(updatePrism,45);
+
+window.addEventListener('resize',()=>{
+  if(archive.classList.contains('active')){
+    measureGlyphs();
+    alignPrismToPage();
+  }
+});
+window.addEventListener('scroll',()=>{
+  if(archive.classList.contains('active')) measureGlyphs();
+},{passive:true});
 
 /* === ДОСЬЕ === */
 function openDossier(id){
@@ -804,18 +811,7 @@ btnBack.addEventListener('click',backToFiles);
 document.getElementById('openDecrypt').addEventListener('click',runConsoleDecrypt);
 document.getElementById('openUnath').addEventListener('click',runConsoleUnath);
 
-window.addEventListener('resize',()=>{
-  if(archive.classList.contains('active')){
-    measureGlyphs();
-    alignPrismToPage();
-  }
-});
-window.addEventListener('scroll',()=>{
-  if(archive.classList.contains('active')) measureGlyphs();
-},{passive:true});
-
 startMatrix();
 </script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a099231fbd719da9',t:'MTc4MTEwMjQ4OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a09cac1cdbe2f5d7',t:'MTc4MTEzOTU1Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
