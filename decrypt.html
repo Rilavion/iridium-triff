@@ -23,7 +23,6 @@ body {
   overflow-x: hidden; min-height: 100vh;
 }
 
-/* Overlays */
 .scanlines {
   position: fixed; inset:0; z-index: 9999; pointer-events: none; opacity: 0.05;
   background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.06) 2px, rgba(255,255,255,0.06) 4px);
@@ -39,7 +38,6 @@ body {
   background: radial-gradient(ellipse 75% 60% at 50% 50%, transparent 0%, rgba(0,0,0,0.15) 70%, rgba(0,0,0,0.4) 100%);
 }
 
-/* Boot / Console */
 #boot {
   position: fixed; inset:0; z-index: 10000; background: #000;
   display: flex; align-items: center; justify-content: center; flex-direction: column;
@@ -82,58 +80,44 @@ body {
   display: inline-block; padding: 2px 0; font-size: 1.05rem; line-height: 1.8;
 }
 .file-choice:hover { color: var(--c-green); text-shadow: 0 0 12px rgba(51,255,51,0.6); }
+.file-choice.locked {
+  color: #ff3333; cursor: not-allowed; position: relative;
+}
+.file-choice.locked:hover {
+  color: #ff3333; text-shadow: 0 0 12px rgba(255,50,50,0.6);
+}
+.lock-msg {
+  display: none; color: #ff3333; font-size: 0.85rem; margin-top: 4px; line-height: 1.6;
+  text-shadow: 0 0 8px rgba(255,50,50,0.3);
+}
+.lock-msg.visible { display: block; }
 
-/* Glitch second choice */
-.file-choice.glitch {
-  position: relative; color: #ff3333; display: inline-block;
-}
-.file-choice.glitch::before,
-.file-choice.glitch::after {
-  content: attr(data-text); position: absolute; top:0; left:0; width:100%; height:100%; background: #000;
-}
-.file-choice.glitch::before {
-  left: 2px; text-shadow: -1px 0 #fff; clip-path: inset(20% 0 55% 0);
-  animation: g1 2s infinite linear alternate-reverse;
-}
-.file-choice.glitch::after {
-  left: -2px; text-shadow: -1px 0 #888; clip-path: inset(60% 0 15% 0);
-  animation: g2 2.5s infinite linear alternate-reverse;
-}
-@keyframes g1 {
-  0%{clip-path:inset(15% 0 65% 0); transform:translate(-2px,1px)} 20%{clip-path:inset(55% 0 10% 0); transform:translate(2px,-1px)}
-  40%{clip-path:inset(30% 0 40% 0); transform:translate(-1px,2px)} 60%{clip-path:inset(70% 0 5% 0); transform:translate(1px,0)}
-  80%{clip-path:inset(10% 0 80% 0); transform:translate(0,-2px)} 100%{clip-path:inset(45% 0 30% 0); transform:translate(-2px,1px)}
-}
-@keyframes g2 {
-  0%{clip-path:inset(65% 0 15% 0); transform:translate(1px,-1px)} 20%{clip-path:inset(10% 0 70% 0); transform:translate(-1px,2px)}
-  40%{clip-path:inset(50% 0 25% 0); transform:translate(2px,0)} 60%{clip-path:inset(20% 0 55% 0); transform:translate(-2px,-1px)}
-  80%{clip-path:inset(80% 0 5% 0); transform:translate(0,1px)} 100%{clip-path:inset(35% 0 45% 0); transform:translate(1px,-2px)}
-}
-
-/* Banner Logo */
 .banner {
-  display: none; text-align: center; margin-bottom: 60px; padding: 40px 0;
-  animation: bannerIn 1s ease-out forwards;
+  display: none; text-align: center; margin-bottom: 60px; padding: 60px 20px;
+  border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02);
 }
-.banner.active { display: block; }
-.banner img {
-  max-width: 320px; width: 100%; height: auto;
-  filter: drop-shadow(0 0 15px #ff0000) drop-shadow(0 0 35px rgba(255,0,0,0.4));
-  animation: neonLogo 2.8s infinite alternate;
+.banner.active { display: block; animation: bannerIn 1s ease-out forwards; }
+.banner-logo {
+  max-width: 280px; width: 100%; height: auto; margin-bottom: 24px;
+  filter: brightness(0.95) contrast(1.1);
+}
+.banner-title {
+  font-family: var(--font-display); font-size: clamp(1.4rem, 4vw, 2.2rem);
+  color: #fff; letter-spacing: 0.08em; margin-bottom: 12px;
+  text-transform: uppercase;
+}
+.banner-desc {
+  font-size: 0.9rem; color: #888; line-height: 1.6; max-width: 600px; margin: 0 auto;
+  letter-spacing: 0.02em;
 }
 @keyframes bannerIn {
-  from { opacity: 0; transform: scale(0.92); }
-  to { opacity: 1; transform: scale(1); }
-}
-@keyframes neonLogo {
-  0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; filter: drop-shadow(0 0 15px #ff0000) drop-shadow(0 0 35px rgba(255,0,0,0.4)); }
-  20%, 24%, 55% { opacity: 0.6; filter: drop-shadow(0 0 5px rgba(255,0,0,0.3)); }
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* Log stream */
 .log-container {
   position: relative; z-index: 1; max-width: 900px; margin: 0 auto;
-  padding: 80px 20px 300px; display: none;
+  padding: 80px 20px 120px; display: none;
 }
 .log-container.active { display: block; }
 .log-block {
@@ -144,17 +128,14 @@ body {
 .log-block.visible { opacity: 1; transform: translateY(0); }
 .log-content {
   font-size: 1.1rem; line-height: 1.85; color: var(--c-text);
-  text-shadow: 0 0 4px rgba(255,255,255,0.06); white-space: pre-wrap;
+  text-shadow: 0 0 4px rgba(255,255,255,0.06);
 }
-.log-content .decode-char { color: #777; transition: color 0.12s; }
-.log-content .decode-char.resolved { color: inherit; }
 .cursor {
   display: inline-block; width: 8px; height: 1.1em; background: var(--c-text);
   vertical-align: bottom; margin-left: 2px; animation: blink 1s step-end infinite;
 }
 @keyframes blink { 50% { opacity: 0; } }
 
-/* Side-by-side block for pyramid */
 .log-block.side-by-side {
   display: flex; gap: 24px; align-items: flex-start; border-left: none; padding-left: 0;
 }
@@ -169,19 +150,14 @@ body {
   background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.12) 2px, rgba(0,0,0,0.12) 4px);
   pointer-events: none;
 }
-@media (max-width: 700px) {
-  .log-block.side-by-side { flex-direction: column; }
-  .log-side-img { width: 100%; max-width: 320px; margin: 0 auto; }
-}
 
-/* Glitch names in text */
 .glitch-name {
   color: #fff; border-bottom: 1px dashed rgba(255,255,255,0.3); cursor: pointer;
   transition: color 0.2s, text-shadow 0.2s, border-bottom-style 0.2s;
+  position: relative; display: inline;
 }
 .glitch-name:hover { color: #fff; text-shadow: 0 0 12px rgba(255,255,255,0.5); border-bottom-style: solid; }
 
-/* Side Panel Dossier */
 .side-panel {
   position: fixed; top: 0; right: 0; width: min(420px, 85vw); height: 100vh;
   background: #050505; border-left: 2px solid rgba(255,255,255,0.12);
@@ -226,37 +202,40 @@ body {
   font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: #888; margin-bottom: 6px; display: block;
 }
 
-/* Finale */
-.corruption-block { margin-top: 100px; }
-.damaged-text { color: #555; font-size: 1rem; line-height: 1.8; word-break: break-all; letter-spacing: 0.02em; }
-.glitch-text { position: relative; display: inline-block; color: #fff; }
-.glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #050505; }
-.glitch-text::before { left: 2px; text-shadow: -1px 0 #fff; clip-path: inset(20% 0 55% 0); animation: g1 2.5s infinite linear alternate-reverse; }
-.glitch-text::after { left: -2px; text-shadow: -1px 0 #888; clip-path: inset(60% 0 15% 0); animation: g2 3s infinite linear alternate-reverse; }
+.corruption-block { margin-top: 60px; }
+.damaged-text { color: #999; font-size: 1.1rem; line-height: 1.85; }
+.redacted {
+  color: #ff3333; font-weight: bold;
+  text-shadow: 0 0 8px rgba(255,50,50,0.4);
+  animation: redactedPulse 3s ease-in-out infinite;
+}
+@keyframes redactedPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
 
 .finale-alert {
-  font-family: var(--font-display); text-align: center; margin-top: 50px; color: var(--c-alert);
-  text-shadow: 0 0 15px rgba(255,30,30,0.5), 0 0 30px rgba(255,0,0,0.2);
-  font-size: clamp(1.3rem, 3.5vw, 1.9rem); line-height: 1.8; letter-spacing: 0.04em;
-  opacity: 0; transform: scale(0.95); transition: opacity 1.5s ease, transform 1.5s ease;
+  font-family: var(--font-display); text-align: center; margin-top: 50px;
+  font-size: clamp(1.1rem, 3vw, 1.6rem); line-height: 1.8; letter-spacing: 0.04em;
 }
-.finale-alert.visible { opacity: 1; transform: scale(1); }
-.finale-alert .sub { font-family: var(--font-mono); font-size: 0.8rem; color: #777; margin-top: 20px; text-shadow: none; }
-.finale-btn {
-  display: inline-block; margin-top: 30px; padding: 12px 28px;
+.finale-alert .redacted-title {
+  color: #ff3333;
+  text-shadow: 0 0 12px rgba(255,30,30,0.4);
+  animation: redactedPulse 3s ease-in-out infinite;
+}
+
+.return-btn {
+  display: inline-block; margin-top: 40px; padding: 12px 28px;
   border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.03);
   color: #fff; font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 0.1em;
   cursor: pointer; transition: all 0.3s ease; text-transform: uppercase;
 }
-.finale-btn:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.07); box-shadow: 0 0 20px rgba(255,255,255,0.1); color: #fff; }
+.return-btn:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.07); box-shadow: 0 0 20px rgba(255,255,255,0.1); }
 
-/* Effects */
-.shake { animation: shake 0.15s cubic-bezier(.36,.07,.19,.97) both; }
-@keyframes shake {
-  0%,100%{transform:translate(0,0)} 10%{transform:translate(-3px,2px)} 20%{transform:translate(2px,-2px)} 30%{transform:translate(-2px,1px)}
-  40%{transform:translate(1px,-1px)} 50%{transform:translate(-1px,2px)} 60%{transform:translate(2px,0)} 70%{transform:translate(-2px,-1px)}
-  80%{transform:translate(1px,1px)} 90%{transform:translate(-1px,-2px)}
+.bottom-return {
+  text-align: center; margin-top: 80px; padding-bottom: 60px;
 }
+
 .particle {
   position: fixed; pointer-events: none; z-index: 10001; font-family: var(--font-mono);
   font-weight: bold; color: #fff; text-shadow: 0 0 6px rgba(255,255,255,0.7);
@@ -266,13 +245,13 @@ body {
   0%{ transform:translate(0,0) rotate(0deg); opacity:1; }
   100%{ transform:translate(var(--tx), var(--ty)) rotate(var(--tr)); opacity:0; }
 }
-#matrixCanvas { position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: 0; transition: opacity 1s; }
-#matrixCanvas.active { opacity: 0.22; }
-.glitch-flash { animation: flashCorrupt 0.9s steps(2) infinite; color: #fff; }
-@keyframes flashCorrupt { 0%,100%{ opacity:1; color:#fff; } 50%{ opacity:0.4; color:#ff3333; } }
 
+@media (max-width: 700px) {
+  .log-block.side-by-side { flex-direction: column; }
+  .log-side-img { width: 100%; max-width: 320px; margin: 0 auto; }
+}
 @media (max-width: 600px) {
-  .log-container { padding: 60px 16px 200px; }
+  .log-container { padding: 60px 16px 100px; }
   .log-content { font-size: 1rem; }
   .side-panel { width: 90vw; padding: 40px 20px; }
   .side-panel-grid { grid-template-columns: 1fr; }
@@ -286,22 +265,20 @@ body {
 <div class="scanlines"></div>
 <div class="noise"></div>
 <div class="vignette"></div>
-<canvas id="matrixCanvas"></canvas>
 
-<!-- Boot Console -->
 <div id="boot">
   <div class="boot-inner">
     <div id="bootLines"></div>
     <div id="fileChoices" style="display:none; margin-top:16px;">
       <div class="file-choice" data-choice="history">> [1] archive_decrypt_full.log — полная хронология агентства</div>
-      <div class="file-choice glitch" data-choice="dossier" data-text="> [2] iridium77 - не_унатх">> [2] iridium77 - не_унатх</div>
+      <div class="file-choice locked" data-choice="dossier">> [2] iridium77 — не_унатх [ЗАБЛОКИРОВАН]</div>
+      <div id="lockMsg" class="lock-msg">> ОШИБКА: файл заблокирован • требуется допуск уровня 7+</div>
       <div class="boot-line" style="margin-top:12px; color: var(--c-dim);">> выберите файл для чтения...</div>
     </div>
     <span class="boot-cursor" id="bootCursor">▮</span>
   </div>
 </div>
 
-<!-- Side Panel -->
 <div class="side-panel" id="sidePanel">
   <button class="side-panel-close" id="sideClose">✕</button>
   <img class="side-panel-img" id="sideImg" src="" alt="">
@@ -313,73 +290,71 @@ body {
   </div>
 </div>
 
-<!-- Log Stream -->
 <div class="log-container" id="logContainer">
 
-  <!-- Banner appears only for history -->
   <div class="banner" id="banner">
-    <img src="assets/decrypt/logo.png" alt="DECRYPT">
+    <img class="banner-logo" src="assets/decrypt/logo.png" alt="DECRYPT">
+    <div class="banner-title">DECRYPT</div>
+    <div class="banner-desc">Частное детективное агентство • Сектор: Спинвардская Периферия • Планета Y-27 • Статус архива: частично повреждён</div>
   </div>
 
-  <div class="log-block">
-    <div class="log-content">Детективное частное агентство “DECRYPT” так-же как и большинство нишевых организациях зародилось в секторе Спинвардская Периферия, в самой гуще развития мегаполиса на планете Y-27, первый основатель организации стал <span class="glitch-name" data-name="Хиоши Сузуки" data-id="hiyoshi">Хиоши Сузуки</span>, прибывший на планету около 3х лет назад, на небольшой межтрансовом шаттле из солнечной системы. Начальный капитал организации составил 400.000$ наличными что были выделены Хиоши его родителями под залог, с ожиданием того что тот вернёт более 70% залога свыше, если не прогорит в сточной канаве планеты.
+  <div class="log-block" data-block="0">
+    <div class="log-content" data-raw="Детективное частное агентство &quot;DECRYPT&quot; так-же как и большинство нишевых организациях зародилось в секторе Спинвардская Периферия, в самой гуще развития мегаполиса на планете Y-27, первый основатель организации стал ::name::hiyoshi::Хиоши Сузуки::, прибывший на планету около 3х лет назад, на небольшой межтрансовом шаттле из солнечной системы. Начальный капитал организации составил 400.000$ наличными что были выделены Хиоши его родителями под залог, с ожиданием того что тот вернёт более 70% залога свыше, если не прогорит в сточной канаве планеты.
 
 Изначально агенство занималось конкретной поставленной задачей, принимая каждое предложение об детективной деятельности. В них часто входили уже клишированные запросы, слежка за второй половинкой которая подозревалась в измене, локальные потери вещей и небольших грабежей, по типу скрытия чей-то квартиры или съёмного жилья, снятие отпечатков, и поиски пропавших посылок утерянных местной почтовой службой.
 
-Этот нишевый бизнес буквально держался лишь на бытовых запросах ежедневно пытаясь выйти хоть на пару сотен долларов из долгов. За около чем более годовой работы таким темпом бизнес был приведён в ужасное состояние, помещение которое снимал Хиоши буквально трещало по швам пока арендодатель в очередной раз завышал цены аргументируя это очень просто “Город растёт - а мы теперь в центре его. Нет денег. Вали на окраину.”.
+Этот нишевый бизнес буквально держался лишь на бытовых запросах ежедневно пытаясь выйти хоть на пару сотен долларов из долгов. За около чем более годовой работы таким темпом бизнес был приведён в ужасное состояние, помещение которое снимал Хиоши буквально трещало по швам пока арендодатель в очередной раз завышал цены аргументируя это очень просто &quot;Город растёт - а мы теперь в центре его. Нет денег. Вали на окраину.&quot;.
 
-Это могло продолжаться буквально не более ещё двух месяцев, пока бы у Хиоши не кончились деньги, с учётом того что его родительский долг съедал более 80% заработка. Но тут как гром с небес появился шанс для малого бизнеса. Либо же до Хиоши самого дошла эта мысль, либо же ему дал очередную идею ежедневный клиент. А именно искать выгоду в корпоративных играх, пытаться заработать на добыче компромата против врагом той или иной фирмы обратившийся к нему, зачистки лишних данных или следов оставленных в ходе очередного “несчастного случая”.</div>
+Это могло продолжаться буквально не более ещё двух месяцев, пока бы у Хиоши не кончились деньги, с учётом того что его родительский долг съедал более 80% заработка. Но тут как гром с небес появился шанс для малого бизнеса. Либо же до Хиоши самого дошла эта мысль, либо же ему дал очередную идею ежедневный клиент. А именно искать выгоду в корпоративных играх, пытаться заработать на добыче компромата против врагом той или иной фирмы обратившийся к нему, зачистки лишних данных или следов оставленных в ходе очередного &quot;несчастного случая&quot;."></div>
   </div>
 
-  <div class="log-block side-by-side">
-    <div class="log-content">А учитывая что к этому времени город давно поделил сектриальный треугольник бизнесов, где самую вершину города занимали мега-корпорации, середину рынки получившие огласку в обществе, а дно подпольные рынки, нарко-базы, и стрип-клубы с провальными бизнесами. Работа была частно пыльной, и требующей поморать руки.
+  <div class="log-block side-by-side" data-block="1">
+    <div class="log-content" data-raw="А учитывая что к этому времени город давно поделил сектриальный треугольник бизнесов, где самую вершину города занимали мега-корпорации, середину рынки получившие огласку в обществе, а дно подпольные рынки, нарко-базы, и стрип-клубы с провальными бизнесами. Работа была частно пыльной, и требующей поморать руки.
 
-Хиоши решил сразу же занять данный рынок, и перейти в политику нейтральных действий, усвоив одно простое правило “За каждым хищником следует свой охотник, и третий наблюдатель что будет пожинать кости обоих.” а название агентства как его основную направленность тот решил не менять в угоду некой конспирации от любопытных глаз правительство. Мол кому есть дело до очередного детектива-самоучки который рано или поздно найдет свою пулу в засанной подворотне.
+Хиоши решил сразу же занять данный рынок, и перейти в политику нейтральных действий, усвоив одно простое правило &quot;За каждым хищником следует свой охотник, и третий наблюдатель что будет пожинать кости обоих.&quot; а название агентства как его основную направленность тот решил не менять в угоду некой конспирации от любопытных глаз правительство. Мол кому есть дело до очередного детектива-самоучки который рано или поздно найдет свою пулу в засанной подворотне.
 
 Данные решения позволили Хиоши с его бизнесом довольно резко начать свое развитие в высь по этажам города. И буквально за пол года такой работы, тот уже смог высунуть голову из канализации в средний сектор, ощутив менее черствый воздух пропитанный наркотой и героином.
 
-Первое задание их оказалось до ужасти просто, они получили его от фирмы по продаже средств по уходу за красотой, на другую такую-же фирму. Требовалось лишь сделать фотографии босса фирмы, находящегося в приватном клубе со страпоном не в том месте. И в отличии от низжевого рынка, на среднем рынке это могло реально повлиять на восприятие фирмы вплоть до обвала её акций. Дело тот закрыл быстро и без проблем, что пробило ему сразу небольшие но значительные связи на среднем плато.</div>
+Первое задание их оказалось до ужасти просто, они получили его от фирмы по продаже средств по уходу за красотой, на другую такую-же фирму. Требовалось лишь сделать фотографии босса фирмы, находящегося в приватном клубе со страпоном не в том месте. И в отличии от низжевого рынка, на среднем рынке это могло реально повлиять на восприятие фирмы вплоть до обвала её акций. Дело тот закрыл быстро и без проблем, что пробило ему сразу небольшие но значительные связи на среднем плато."></div>
     <div class="log-side-img">
       <img src="assets/decrypt/society-triangle.png" alt="[СХЕМА: СЕКТИРИАЛЬНЫЙ ТРЕУГОЛЬНИК]">
     </div>
   </div>
 
-  <div class="log-block" id="personnelBlock">
-    <div class="log-content">К тому моменту тот уже начал предпринимать движение в найме дополнительных сотрудников, уверенности естественно в каждом новом не было, и Хиоши понимал что каждый из них может подставить его в любой момент, но это всяко лучше когда предатель прикрывает спину от врага, чем враг смотрящий сквозь дырку в твоем сердце.
+  <div class="log-block" data-block="2" id="personnelBlock">
+    <div class="log-content" data-raw="К тому моменту тот уже начал предпринимать движение в найме дополнительных сотрудников, уверенности естественно в каждом новом не было, и Хиоши понимал что каждый из них может подставить его в любой момент, но это всяко лучше когда предатель прикрывает спину от врага, чем враг смотрящий сквозь дырку в твоем сердце.
 
-Первый состав команды был из трёх существ разных расс, аркана девушка, ярко-розового окраса — <span class="glitch-name" data-name="Каденс Слоан" data-id="cadence">Каденс Слоан</span>, мужчина человеческой расы <span class="glitch-name" data-name="Иридий" data-id="iridium">Иридий</span> с серебряными волосами, и мужчина вульпканин <span class="glitch-name" data-name="Дарос Полей" data-id="daros">Дарос Полей</span>.
+Первый состав команды был из трёх существ разных расс, аркана девушка, ярко-розового окраса — ::name::cadence::Каденс Слоан::, мужчина человеческой расы ::name::iridium::Иридий:: с серебряными волосами, и мужчина вульпканин ::name::daros::Дарос Полей::.
 
-И если вульпу с арканой Хиоши смог достать буквально с подворотен нижнего плато, человека ему подослал один из знакомых, чьи заказы он уже не раз выполнял со среднего плато. И найм новых сотрудников стал для организации буквально вторым дыханием, это позволило брать на пару заказов больше, а учитывая что с приходом Иридия, у них ещё и появился автотранспорт который по явному согласию всех сторон стал принадлежать организации. С того момента их влияние начало расходиться по среднему плато, начиная с ежедневных заданий по сборке компромата, заканчиваю уже прямым созданием самого этого компромата.</div>
+И если вульпу с арканой Хиоши смог достать буквально с подворотен нижнего плато, человека ему подослал один из знакомых, чьи заказы он уже не раз выполнял со среднего плато. И найм новых сотрудников стал для организации буквально вторым дыханием, это позволило брать на пару заказов больше, а учитывая что с приходом Иридия, у них ещё и появился автотранспорт который по явному согласию всех сторон стал принадлежать организации. С того момента их влияние начало расходиться по среднему плато, начиная с ежедневных заданий по сборке компромата, заканчиваю уже прямым созданием самого этого компромата."></div>
   </div>
 
-  <div class="log-block" id="corruptionBlock">
-    <div class="log-content glitch-flash" style="min-height: 60px; margin-bottom: 16px;"></div>
-    <div class="damaged-text">
-      начиная с <span class="glitch-text" data-text="[ДАННЫЕ УДАЛЕНЫ]">[ДАННЫЕ УДАЛЕНЫ]</span> организация развилась и <span class="glitch-text" data-text="[ДАННЫЕ УДАЛЕНЫ]">[ДАННЫЕ УДАЛЕНЫ]</span> получила свой первый и <span class="glitch-text" data-text="[ДАННЫЕ УДАЛЕНЫ]">[ДАННЫЕ УДАЛЕНЫ]</span>, заказ от <span class="glitch-text" data-text="[ДАННЫЕ УДАЛЕНЫ]">[ДАННЫЕ УДАЛЕНЫ]</span>
-    </div>
+  <div class="log-block corruption-block" data-block="3" id="corruptionBlock">
+    <div class="damaged-text">начиная с <span class="redacted">[ДАННЫЕ УДАЛЕНЫ]</span> организация развилась и <span class="redacted">[ДАННЫЕ УДАЛЕНЫ]</span> получила свой первый и <span class="redacted">[ДАННЫЕ УДАЛЕНЫ]</span>, заказ от <span class="redacted">[ДАННЫЕ УДАЛЕНЫ]</span></div>
     <div class="finale-alert" id="finaleAlert">
-      <div>АРХИВ ПОВРЕЖДЁН</div>
-      <div>ДАННЫЕ НЕ УДАЛОСЬ ВОССТАНОВИТЬ</div>
-      <div class="sub">[ соединение разорвано • сегмент нечитаем ]</div>
-      <button class="finale-btn" id="returnBtn">вернуться в консоль</button>
+      <div class="redacted-title">АРХИВ ПОВРЕЖДЁН</div>
+      <div class="redacted-title" style="margin-top: 8px;">ДАННЫЕ НЕ УДАЛОСЬ ВОССТАНОВИТЬ</div>
     </div>
+  </div>
+
+  <div class="bottom-return">
+    <button class="return-btn" id="returnBtn">вернуться в консоль</button>
   </div>
 
 </div>
 
 <script>
 const CORRUPT_CHARS = '▓▒░█/#<>[]{}01ψΩΛЖЯÆИҰ∎◢◣◤◥';
-const MCHARS = '0123456789ABCDEF▓▒░█アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
 
 const DOSSIER = {
   hiyoshi: { name: 'ХИОШИ СУЗУКИ', photo: 'assets/decrypt/hiyoshi-elevator.png', fields: [['ФИО','Хиоши Сузуки'],['ПОЛ','мужской'],['РАСА','человек'],['РОСТ','178 см'],['ВЕС','71 кг'],['СТАТУС','след оборван'],['РОДНАЯ ПЛАНЕТА','Земля / Солнечная система']], note: 'Основатель. Поднял агентство из бытового сыска в рынок корпоративной грязи, предпочитая дробить заказы так, чтобы никто не видел всей картины целиком.' },
   cadence: { name: 'КАДЕНС СЛОАН', photo: 'assets/decrypt/arcana-cigarettes.jpeg', fields: [['ФИО','Каденс Слоан'],['ПОЛ','женский'],['РАСА','аркана'],['РОСТ','171 см'],['ВЕС','57 кг'],['СТАТУС','последний след нестабилен'],['РОДНАЯ ПЛАНЕТА','не зафиксирована']], note: 'Полевой элемент. Сцены вокруг неё выглядят бытовыми, но именно через такие места в архиве чаще всего начинается чужой компромат.' },
   iridium: { name: 'ИРИДИЙ', photo: 'assets/decrypt/iridium-elevator.png', fields: [['ФИО','Иридий'],['ПОЛ','мужской'],['РАСА','человек'],['РОСТ','188 см'],['ВЕС','79 кг'],['СТАТУС','следы разорваны'],['РОДНАЯ ПЛАНЕТА','Ме▓р◢к█уÆрЯи01-█◣']], note: 'Принёс агентству подвижность. Возникает рядом с узлами вывоза, передачи и слишком быстрым исчезновением хвостов.' },
-  daros:   { name: 'ДАРОС ПОЛЕЙ', photo: 'assets/decrypt/daros-placeholder.svg', fields: [['ФИО','Дарос Полей'],['ПОЛ','мужской'],['РАСА','вульпканин'],['РОСТ','182 см'],['ВЕС','68 кг'],['СТАТУС','данные неполные'],['РОДНАЯ ПЛАНЕТА','не подтверждена']], note: 'Связан с частотами, служебными проходами, запасными ключами и нижним плато. От него осталось меньше лица, чем метода.' }
+  daros: { name: 'ДАРОС ПОЛЕЙ', photo: 'assets/decrypt/daros-placeholder.svg', fields: [['ФИО','Дарос Полей'],['ПОЛ','мужской'],['РАСА','вульпканин'],['РОСТ','182 см'],['ВЕС','68 кг'],['СТАТУС','данные неполные'],['РОДНАЯ ПЛАНЕТА','не подтверждена']], note: 'Связан с частотами, служебными проходами, запасными ключами и нижним плато. От него осталось меньше лица, чем метода.' }
 };
 
-/* ========== BOOT ========== */
 async function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
 async function runBoot(){
   const box = document.getElementById('bootLines');
   const lines = [
@@ -391,133 +366,183 @@ async function runBoot(){
     '> access granted • operator level 4'
   ];
   for(const line of lines){
-    const div = document.createElement('div'); div.className = 'boot-line'; div.textContent = line; box.appendChild(div);
-    await sleep(30); div.classList.add('visible'); await sleep(180);
+    const div = document.createElement('div');
+    div.className = 'boot-line';
+    div.textContent = line;
+    box.appendChild(div);
+    await sleep(30);
+    div.classList.add('visible');
+    await sleep(180);
   }
   await sleep(400);
   document.getElementById('fileChoices').style.display = 'block';
   document.querySelectorAll('.file-choice').forEach(c => {
-    c.addEventListener('click', () => startArchive(c.dataset.choice));
+    c.addEventListener('click', () => {
+      if(c.classList.contains('locked')){
+        document.getElementById('lockMsg').classList.add('visible');
+        return;
+      }
+      startArchive(c.dataset.choice);
+    });
   });
 }
 
 function startArchive(choice){
+  if(choice !== 'history') return;
   document.getElementById('boot').classList.add('done');
   const container = document.getElementById('logContainer');
   container.classList.add('active');
-
-  if(choice === 'history'){
-    const banner = document.getElementById('banner');
-    banner.classList.add('active');
-    setTimeout(()=> initStream(), 1200);
-  } else {
-    // dossier choice: show stream then jump to personnel names
-    initStream();
-    setTimeout(()=>{
-      document.getElementById('personnelBlock').scrollIntoView({behavior:'smooth', block:'center'});
-    }, 2200);
-  }
+  document.getElementById('banner').classList.add('active');
+  setTimeout(()=> initStream(), 800);
 }
 
-/* ========== DECODE STREAM (fast) ========== */
-function streamDecode(el, baseSpeed = 3){
-  const full = el.dataset.text || el.textContent.trim();
-  if(!full) return;
-  el.dataset.text = full; el.textContent = '';
-  const noise = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ0123456789▓▒░█ψΩΛЖЯÆИҰ∎◢◣';
-  let i = 0;
-  const cur = document.createElement('span'); cur.className = 'cursor'; el.appendChild(cur);
-
-  function next(){
-    if(i >= full.length){ cur.remove(); el.classList.add('done'); return; }
-    const ch = full[i];
-    if(ch === '\n'){
-      el.insertBefore(document.createTextNode('\n'), cur);
-      i++; setTimeout(next, baseSpeed); return;
+function parseRawText(raw){
+  const parts = [];
+  let remaining = raw.replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+  const regex = /::name::(\w+)::(.+?)::/g;
+  let lastIndex = 0;
+  let match;
+  while((match = regex.exec(remaining)) !== null){
+    if(match.index > lastIndex){
+      parts.push({ type: 'text', value: remaining.substring(lastIndex, match.index) });
     }
-    const span = document.createElement('span');
-    span.className = 'decode-char';
-    span.textContent = noise[Math.floor(Math.random() * noise.length)];
-    el.insertBefore(span, cur);
-    let cycles = 0;
-    const maxCycles = (ch === ' ' || /[.,;:!?\-]/.test(ch)) ? 1 : 1 + Math.floor(Math.random() * 2);
-    const timer = setInterval(()=>{
-      if(cycles < maxCycles){
-        span.textContent = noise[Math.floor(Math.random() * noise.length)];
-        cycles++;
-      } else {
-        clearInterval(timer);
-        span.textContent = ch;
-        span.classList.add('resolved');
-        i++;
-        setTimeout(next, baseSpeed + Math.random() * 3);
-      }
-    }, 16);
+    parts.push({ type: 'name', id: match[1], value: match[2] });
+    lastIndex = regex.lastIndex;
   }
-  next();
+  if(lastIndex < remaining.length){
+    parts.push({ type: 'text', value: remaining.substring(lastIndex) });
+  }
+  return parts;
+}
+
+function typeWriter(el, parts, speed, callback){
+  el.innerHTML = '';
+  const cur = document.createElement('span');
+  cur.className = 'cursor';
+  el.appendChild(cur);
+
+  let partIdx = 0;
+  let charIdx = 0;
+  let currentNameSpan = null;
+
+  function tick(){
+    if(partIdx >= parts.length){
+      cur.remove();
+      if(callback) callback();
+      return;
+    }
+    const part = parts[partIdx];
+    if(part.type === 'name'){
+      if(!currentNameSpan){
+        currentNameSpan = document.createElement('span');
+        currentNameSpan.className = 'glitch-name';
+        currentNameSpan.dataset.name = part.value;
+        currentNameSpan.dataset.id = part.id;
+        el.insertBefore(currentNameSpan, cur);
+        charIdx = 0;
+      }
+      if(charIdx < part.value.length){
+        currentNameSpan.textContent += part.value[charIdx];
+        charIdx++;
+        setTimeout(tick, speed);
+      } else {
+        bindGlitchName(currentNameSpan);
+        currentNameSpan = null;
+        charIdx = 0;
+        partIdx++;
+        setTimeout(tick, speed);
+      }
+    } else {
+      if(charIdx < part.value.length){
+        const ch = part.value[charIdx];
+        el.insertBefore(document.createTextNode(ch), cur);
+        charIdx++;
+        setTimeout(tick, speed);
+      } else {
+        charIdx = 0;
+        partIdx++;
+        setTimeout(tick, speed);
+      }
+    }
+  }
+  tick();
+}
+
+function bindGlitchName(el){
+  const original = el.dataset.name;
+  let interval;
+  el.addEventListener('mouseenter', ()=>{
+    interval = setInterval(()=>{
+      el.textContent = original.split('').map(c=>
+        Math.random()>0.35 ? CORRUPT_CHARS[Math.floor(Math.random()*CORRUPT_CHARS.length)] : c
+      ).join('');
+    }, 45);
+  });
+  el.addEventListener('mouseleave', ()=>{ clearInterval(interval); el.textContent = original; });
+  el.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    openSidePanel(el.dataset.id);
+  });
 }
 
 function initStream(){
   const blocks = document.querySelectorAll('.log-block');
   let idx = 0;
-  function next(){
+  const speed = 1;
+
+  function showNext(){
     if(idx >= blocks.length) return;
     const block = blocks[idx];
     block.classList.add('visible');
     const content = block.querySelector('.log-content');
-    if(content && !content.classList.contains('done') && content.textContent.trim()){
-      streamDecode(content, 3);
-      const estimate = content.textContent.length * 8 + 200;
-      setTimeout(next, Math.min(estimate, 5000));
+    if(content && content.dataset.raw){
+      const parts = parseRawText(content.dataset.raw);
+      const totalChars = parts.reduce((s,p) => s + p.value.length, 0);
+      typeWriter(content, parts, speed, ()=>{
+        idx++;
+        showNext();
+      });
     } else {
-      setTimeout(next, 300);
+      idx++;
+      setTimeout(showNext, 300);
     }
-    idx++;
   }
-  next();
+  showNext();
 }
 
-/* ========== GLITCH HOVER NAMES + CLICK OPEN ========== */
-function initGlitchNames(){
-  document.querySelectorAll('.glitch-name').forEach(el=>{
-    const original = el.dataset.name;
-    let interval;
-    el.addEventListener('mouseenter', ()=>{
-      interval = setInterval(()=>{
-        el.textContent = original.split('').map(c=>Math.random()>0.35?CORRUPT_CHARS[Math.floor(Math.random()*CORRUPT_CHARS.length)]:c).join('');
-      }, 45);
-    });
-    el.addEventListener('mouseleave', ()=>{ clearInterval(interval); el.textContent = original; });
-    el.addEventListener('click', ()=> openSidePanel(el.dataset.id));
-  });
-}
-
-/* ========== SIDE PANEL ========== */
 const sidePanel = document.getElementById('sidePanel');
 
 function openSidePanel(id){
-  const data = DOSSIER[id]; if(!data) return;
+  const data = DOSSIER[id];
+  if(!data) return;
   document.getElementById('sideImg').src = data.photo;
   document.getElementById('sideName').textContent = data.name;
   document.getElementById('sideNoteText').textContent = data.note;
-  const grid = document.getElementById('sideGrid'); grid.innerHTML = '';
+  const grid = document.getElementById('sideGrid');
+  grid.innerHTML = '';
   data.fields.forEach(([label, value])=>{
-    const div = document.createElement('div'); div.className = 'cell';
-    div.innerHTML = `<span class="cell-label">${label}</span>${value}`;
+    const div = document.createElement('div');
+    div.className = 'cell';
+    div.innerHTML = '<span class="cell-label">' + label + '</span>' + value;
     grid.appendChild(div);
   });
   sidePanel.classList.add('open');
   spawnParticles(window.innerWidth - 80, window.innerHeight/2, 14);
 }
+
 function closeSidePanel(){ sidePanel.classList.remove('open'); }
-
 document.getElementById('sideClose').addEventListener('click', closeSidePanel);
+document.addEventListener('click', (e)=>{
+  if(sidePanel.classList.contains('open') && !sidePanel.contains(e.target) && !e.target.classList.contains('glitch-name')){
+    closeSidePanel();
+  }
+});
 
-/* ========== PARTICLES ========== */
 function spawnParticles(x, y, count){
   const chars = '▓▒░█/#<>[]{}01ψΩΛЖЯÆИҰ∎◢◣◤◥';
   for(let i=0;i<count;i++){
-    const el = document.createElement('div'); el.className = 'particle';
+    const el = document.createElement('div');
+    el.className = 'particle';
     el.textContent = chars[Math.floor(Math.random()*chars.length)];
     el.style.left = (x + (Math.random()-0.5)*80) + 'px';
     el.style.top = (y + (Math.random()-0.5)*80) + 'px';
@@ -526,76 +551,16 @@ function spawnParticles(x, y, count){
     el.style.setProperty('--ty', ((Math.random()-0.5)*300 - 60)+'px');
     el.style.setProperty('--tr', ((Math.random()-0.5)*120)+'deg');
     el.style.color = Math.random()>0.6 ? '#fff' : (Math.random()>0.5 ? '#aaa' : '#555');
-    document.body.appendChild(el); setTimeout(()=>el.remove(), 800);
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 800);
   }
 }
 
-/* ========== MATRIX RAIN ========== */
-const canvas = document.getElementById('matrixCanvas');
-const ctx = canvas.getContext('2d');
-let mw, mh, drops = [], mActive = false, mId;
-function resizeM(){
-  mw = canvas.width = window.innerWidth; mh = canvas.height = window.innerHeight;
-  const cols = Math.floor(mw/16); drops = [];
-  for(let i=0;i<cols;i++) drops[i] = Math.random()*-100;
-}
-function drawM(){
-  if(!mActive) return;
-  ctx.fillStyle = 'rgba(0,0,0,0.08)'; ctx.fillRect(0,0,mw,mh);
-  ctx.fillStyle = 'rgba(255,255,255,0.25)'; ctx.font = '14px Share Tech Mono';
-  for(let i=0;i<drops.length;i++){
-    const text = MCHARS[Math.floor(Math.random()*MCHARS.length)];
-    ctx.fillText(text, i*16, drops[i]*14);
-    if(drops[i]*14 > mh && Math.random()>0.975) drops[i] = 0;
-    drops[i]++;
-  }
-  mId = requestAnimationFrame(drawM);
-}
-function startMatrix(){ if(mActive) return; resizeM(); mActive = true; drawM(); }
-function stopMatrix(){ mActive = false; cancelAnimationFrame(mId); ctx.clearRect(0,0,mw,mh); canvas.classList.remove('active'); }
-
-/* ========== FINALE ========== */
-let finaleTriggered = false;
-function triggerFinale(){
-  if(finaleTriggered) return; finaleTriggered = true;
-  canvas.classList.add('active'); startMatrix();
-  let shakes = 0;
-  const si = setInterval(()=>{
-    document.body.classList.add('shake');
-    setTimeout(()=>document.body.classList.remove('shake'), 150);
-    spawnParticles(window.innerWidth/2 + (Math.random()-0.5)*200, window.innerHeight/2 + (Math.random()-0.5)*200, 8);
-    shakes++; if(shakes > 24) clearInterval(si);
-  }, 180);
-  setTimeout(()=>{ document.getElementById('finaleAlert').classList.add('visible'); }, 1600);
-}
-
-/* ========== RETURN TO CONSOLE ========== */
 document.getElementById('returnBtn').addEventListener('click', ()=> location.reload());
 
-/* ========== OBSERVER ========== */
-const observer = new IntersectionObserver((entries)=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting && entry.target.id === 'corruptionBlock') triggerFinale();
-  });
-}, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
-if(document.getElementById('corruptionBlock')) observer.observe(document.getElementById('corruptionBlock'));
-
-/* ========== AMBIENT GLITCH ========== */
-setInterval(()=>{
-  const blocks = document.querySelectorAll('.log-block.visible');
-  if(!blocks.length) return;
-  const b = blocks[Math.floor(Math.random()*blocks.length)];
-  b.style.transform = `translateX(${(Math.random()-0.5)*2}px)`;
-  setTimeout(()=> b.style.transform = '', 90);
-}, 3500);
-
-/* ========== INIT ========== */
 window.addEventListener('DOMContentLoaded', ()=>{
   runBoot();
-  initGlitchNames();
 });
-window.addEventListener('resize', ()=>{ if(mActive) resizeM(); });
 </script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
