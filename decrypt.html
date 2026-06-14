@@ -24,11 +24,6 @@ body{background:#050505;color:var(--c-text);font-family:var(--font-mono);overflo
 
 canvas#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 
-#decryptBar{position:fixed;top:0;left:0;height:3px;width:0%;z-index:14000;background:linear-gradient(90deg,var(--c-green),#9dff9d);box-shadow:0 0 12px rgba(51,255,51,0.6);transition:width 0.15s ease;opacity:0}
-#decryptBar.visible{opacity:1}
-#decryptPct{position:fixed;top:8px;right:14px;z-index:14000;font-size:0.65rem;color:var(--c-dim);letter-spacing:0.12em;opacity:0;transition:opacity 0.4s}
-#decryptPct.visible{opacity:1}
-
 #boot{position:fixed;inset:0;z-index:10000;background:transparent;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity 0.8s ease,visibility 0.8s;overflow:hidden}
 #boot.done{opacity:0;visibility:hidden;pointer-events:none}
 .boot-inner{width:min(820px,92vw);border:1px solid rgba(0,255,0,0.3);background:rgba(0,8,0,0.9);padding:32px;box-shadow:0 0 80px rgba(0,0,0,0.9),0 0 30px rgba(0,255,0,0.06),inset 0 0 60px rgba(0,40,0,0.12);position:relative;z-index:2;backdrop-filter:blur(4px)}
@@ -66,20 +61,6 @@ canvas#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 @keyframes errorGlitch{0%,92%,100%{transform:translate(0)}93%{transform:translate(-3px,1px)}95%{transform:translate(2px,-1px)}97%{transform:translate(-1px,2px)}}
 .error-bar{position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,#ff3333,transparent);animation:errorScan 2s linear infinite}
 @keyframes errorScan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-
-.chapter-nav{position:fixed;left:24px;top:50%;transform:translateY(-50%);z-index:13000;display:none;flex-direction:column;gap:0;opacity:0;transition:opacity 0.5s}
-.chapter-nav.visible{display:flex;opacity:1}
-.chapter-item{display:flex;align-items:center;gap:12px;cursor:pointer;position:relative;padding:8px 0}
-.chapter-dot{width:11px;height:11px;border:1px solid rgba(255,255,255,0.3);border-radius:50%;flex-shrink:0;transition:all 0.3s;background:#050505;position:relative;z-index:2}
-.chapter-item:not(:last-child)::after{content:'';position:absolute;left:5px;top:24px;width:1px;height:calc(100% - 8px);background:rgba(255,255,255,0.12);z-index:1}
-.chapter-item.active .chapter-dot{border-color:var(--c-green);background:var(--c-green);box-shadow:0 0 12px rgba(51,255,51,0.6)}
-.chapter-item.done .chapter-dot{border-color:var(--c-dim);background:var(--c-dim)}
-.chapter-item.corrupt.active .chapter-dot{border-color:#ff3333;background:#ff3333;box-shadow:0 0 12px rgba(255,50,50,0.6)}
-.chapter-label{font-size:0.62rem;color:#555;letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap;opacity:0;transform:translateX(-6px);transition:all 0.3s;pointer-events:none}
-.chapter-item:hover .chapter-label,.chapter-item.active .chapter-label{opacity:1;transform:translateX(0)}
-.chapter-item.active .chapter-label{color:#ccc}
-.chapter-item.corrupt.active .chapter-label{color:#ff6666}
-@media(max-width:1100px){.chapter-nav{display:none!important}}
 
 .banner{display:none;margin-bottom:50px;border:1px solid rgba(255,255,255,0.08);background:#000;position:relative;overflow:hidden}
 .banner.active{display:flex;align-items:center;animation:bannerIn 0.8s ease-out forwards}
@@ -192,9 +173,6 @@ canvas#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 <div class="vignette"></div>
 <canvas id="bgCanvas"></canvas>
 
-<div id="decryptBar"></div>
-<div id="decryptPct">РАСШИФРОВАНО 0%</div>
-
 <div id="boot">
   <div class="boot-inner">
     <div class="boot-header">
@@ -219,8 +197,6 @@ canvas#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
     <button class="error-close" id="errorClose">закрыть</button>
   </div>
 </div>
-
-<div class="chapter-nav" id="chapterNav"></div>
 
 <div class="side-panel" id="sidePanel">
   <div class="side-panel-header">
@@ -424,22 +400,6 @@ if(e.target===document.getElementById('errorOverlay'))
 document.getElementById('errorOverlay').classList.remove('active');
 });
 
-function buildChapterNav(){
-const nav=document.getElementById('chapterNav');
-const blocks=document.querySelectorAll('.log-block');
-blocks.forEach((b,i)=>{
-const item=document.createElement('div');
-item.className='chapter-item';
-if(b.dataset.corrupt)item.classList.add('corrupt');
-item.dataset.target=i;
-item.innerHTML='<div class="chapter-dot"></div><div class="chapter-label">'+(b.dataset.chapter||('сегмент '+i))+'</div>';
-item.addEventListener('click',()=>{
-b.scrollIntoView({behavior:'smooth',block:'center'});
-});
-nav.appendChild(item);
-});
-}
-
 function startArchive(choice){
 if(choice!=='history')return;
 document.getElementById('boot').classList.add('done');
@@ -447,14 +407,9 @@ const container=document.getElementById('logContainer');
 container.classList.add('active');
 document.getElementById('banner').classList.add('active');
 initBannerMatrix();
-buildChapterNav();
 setTimeout(()=>{
 document.getElementById('floatingReturn').classList.add('visible');
-document.getElementById('chapterNav').classList.add('visible');
-document.getElementById('decryptBar').classList.add('visible');
-document.getElementById('decryptPct').classList.add('visible');
 initStream();
-initScrollTracking();
 },800);
 }
 
@@ -544,6 +499,32 @@ tick();
 function bindGlitchName(el){
 const original=el.dataset.name;
 let isHovered=false;
+
+// === ФИКС ПРЫГАЮЩЕГО ТЕКСТА ===
+// Измеряем ширину оригинального текста и фиксируем её, чтобы
+// при смене символов на глитч-символы (у которых может быть другая ширина)
+// окружающий текст не "дёргался" и не перетекал.
+const probe=document.createElement('span');
+probe.style.cssText='position:absolute;visibility:hidden;left:-9999px;top:-9999px;white-space:nowrap;pointer-events:none;';
+const cs=window.getComputedStyle(el);
+probe.style.font=cs.font;
+probe.style.fontSize=cs.fontSize;
+probe.style.fontFamily=cs.fontFamily;
+probe.style.fontWeight=cs.fontWeight;
+probe.style.letterSpacing=cs.letterSpacing;
+probe.textContent=original;
+document.body.appendChild(probe);
+const lockedWidth=Math.ceil(probe.getBoundingClientRect().width);
+probe.remove();
+
+el.style.display='inline-block';
+el.style.width=lockedWidth+'px';
+el.style.textAlign='center';
+el.style.whiteSpace='nowrap';
+el.style.overflow='hidden';
+el.style.verticalAlign='baseline';
+// ===============================
+
 setInterval(()=>{
 if(isHovered)return;
 el.textContent=original.split('').map(c=>
@@ -572,35 +553,6 @@ idx++;setTimeout(showNext,300);
 }
 }
 showNext();
-}
-
-function initScrollTracking(){
-const nav=document.getElementById('chapterNav');
-const items=nav.querySelectorAll('.chapter-item');
-const blocks=document.querySelectorAll('.log-block');
-const bar=document.getElementById('decryptBar');
-const pct=document.getElementById('decryptPct');
-function update(){
-const scrollTop=window.scrollY;
-const docH=document.documentElement.scrollHeight-window.innerHeight;
-const progress=docH>0?Math.min(1,scrollTop/docH):0;
-const val=Math.round(progress*100);
-bar.style.width=val+'%';
-pct.textContent='РАСШИФРОВАНО '+val+'%';
-let activeIdx=0;
-const center=window.innerHeight/2;
-blocks.forEach((b,i)=>{
-const rect=b.getBoundingClientRect();
-if(rect.top<center)activeIdx=i;
-});
-items.forEach((it,i)=>{
-it.classList.remove('active','done');
-if(i<activeIdx)it.classList.add('done');
-if(i===activeIdx)it.classList.add('active');
-});
-}
-window.addEventListener('scroll',update,{passive:true});
-update();
 }
 
 const sidePanel=document.getElementById('sidePanel');
